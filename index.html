@@ -3,861 +3,813 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Software Architecture — Exam Notes (7th Sem)</title>
-    <meta name="description" content="Comprehensive exam notes for Software Architecture, B.Tech 7th Semester. Dark mode, offline-ready.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Software Architecture — Exam Notes</title>
+    <meta name="description" content="AMOLED optimized Software Architecture exam notes. B.Tech 7th Sem.">
     <style>
         :root {
-            --bg-primary: #121212;
-            --bg-secondary: #1e1e1e;
-            --bg-tertiary: #2d2d2d;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --accent: #bb86fc;
-            --accent-variant: #3700b3;
-            --error: #cf6679;
-            --success: #03dac6;
-            --border: #333;
+            /* AMOLED MONOCHROMATIC THEME */
+            --bg-core: #000000;
+            --bg-surface: #000000;
+            --bg-highlight: #121212;
+            --text-main: #ffffff;
+            --text-muted: #b0b0b0;
+            --border: #333333;
+            --border-active: #ffffff;
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-            --spacing-unit: 1rem;
+            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background-color: var(--bg-core);
+            color: var(--text-main);
             font-family: var(--font-main);
             line-height: 1.6;
             font-size: 16px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Utilities */
+        /* UTILITIES */
         .hidden { display: none !important; }
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
-        .bold-highlight { color: var(--accent); font-weight: 700; }
-        .text-small { font-size: 0.85rem; color: var(--text-secondary); }
-        .exam-tip { color: #ffcf40; font-style: italic; display: block; margin-top: 0.5rem; font-size: 0.9rem; }
-
-        /* Header */
+        .text-muted { color: var(--text-muted); font-size: 0.9em; }
+        .bold { font-weight: 700; color: #fff; }
+        strong { color: #fff; font-weight: 700; text-decoration: underline solid #333 1px; }
+        
+        /* HEADER - Minimal for Mobile */
         header {
             position: sticky;
             top: 0;
             z-index: 100;
-            background-color: var(--bg-secondary);
+            background-color: rgba(0, 0, 0, 0.95);
             border-bottom: 1px solid var(--border);
-            padding: 0.75rem 1rem;
+            backdrop-filter: blur(10px);
+            padding: 1rem;
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
             justify-content: space-between;
-            gap: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            align-items: center;
+            height: 60px;
         }
 
-        .header-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
+        .header-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
+        .header-title span { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; margin-left: 5px; }
 
-        .header-controls {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        button {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
+        .menu-btn {
+            background: transparent;
             border: 1px solid var(--border);
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.2s;
         }
 
-        button:hover { background-color: var(--border); }
-        button:active { transform: translateY(1px); }
-        button.active { background-color: var(--accent); color: #000; font-weight: bold; }
+        /* OVERLAY MENU (TOC + Controls) */
+        #menu-overlay {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 60px);
+            background-color: var(--bg-core);
+            z-index: 99;
+            display: none; /* Toggled via JS */
+            flex-direction: column;
+            padding: 1rem;
+            overflow-y: auto;
+            border-top: 1px solid var(--border);
+        }
+
+        #menu-overlay.open { display: flex; }
+
+        .menu-section { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .menu-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 1px; }
+
+        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        
+        .app-btn {
+            background: var(--bg-highlight);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+        .app-btn:active { background: var(--border); transform: scale(0.98); }
+        .app-btn.active { background: var(--text-main); color: var(--bg-core); font-weight: bold; }
 
         #search-input {
-            background-color: var(--bg-primary);
+            width: 100%;
+            background: var(--bg-highlight);
             border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 0.4rem;
-            border-radius: 4px;
-            width: 200px;
-        }
-
-        /* Layout */
-        .container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* Sidebar TOC */
-        #toc {
-            width: 300px;
-            background-color: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-            padding: 1rem;
-            display: none; /* Hidden on mobile by default */
-            flex-direction: column;
-            gap: 0.5rem;
-            height: calc(100vh - 60px);
-            position: fixed;
-            left: 0;
-            top: 60px;
-            z-index: 90;
-        }
-
-        @media (min-width: 768px) {
-            #toc { display: flex; position: sticky; top: 60px; height: calc(100vh - 60px); }
-            .main-content { margin-left: 0; }
-        }
-
-        .toc-link {
-            display: block;
-            padding: 0.5rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            border-radius: 4px;
-        }
-
-        .toc-link:hover, .toc-link.active {
-            background-color: var(--bg-tertiary);
-            color: var(--accent);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            max-width: 100%;
-        }
-        
-        @media (min-width: 768px) {
-            .main-content { padding: 2rem; max-width: 1000px; margin: 0 auto; }
-        }
-
-        /* Question Section */
-        section.question-block {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.8rem;
             border-radius: 8px;
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            position: relative;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .toc-list a {
+            display: block;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #1a1a1a;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .toc-list a:hover { color: var(--text-main); }
+
+        /* CONTENT AREA */
+        .container { padding: 1rem; max-width: 800px; margin: 0 auto; }
+
+        /* QUESTION BLOCK */
+        section.question-block {
+            border-bottom: 4px solid var(--border); /* Thick separator */
+            padding-bottom: 3rem;
+            margin-bottom: 3rem;
         }
 
         h2 {
             font-size: 1.4rem;
+            font-weight: 700;
             margin-bottom: 1rem;
-            color: var(--accent);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            line-height: 1.4;
+            color: var(--text-main);
+            border-left: 4px solid var(--text-main);
+            padding-left: 1rem;
         }
 
-        h3 {
-            font-size: 1.1rem;
-            margin: 1.2rem 0 0.5rem;
-            color: var(--text-primary);
-        }
+        h3 { font-size: 1rem; margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border); display: block; padding-bottom: 0.3rem;}
 
-        p, ul, ol { margin-bottom: 1rem; }
-        ul, ol { padding-left: 1.5rem; }
-        li { margin-bottom: 0.4rem; }
-
-        /* Summary & Definition */
+        /* COMPONENTS */
         .quick-summary {
-            background-color: rgba(3, 218, 198, 0.1);
-            border-left: 3px solid var(--success);
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .definition {
-            font-style: italic;
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
-
-        /* ASCII Diagrams */
-        .ascii-container {
-            background-color: #000;
             border: 1px solid var(--border);
             padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            border-radius: 6px;
+            background: var(--bg-highlight);
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        .ascii-container {
+            background: var(--bg-highlight);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 6px;
             overflow-x: auto;
-            position: relative;
+            margin: 1.5rem 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         pre {
             font-family: var(--font-mono);
-            font-size: 0.85rem;
-            line-height: 1.2;
-            color: var(--success);
+            font-size: 13px; 
+            line-height: 1.4;
+            color: var(--text-main);
             white-space: pre;
         }
 
         .draw-tip {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
             font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.8rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed var(--border);
         }
 
-        /* Deep Dive */
-        .deep-dive {
-            margin-top: 1rem;
-            line-height: 1.7;
-        }
+        .deep-dive { margin-top: 1rem; font-size: 1.05rem; letter-spacing: 0.2px; }
+        .deep-dive p { margin-bottom: 1.2rem; }
+        .deep-dive ul, .deep-dive ol { padding-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+        .deep-dive li { margin-bottom: 0.6rem; }
+        .deep-dive strong { color: var(--text-main); }
 
-        .deep-dive strong { color: var(--text-primary); }
-
-        /* Components */
-        .sample-answer, .practice-question {
-            background-color: var(--bg-tertiary);
+        .sample-answer {
+            background: #0a0a0a;
             border: 1px solid var(--border);
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 4px;
+            border-left: 4px solid var(--text-main);
+            padding: 1.2rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
         }
-        
-        .sample-answer h3, .practice-question h3 { margin-top: 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
 
-        .checklist, .omissions, .mnemonic {
-            margin-top: 1rem;
+        .checklist, .omissions, .practice {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-highlight);
+            border-radius: 6px;
+        }
+
+        .checklist h4, .omissions h4, .practice h4 {
+            margin: 0 0 0.5rem 0;
             font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
         }
 
         .mnemonic {
-            background-color: rgba(187, 134, 252, 0.1);
-            border: 1px dashed var(--accent);
-            padding: 0.5rem;
-            border-radius: 4px;
+            border: 1px dashed var(--text-muted);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
         }
 
-        .cheat-sheet {
-            margin-top: 1rem;
-            border-top: 1px dashed var(--border);
-            padding-top: 1rem;
-        }
-
-        /* Controls per question */
+        /* Question Controls */
         .q-controls {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-            background: var(--bg-tertiary);
-            padding: 0.5rem;
-            border-radius: 4px;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
-
-        .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
-
-        /* Image Placeholder */
-        .img-placeholder {
-            background-color: #000;
+        .q-btn {
+            background: transparent;
             border: 1px solid var(--border);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 200px;
-            margin: 1rem 0;
-            font-family: var(--font-mono);
-            text-align: center;
-            flex-direction: column;
-            padding: 1rem;
+            color: var(--text-muted);
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            white-space: nowrap;
         }
+        .q-btn:active { background: var(--text-main); color: black; }
         
-        .fallback-link {
-            color: var(--accent);
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            display: block;
+        .rec-time {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            align-self: center;
+            white-space: nowrap;
         }
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-        }
-        
-        th, td {
-            border: 1px solid var(--border);
-            padding: 0.75rem;
-            text-align: left;
-        }
-        
-        th { background-color: var(--bg-tertiary); color: var(--accent); }
+        /* TABLES */
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid var(--border); padding: 0.8rem; text-align: left; }
+        th { color: var(--text-main); font-weight: bold; background: var(--bg-highlight); }
+        td { color: var(--text-muted); }
 
-        /* Footer */
+        /* FOOTER */
         footer {
-            background-color: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            padding: 1.5rem;
+            padding: 3rem 2rem;
             text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
             margin-top: auto;
         }
 
-        /* MODES */
-        body.diagrams-only .deep-dive, 
+        /* VIEW MODES */
+        body.diagrams-only .deep-dive,
         body.diagrams-only .sample-answer,
-        body.diagrams-only .practice-question,
-        body.diagrams-only .quick-summary,
         body.diagrams-only .checklist,
-        body.diagrams-only .omissions { display: none; }
+        body.diagrams-only .omissions,
+        body.diagrams-only .practice { display: none; }
 
-        body.revision-mode .deep-dive,
-        body.revision-mode .sample-answer,
-        body.revision-mode .practice-question { display: none; }
-        
+        body.revision-mode .deep-dive, 
+        body.revision-mode .practice { display: none; }
         body.revision-mode .cheat-sheet { display: block !important; }
 
-        /* PRINT STYLES */
+        /* PRINT */
         @media print {
-            body {
-                background-color: #fff;
-                color: #000;
-                display: block;
-            }
-            header, #toc, .q-controls, button { display: none !important; }
-            .main-content { margin: 0; padding: 0; max-width: 100%; }
-            section.question-block {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                border: 1px solid #ccc;
-                background-color: #fff;
-                color: #000;
-                margin-bottom: 20px;
-            }
-            h2 { color: #000; border-bottom: 2px solid #000; }
-            .ascii-container { border: 1px solid #000; background: #fff; color: #000; }
-            pre { color: #000; }
-            .quick-summary { border-left: 3px solid #000; background: #f0f0f0; color: #000; }
-            .sample-answer { background: #f9f9f9; border: 1px solid #ccc; }
-            footer { position: static; color: #000; }
-            
-            /* Force show content hidden by default toggles */
-            .cheat-sheet { display: block !important; }
+            body { background: white; color: black; }
+            header, #menu-overlay, .q-controls { display: none; }
+            section.question-block { border-bottom: 1px solid #ccc; page-break-inside: avoid; }
+            .ascii-container { border: 1px solid #000; background: none; }
+            pre { color: black; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-title">Software Architecture — Exam Notes <span class="text-small">7th Sem</span></div>
-    <div class="header-controls">
-        <input type="text" id="search-input" placeholder="Search questions..." aria-label="Search questions">
-        <button onclick="toggleTOC()" class="mobile-only" aria-label="Toggle Menu">Menu</button>
-        <button onclick="expandAll()" title="Expand All Sections">Expand All</button>
-        <button onclick="collapseAll()" title="Collapse All Sections">Collapse All</button>
-        <button onclick="toggleRevisionMode()" id="btn-rev" title="Toggle Revision Mode">Revision Mode</button>
-        <button onclick="toggleDiagramsOnly()" id="btn-diag" title="Toggle Diagrams Only">Diagrams Only</button>
-        <button onclick="exportText()" title="Download as .txt">Export Text</button>
-        <button onclick="printPDF()" title="Print to PDF">Download PDF</button>
-    </div>
+    <div class="header-title">Arch Notes <span>7th Sem</span></div>
+    <button class="menu-btn" onclick="toggleMenu()">MENU</button>
 </header>
 
-<div class="container">
-    <nav id="toc" aria-label="Table of Contents">
-        <!-- TOC injected via JS -->
-    </nav>
+<!-- Full Screen Menu Overlay -->
+<div id="menu-overlay">
+    <div class="menu-section">
+        <div class="menu-label">Search</div>
+        <input type="text" id="search-input" placeholder="Type to find questions...">
+    </div>
 
-    <main class="main-content" id="content-area">
-        <!-- Content injected below -->
+    <div class="menu-section">
+        <div class="menu-label">View Modes</div>
+        <div class="control-grid">
+            <button class="app-btn" onclick="toggleRevisionMode()" id="btn-rev">Revision Mode</button>
+            <button class="app-btn" onclick="toggleDiagramsOnly()" id="btn-diag">Diagrams Only</button>
+        </div>
+    </div>
 
-        <!-- Q1 -->
-        <section class="question-block" id="q1">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q1-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q1-diag')">Copy Diagram</button>
-                <button class="btn-sm" onclick="toggleSection('q1-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q1: Explain the evolution of software architecture. Discuss how architecture has changed from monolithic systems to modern distributed systems.</h2>
-            
-            <div class="quick-summary">
-                <p><strong>Summary:</strong> The journey from <strong>Monoliths</strong> (everything in one box) to <strong>Distributed Systems</strong> (Microservices, Serverless). Evolution is driven by the need for higher scalability, fault tolerance, and faster deployment speeds (DevOps).</p>
-            </div>
+    <div class="menu-section">
+        <div class="menu-label">Actions</div>
+        <div class="control-grid">
+            <button class="app-btn" onclick="expandAll()">Expand All</button>
+            <button class="app-btn" onclick="collapseAll()">Collapse All</button>
+            <button class="app-btn" onclick="exportText()">Export .txt</button>
+            <button class="app-btn" onclick="printPDF()">Save PDF</button>
+        </div>
+    </div>
 
-            <div class="ascii-container">
+    <div class="menu-section">
+        <div class="menu-label">Table of Contents</div>
+        <div id="toc-list" class="toc-list">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+</div>
+
+<div class="container" id="main-container">
+
+    <!-- Q1 -->
+    <section class="question-block" id="q1">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q1-sa')">Copy Ans</button>
+            <button class="q-btn" onclick="toggleID('q1-cs')">Cheat Sheet</button>
+            <span class="rec-time">Rec: 18 min</span>
+        </div>
+        <h2>Q1: Explain the evolution of software architecture. Discuss how architecture has changed from monolithic systems to modern distributed systems.</h2>
+        
+        <div class="quick-summary">
+            1. Evolution driven by need for <strong>scalability</strong> and <strong>agility</strong>.<br>
+            2. Journey: Monolith -> Client-Server -> SOA -> Microservices.<br>
+            3. Shift from "Tight Coupling" to "Loose Coupling".
+        </div>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> The evolution of software architecture refers to the historical progression of design patterns from single-unit <strong>__Monoliths__</strong> to decentralized <strong>__Distributed_Systems__</strong>, aiming to solve complexity, scaling, and deployment challenges.</p>
+        </div>
+
+        <div class="ascii-container">
 <pre id="q1-diag">
-   [ MONOLITHIC ]           [ LAYERED ]             [ SOA ]              [ MICROSERVICES ]
-    ___________            ___________            ___________            _______________
-   |  _______  |          |____UI_____|          | Service A |          |  [S1]   [S2]  |
-   | | Code  | |   -->    |___Logic___|   -->    |___|___|___|   -->    |  (DB)   (DB)  |
-   | |_______| |          |___Data____|          |   ESB     |          | [S3]   [S4]   |
-   |___|___|___|                                 |___________|          |_______________|
-      (1 Unit)             (Separation)          (Integration)           (Decentralized)
+DIAGRAM (ASCII — exam-drawable):
+
+  [ 1980s ]       [ 1990s ]          [ 2000s ]          [ 2010s+ ]
+ MONOLITH      CLIENT-SERVER           SOA            MICROSERVICES
+ _________      ___________        ___________       ________________
+|         |    |    UI     |      | Service A |     | [S1]   [S2]    |
+| All-in- |    |___________|      |___|___|___|     |  |      |      |
+|   One   |          |              |  ESB  |       | (DB)   (DB)    |
+|_________|    |___DB______|      |_________|       |________________|
 </pre>
-                <div class="draw-tip">Tip: Draw 4 boxes left-to-right. 1. Big box (Monolith). 2. Stack of 3 rectangles (Layered). 3. Services on a bus (SOA). 4. Floating independent boxes (Microservices).</div>
-            </div>
+            <div class="draw-tip">Draw a timeline. 1 Big box -> 2 Boxes (UI/DB) -> Bus (ESB) -> Many small floating boxes.</div>
+        </div>
 
-            <div class="deep-dive">
-                <p><strong>1. The Era of Monoliths (Early Days):</strong><br>
-                Software started as a single executable. Mainframe systems. <br>
-                - <strong>Structure:</strong> UI, Business Logic, and Data Access code were tightly coupled in one codebase.<br>
-                - <strong>Pros:</strong> Easy to develop initially, simple deployment (copy 1 file), zero network latency internally.<br>
-                - <strong>Cons:</strong> "Spaghetti Code", Single Point of Failure (one bug crashes app), Vertical Scaling only (buy bigger RAM).</p>
+        <div class="deep-dive">
+            <p><strong>1. Monolithic Architecture (The Beginning):</strong> In the early days (Mainframes), software was a single unified block. The UI, Business Logic, and Data Access layers were physically combined in one executable.
+            <br><em>Pros:</em> Simple to develop and test initially.
+            <br><em>Cons:</em> <strong>__Single_Point_of_Failure__</strong> (one bug crashes all), difficult to scale (must buy bigger hardware - Vertical Scaling).</p>
 
-                <p><strong>2. Client-Server & Layered (1990s):</strong><br>
-                The rise of the PC led to separating the <strong>Client</strong> (UI) from the <strong>Server</strong> (Database). <br>
-                - <strong>2-Tier:</strong> Fat Client -> DB.<br>
-                - <strong>3-Tier:</strong> UI -> Application Server (Logic) -> Database. This introduced logical separation of concerns.</p>
+            <p><strong>2. Client-Server & Layered (The 90s):</strong> The rise of PCs led to splitting the workload. The <strong>__Client__</strong> handled presentation, and the <strong>__Server__</strong> handled data. This evolved into N-Tier architecture (Presentation, Logic, Data layers).
+            <br><em>Improvement:</em> Logical separation of concerns.</p>
 
-                <p><strong>3. Service-Oriented Architecture (SOA) (2000s):</strong><br>
-                Enterprise-scale integration. Big monolithic apps needed to talk to each other.<br>
-                - <strong>Key Tech:</strong> SOAP (XML), ESB (Enterprise Service Bus).<br>
-                - <strong>Focus:</strong> Reusability of services across the enterprise. Heavyweight communication.</p>
+            <p><strong>3. Service-Oriented Architecture (SOA) (The 2000s):</strong> Enterprises needed large, disparate systems to talk to each other. SOA introduced the <strong>__Enterprise_Service_Bus_(ESB)__</strong>. Services were coarse-grained and communicated via heavy protocols like SOAP/XML.
+            <br><em>Focus:</em> Reusability and Integration.</p>
 
-                <p><strong>4. Microservices & Cloud (2010s+):</strong><br>
-                Driven by Netflix, Amazon, and Cloud (AWS).<br>
-                - <strong>Concept:</strong> Break app into tiny, independent services organized around <em>business capabilities</em> (e.g., "Payment Service").<br>
-                - <strong>Key Tech:</strong> REST (JSON), Docker containers, Kubernetes.<br>
-                - <strong>Pros:</strong> Horizontal scaling, Fault isolation, Tech stack freedom (Java for one, Node.js for another).</p>
+            <p><strong>4. Microservices (Modern Distributed):</strong> Driven by Cloud (AWS/Azure) and DevOps. Applications are broken into tiny, autonomous services, each with its own database. They communicate via lightweight <strong>__REST_APIs__</strong>.
+            <br><em>Key Benefit:</em> <strong>__Horizontal_Scaling__</strong> (add more cheap servers) and Fault Isolation (if one service fails, others survive).</p>
 
-                <table>
-                    <tr><th>Feature</th><th>Monolith</th><th>Microservices</th></tr>
-                    <tr><td>Scaling</td><td>Vertical (Bigger Hardware)</td><td>Horizontal (More Machines)</td></tr>
-                    <tr><td>Database</td><td>Shared Central DB</td><td>Database per Service</td></tr>
-                    <tr><td>Coupling</td><td>Tight</td><td>Loose</td></tr>
-                    <tr><td>Deployment</td><td>Risky (Deploy All)</td><td>Safe (Deploy One Service)</td></tr>
-                </table>
-            </div>
+            <p><strong>Comparison:</strong>
+            <br>- <em>Monolith:</em> Tight Coupling, Shared Database, Riskier Deployments.
+            <br>- <em>Distributed:</em> Loose Coupling, Decentralized Data, Independent Deployments.</p>
+        </div>
 
-            <div class="sample-answer" id="q1-sa">
-                <h3>Sample Answer (7 Marks)</h3>
-                <p>The evolution of software architecture reflects the industry's move from centralized, rigid structures to decentralized, flexible systems. The phases are:</p>
-                <p>1. <strong>Monolithic Architecture:</strong> The starting point where all components (UI, Logic, Data) reside in a single artifact. It provided simplicity but suffered from tight coupling and a single point of failure. Scaling required upgrading hardware (Vertical Scaling).</p>
-                <p>2. <strong>Client-Server/Layered:</strong> Introduced separation of concerns (3-Tier Architecture). It improved maintainability by decoupling the UI from logic and data, but still relied on a centralized database.</p>
-                <p>3. <strong>Service-Oriented Architecture (SOA):</strong> Focused on integrating large enterprise applications using an Enterprise Service Bus (ESB). Services communicated via SOAP, emphasizing reusability.</p>
-                <p>4. <strong>Microservices Architecture:</strong> The modern standard. Applications are decomposed into small, autonomous services that communicate via lightweight APIs (REST). This enables <strong>DevOps</strong>, independent deployment, fault isolation, and infinite horizontal scaling on cloud infrastructure.</p>
-            </div>
+        <div class="sample-answer" id="q1-sa">
+            <h3>Sample Answer (7 Marks)</h3>
+            <p>The evolution of software architecture has been driven by the need to manage increasing complexity and scale. The major phases are:</p>
+            <ol>
+                <li><strong>Monolithic Architecture:</strong> The earliest systems where all modules (UI, Logic, Data) were bundled into a single artifact. While simple, they suffered from tight coupling and vertical scaling limits.</li>
+                <li><strong>Client-Server/Layered:</strong> Introduced logical separation (e.g., 3-Tier Architecture), decoupling the User Interface from the Database.</li>
+                <li><strong>Service-Oriented Architecture (SOA):</strong> Focused on enterprise integration using an ESB and SOAP, allowing large systems to interoperate.</li>
+                <li><strong>Microservices:</strong> The current standard for cloud-native apps. It decomposes systems into small, independent services communicating via REST. This enables <strong>__continuous_deployment__</strong> and infinite horizontal scaling.</li>
+            </ol>
+            <p><strong>Conclusion:</strong> The trend is a consistent move from centralized, rigid structures to decentralized, flexible distributed systems.</p>
+        </div>
 
-            <div class="mnemonic">
-                <strong>Mnemonic:</strong> <strong>M-C-S-M</strong> -> <strong>M</strong>onolith, <strong>C</strong>lient-Server, <strong>S</strong>OA, <strong>M</strong>icroservices. ("My Computer Saw Me").
-            </div>
+        <div class="checklist">
+            <h4>What to write to get 7/7:</h4>
+            <ul>
+                <li>Mention "Vertical Scaling" vs "Horizontal Scaling".</li>
+                <li>Keyword: <strong>__Coupling__</strong> (Tight to Loose).</li>
+                <li>Mention the timeline: Mainframe -> PC -> Web -> Cloud.</li>
+                <li>Draw the diagram showing the breakdown of the box.</li>
+            </ul>
+        </div>
 
-            <div class="cheat-sheet hidden" id="q1-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li><strong>Monolith:</strong> Single point of failure, Vertical Scaling.</li>
-                    <li><strong>Client-Server:</strong> 2-Tier/3-Tier separation.</li>
-                    <li><strong>SOA:</strong> ESB, SOAP, Heavyweight integration.</li>
-                    <li><strong>Microservices:</strong> Decentralized DB, REST, Horizontal Scaling.</li>
-                    <li><strong>Trend:</strong> Tight Coupling -> Loose Coupling.</li>
-                </ul>
-            </div>
-        </section>
+        <div class="mnemonic"><strong>M-C-S-M</strong>: Monolith -> Client-Server -> SOA -> Microservices.</div>
+        
+        <div class="cheat-sheet hidden" id="q1-cs">
+            <h3>Cheat Sheet</h3>
+            <ul>
+                <li><strong>Monolith:</strong> Single executable, hard to change.</li>
+                <li><strong>Client-Server:</strong> Separation of UI and Data.</li>
+                <li><strong>SOA:</strong> Enterprise Service Bus (ESB), SOAP.</li>
+                <li><strong>Microservices:</strong> Independent, REST, Cloud-native.</li>
+                <li><strong>Driver:</strong> Need for speed (Time to market) and Scale.</li>
+            </ul>
+        </div>
+    </section>
 
-        <!-- Q2 -->
-        <section class="question-block" id="q2">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q2-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q2-diag')">Copy Diagram</button>
-                <button class="btn-sm" onclick="toggleSection('q2-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q2: Describe different software development methodologies and the software quality model.</h2>
+    <!-- Q2 -->
+    <section class="question-block" id="q2">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q2-sa')">Copy Ans</button>
+            <button class="q-btn" onclick="toggleID('q2-cs')">Cheat Sheet</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q2: Describe different software development methodologies and the software quality model.</h2>
 
-            <div class="quick-summary">
-                <p><strong>Summary:</strong> Methodologies control <em>how</em> we build (Waterfall vs Agile). Quality Models measure <em>how good</em> it is (ISO 9126). Key contrast: Waterfall is linear; Agile is cyclic.</p>
-            </div>
+        <div class="quick-summary">
+            1. Methodologies: <strong>Waterfall</strong> (Linear) vs <strong>Agile</strong> (Iterative).<br>
+            2. Quality Model: <strong>ISO 9126</strong> standard.<br>
+            3. Key attributes: Functionality, Reliability, Usability, Efficiency.
+        </div>
 
-            <div class="ascii-container">
+        <div class="ascii-container">
 <pre id="q2-diag">
-   WATERFALL (Linear)           AGILE (Cyclic)
-   [ Requirements ]            (   PLAN   )
-          |                  /              \
-      [ Design ]           ( DEPLOY      CODE )
-          |                 \              /
-       [ Code ]              (    TEST    )
-          |                   -------------
-       [ Test ]               Repeats every
-          |                  Sprint (2 weeks)
-     [ Maintenance ]
+DIAGRAM (ASCII — exam-drawable):
+
+   WATERFALL (Linear)           AGILE (Iterative)
+  [ Reqs ]                     (    Plan    )
+     |                       /            \
+  [ Design ]               ( Deploy      Code )
+     |                       \            /
+  [ Code ]                     (    Test    )
+     |                          ------------
+  [ Test ]                     (Repeats Loop)
 </pre>
-                <div class="draw-tip">Tip: Draw steps going down like a staircase for Waterfall. Draw a circular cycle for Agile with arrows.</div>
-            </div>
+            <div class="draw-tip">Draw steps going down (Staircase) for Waterfall. Draw a Circle with arrows for Agile.</div>
+        </div>
 
-            <div class="deep-dive">
-                <p><strong>1. Development Methodologies:</strong></p>
-                <ul>
-                    <li><strong>Waterfall Model:</strong> Classical, linear approach. You cannot go back. Requirements must be frozen before design starts.
-                        <br><em>Use when:</em> Requirements are clear and fixed (e.g., building a bridge).
-                        <br><em>Failures:</em> If requirements change late, the project fails.</li>
-                    <li><strong>Agile (Scrum/Kanban):</strong> Iterative approach. Software is built in small chunks called "Sprints" (usually 2 weeks).
-                        <br><em>Use when:</em> Requirements are unclear or changing (e.g., startup app).
-                        <br><em>Key:</em> Continuous feedback from the customer.</li>
-                    <li><strong>Spiral Model:</strong> Risk-driven. Combines Waterfall phases with prototyping loops. Good for high-risk projects.</li>
-                </ul>
+        <div class="deep-dive">
+            <p><strong>Part 1: Methodologies</strong>
+            <br><strong>1. Waterfall Model:</strong> A sequential design process. Progress flows steadily downwards (like a waterfall) through phases: Requirements -> Design -> Implementation -> Verification -> Maintenance.
+            <br>- <em>Pros:</em> Simple, disciplined. Good for fixed-requirement projects (e.g., construction).
+            <br>- <em>Cons:</em> Rigid. <strong>__No_turning_back__</strong>. Poor for changing requirements.</p>
 
-                <p><strong>2. Software Quality Model (ISO 9126):</strong><br>
-                The global standard for "What makes software good?". It has 6 top-level attributes:</p>
-                <table>
-                    <tr><th>Attribute</th><th>Meaning</th><th>Sub-attributes</th></tr>
-                    <tr><td><strong>Functionality</strong></td><td>Does it work?</td><td>Suitability, Accuracy, Security</td></tr>
-                    <tr><td><strong>Reliability</strong></td><td>Does it crash?</td><td>Fault Tolerance, Recoverability</td></tr>
-                    <tr><td><strong>Usability</strong></td><td>Is it easy?</td><td>Learnability, Understandability</td></tr>
-                    <tr><td><strong>Efficiency</strong></td><td>Is it fast?</td><td>Time Behavior, Resource Utilization</td></tr>
-                    <tr><td><strong>Maintainability</strong></td><td>Easy to fix?</td><td>Changeability, Testability</td></tr>
-                    <tr><td><strong>Portability</strong></td><td>Moveable?</td><td>Adaptability, Installability</td></tr>
-                </table>
-            </div>
+            <p><strong>2. Agile Methodology (Scrum/Kanban):</strong> An iterative approach. Software is developed in small increments called <strong>__Sprints__</strong> (usually 2 weeks).
+            <br>- <em>Pros:</em> Adaptable to change, frequent delivery, customer feedback loop.
+            <br>- <em>Cons:</em> Scope creep, requires experienced team.</p>
 
-            <div class="sample-answer" id="q2-sa">
-                <h3>Sample Answer (7 Marks)</h3>
-                <p><strong>Software Methodologies:</strong><br>
-                1. <strong>Waterfall:</strong> A sequential design process where progress flows steadily downwards through Requirement, Design, Implementation, Verification, and Maintenance phases. It is rigid and best for stable requirements.<br>
-                2. <strong>Agile:</strong> An iterative methodology that values customer collaboration and responsiveness to change. Development happens in short cycles (Sprints), delivering functional software frequently.<br>
-                
-                <strong>Software Quality Model (ISO 9126):</strong><br>
-                This standard evaluates software quality based on six characteristics:<br>
-                1. <strong>Functionality:</strong> The ability to provide required functions (Accuracy, Security).<br>
-                2. <strong>Reliability:</strong> Capability to maintain performance level (Fault tolerance).<br>
-                3. <strong>Usability:</strong> Effort needed to learn and use the software.<br>
-                4. <strong>Efficiency:</strong> Performance relative to resources used (Speed, Memory).<br>
-                5. <strong>Maintainability:</strong> Effort needed to modify or fix the system.<br>
-                6. <strong>Portability:</strong> Ability to be transferred from one environment to another.</p>
-            </div>
+            <p><strong>Part 2: Software Quality Model (ISO 9126)</strong>
+            <br>Defines "Quality" using 6 standard characteristics:</p>
+            <ul>
+                <li><strong>Functionality:</strong> Does it do what is needed? (Suitability, Security).</li>
+                <li><strong>Reliability:</strong> Does it stay up? (Fault tolerance, Recoverability).</li>
+                <li><strong>Usability:</strong> Is it easy to use? (Learnability).</li>
+                <li><strong>Efficiency:</strong> Performance relative to resources (Time behavior, Memory).</li>
+                <li><strong>Maintainability:</strong> Easy to fix? (Testability, Stability).</li>
+                <li><strong>Portability:</strong> Easy to move? (Installability).</li>
+            </ul>
+        </div>
 
-            <div class="mnemonic">
-                <strong>Mnemonic:</strong> <strong>F-R-U-E-M-P</strong> -> Functionality, Reliability, Usability, Efficiency, Maintainability, Portability. <br><em>(Imagine a "Frump"y old computer needing quality checks).</em>
-            </div>
-            
-             <div class="cheat-sheet hidden" id="q2-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li><strong>Waterfall:</strong> Linear, No turning back, Document heavy.</li>
-                    <li><strong>Agile:</strong> Iterative, Feedback driven, Code heavy.</li>
-                    <li><strong>ISO 9126:</strong> The 6 pillars of quality.</li>
-                    <li><strong>Efficiency vs Reliability:</strong> Often a trade-off.</li>
-                </ul>
-            </div>
-        </section>
+        <div class="sample-answer" id="q2-sa">
+            <h3>Sample Answer (7 Marks)</h3>
+            <p><strong>Software Development Methodologies:</strong>
+            <br>1. <strong>Waterfall:</strong> A classical linear model where each phase must be completed before the next begins. It relies on heavy documentation and fixed requirements.
+            <br>2. <strong>Agile:</strong> A flexible, iterative approach focusing on rapid delivery of small software increments. It values response to change over following a plan.</p>
+            <p><strong>Software Quality Model (ISO 9126):</strong>
+            <br>To objectively measure software quality, we use the ISO 9126 standard which defines six characteristics:
+            <br>- <strong>Functionality:</strong> Suitability and accuracy.
+            <br>- <strong>Reliability:</strong> Maturity and fault tolerance.
+            <br>- <strong>Usability:</strong> Ease of understanding.
+            <br>- <strong>Efficiency:</strong> Resource utilization and speed.
+            <br>- <strong>Maintainability:</strong> Ease of modification.
+            <br>- <strong>Portability:</strong> Adaptability to environments.</p>
+        </div>
 
-        <!-- Q3 -->
-        <section class="question-block" id="q3">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q3-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q3-diag')">Copy Diagram</button>
-                <button class="btn-sm" onclick="toggleSection('q3-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q3: Describe the software architecture business cycle with a neat diagram.</h2>
-            
-            <div class="quick-summary">
-                <p><strong>Summary:</strong> Architecture is not created in a vacuum. It's a cycle: Stakeholders influence the Architect -> Architect builds System -> System changes the World -> Stakeholders have new ideas.</p>
-            </div>
-            
-            <div class="ascii-container">
+        <div class="mnemonic"><strong>F-R-U-E-M-P</strong> (Functionality, Reliability, Usability, Efficiency, Maintainability, Portability).</div>
+    </section>
+
+    <!-- Q3 -->
+    <section class="question-block" id="q3">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q3-sa')">Copy Ans</button>
+            <button class="q-btn" onclick="toggleID('q3-cs')">Cheat Sheet</button>
+            <span class="rec-time">Rec: 18 min</span>
+        </div>
+        <h2>Q3: Describe the software architecture business cycle with a neat diagram.</h2>
+        
+        <div class="quick-summary">
+            1. Architecture is a cycle, not a one-time event.<br>
+            2. Inputs: Stakeholders, Org, Tech.<br>
+            3. Feedback: The system changes the environment that created it.
+        </div>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> The <strong>__Architecture_Business_Cycle_(ABC)__</strong> is the concept that software architecture is a result of technical, business, and social influences, and the resulting system in turn influences those very factors.</p>
+        </div>
+
+        <div class="ascii-container">
 <pre id="q3-diag">
-   [ Stakeholders ]  [ Tech Environment ]  [ Organization ]
-          |                  |                    |
-          | (Reqs)           | (Tools)            | (Skills)
-          v                  v                    v
-       __________________________________________________
-      |               THE ARCHITECT                      |
-      |__________________________________________________|
-                            |
-                            v
-                     [ ARCHITECTURE ]
-                            |
-                            v
-                       [ SYSTEM ]
-                      /     |     \
-   (Feedback Loop)   v      v      v
-    [ Stakeholders ] [ Tech Env ] [ Organization ]
-    (New features!)   (New stds!)  (New skills!)
+DIAGRAM (ASCII — exam-drawable):
+
+   [Stakeholders]   [Organization]   [Tech Env]
+         |                |               |
+         | (Reqs)         | (Skills)      | (Tools)
+         v                v               v
+      _________________________________________
+     |           THE ARCHITECT                 |
+     |_________________________________________|
+                      |
+                      v
+               [ ARCHITECTURE ]
+                      |
+                      v
+                 [ SYSTEM ]
+                /     |    \
+ (Feedback)    v      v     v
+     [Stakeholders] [Org] [Tech Env]
 </pre>
-                <div class="draw-tip">Tip: Draw "Architect" in the center. 3 boxes on top pointing IN (Inputs). Output is "System". 3 arrows from System looping back up to the top boxes (Feedback).</div>
-            </div>
+            <div class="draw-tip">Architect in middle. 3 Inputs (top). Output -> System. System loops back to Inputs (bottom).</div>
+        </div>
 
-            <div class="deep-dive">
-                <p>The <strong>Architecture Business Cycle (ABC)</strong> explains the "Context" of architecture.</p>
-                <p><strong>1. Inputs (Influences on Architect):</strong><br>
-                - <strong>Stakeholders:</strong> The people who care. End-users want usability; Management wants low cost; Security team wants encryption. Architect must trade-off these conflicting goals.<br>
-                - <strong>Developing Organization:</strong> <em>Conway's Law:</em> "Organizations design systems that copy their communication structure." If you have 3 teams, you'll likely build a 3-part system.<br>
-                - <strong>Technical Environment:</strong> Industry trends. If everyone uses Cloud/AI, the architect is pressured to use them too.<br>
-                - <strong>Architect's Experience:</strong> We stick to what we know. If the architect knows Java, the system will likely be Java.</p>
+        <div class="deep-dive">
+            <p><strong>1. Influences on the Architect (Inputs):</strong>
+            <br>- <strong>Stakeholders:</strong> Users, managers, and testers all have conflicting goals (e.g., "Fast" vs "Secure" vs "Cheap"). The architect mediates these.
+            <br>- <strong>Developing Organization:</strong> <strong>__Conway's_Law__</strong> states that systems mirror the communication structure of the team. If you have 3 teams, you get a 3-part compiler.
+            <br>- <strong>Technical Environment:</strong> Current industry standards (e.g., "Everyone uses Cloud now") force design choices.
+            <br>- <strong>Architect's Experience:</strong> We stick to what we know. Past success biases future design.</p>
 
-                <p><strong>2. Outputs:</strong><br>
-                The Architecture itself, and eventually the running System.</p>
+            <p><strong>2. The Feedback Loop (Return Cycle):</strong>
+            <br>Once the system is built, it changes the world:
+            <br>- <strong>Organization:</strong> Acquires new skills (e.g., "Now we know Microservices").
+            <br>- <strong>Stakeholders:</strong> Seeing the system generates NEW requirements.
+            <br>- <strong>Tech Env:</strong> A successful system might become a platform for others.</p>
+        </div>
 
-                <p><strong>3. The Feedback Loop (Return Cycle):</strong><br>
-                The system changes the environment that created it.<br>
-                - <strong>Organization:</strong> Now possesses new skills (e.g., "We are now a Microservices company").<br>
-                - <strong>Stakeholders:</strong> Once they see the system, they want <em>more</em> features.<br>
-                - <strong>Tech Env:</strong> A successful system might define a new industry standard.</p>
-            </div>
+        <div class="sample-answer" id="q3-sa">
+            <h3>Sample Answer (7 Marks)</h3>
+            <p>The Software Architecture Business Cycle (ABC) demonstrates that architecture is not created in a vacuum. It is a loop:</p>
+            <p><strong>Phase 1: Influences (Inputs)</strong>
+            <br>The architect designs the system based on constraints from:
+            <br>- <strong>Stakeholders:</strong> Who define the functional and non-functional requirements.
+            <br>- <strong>Developing Organization:</strong> Staff skills and budget (Conway's Law).
+            <br>- <strong>Technical Environment:</strong> Available tools and frameworks.
+            <br>- <strong>Architect’s Experience:</strong> Personal bias and expertise.</p>
+            <p><strong>Phase 2: Output</strong>
+            <br>These inputs produce the <strong>__Architecture__</strong>, which leads to the running <strong>__System__</strong>.</p>
+            <p><strong>Phase 3: Feedback</strong>
+            <br>The existence of the system changes the environment. It creates new market opportunities, trains the organization in new technologies, and sets new standards, thus restarting the cycle.</p>
+        </div>
 
-            <div class="sample-answer" id="q3-sa">
-                <h3>Sample Answer (7 Marks)</h3>
-                <p>The Software Architecture Business Cycle (ABC) illustrates that architecture is a result of business, social, and technical factors, and it reciprocally influences them.</p>
-                <p><strong>1. Inputs to the Architect:</strong><br>
-                The architect does not work in isolation. They are influenced by:<br>
-                - <strong>Stakeholders:</strong> Diverse groups (Users, Managers, Testers) with conflicting requirements (e.g., Performance vs. Security).<br>
-                - <strong>Developing Organization:</strong> The staff skills, budget, and team structure (Conway's Law) constrain the design.<br>
-                - <strong>Technical Environment:</strong> Standard frameworks and tools available at the time.<br>
-                - <strong>Architect's Experience:</strong> Past successes and failures bias the current design.</p>
-                <p><strong>2. The Feedback Loop:</strong><br>
-                Once the system is built, it affects its environment:<br>
-                - It adds new capabilities to the organization.<br>
-                - It changes stakeholder expectations (leading to new requirements).<br>
-                - It contributes to the technical environment (best practices).</p>
-            </div>
+        <div class="mnemonic"><strong>S-O-T-E</strong> (Inputs: Stakeholders, Org, Tech, Experience).</div>
+    </section>
 
-             <div class="mnemonic">
-                <strong>Mnemonic:</strong> <strong>S-O-T-E</strong> -> Stakeholders, Organization, Tech Env, Experience. (Inputs to Architect).
-            </div>
+    <!-- Q4 -->
+    <section class="question-block" id="q4">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q4-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q4: Explain Software Quality Models: McCall Model, Boehm Model, ISO Model, FURPS.</h2>
 
-             <div class="cheat-sheet hidden" id="q3-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li><strong>Cycle:</strong> Influence -> Build -> Feedback.</li>
-                    <li><strong>Conway's Law:</strong> Team structure = System structure.</li>
-                    <li><strong>Inputs:</strong> S-O-T-E.</li>
-                    <li><strong>Feedback:</strong> A built system changes the requirements for the next one.</li>
-                </ul>
-            </div>
-        </section>
+        <div class="quick-summary">
+            1. <strong>McCall:</strong> Product Revision, Transition, Operation.<br>
+            2. <strong>Boehm:</strong> Hierarchical utility model.<br>
+            3. <strong>FURPS:</strong> Functionality, Usability, Reliability, Perf, Support.
+        </div>
 
-        <!-- Q4 -->
-        <section class="question-block" id="q4">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q4-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="toggleSection('q4-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q4: Explain Software Quality Models: McCall Model, Boehm Model, ISO Model, FURPS.</h2>
+        <div class="deep-dive">
+            <p><strong>1. McCall’s Model (1977):</strong>
+            <br>Focuses on three perspectives of the software lifecycle:
+            <br>- <strong>Product Revision (Can I change it?):</strong> Maintainability, Flexibility, Testability.
+            <br>- <strong>Product Transition (Can I move it?):</strong> Portability, Reusability, Interoperability.
+            <br>- <strong>Product Operation (Does it run?):</strong> Correctness, Reliability, Efficiency, Integrity, Usability.</p>
 
-            <div class="deep-dive">
-                <p>Different eras produced different ways to define "Quality".</p>
-                <p><strong>1. McCall’s Model (1977):</strong><br>
-                Organized around three perspectives of the product:<br>
-                - <strong>Product Revision (Can I change it?):</strong> Maintainability, Flexibility, Testability.<br>
-                - <strong>Product Transition (Can I move it?):</strong> Portability, Reusability, Interoperability.<br>
-                - <strong>Product Operation (Does it work?):</strong> Correctness, Reliability, Efficiency, Integrity, Usability.</p>
-                
-                <p><strong>2. Boehm’s Model (1978):</strong><br>
-                Similar to McCall but adds a hierarchy. Top level is "General Utility".<br>
-                - Key difference: It explicitly places <strong>Maintainability</strong> as a primary driver for utility. If you can't maintain it, it's not useful.</p>
+            <p><strong>2. Boehm’s Model (1978):</strong>
+            <br>A hierarchical model focusing on "General Utility".
+            <br>- Unique feature: It places <strong>__Maintainability__</strong> as a primary driver. If software costs too much to maintain, its utility is low.
+            <br>- Hierarchy: Utility -> Portability, As-is Utility, Maintainability.</p>
 
-                <p><strong>3. FURPS (Hewlett-Packard):</strong><br>
-                Simple, functional model.<br>
-                - <strong>F</strong>unctionality: Features, Capabilities.<br>
-                - <strong>U</strong>sability: Human factors, Aesthetics.<br>
-                - <strong>R</strong>eliability: Frequency of failure, Recoverability.<br>
-                - <strong>P</strong>erformance: Speed, Throughput, Response time.<br>
-                - <strong>S</strong>upportability: Testability, Extensibility, Serviceability.</p>
+            <p><strong>3. FURPS Model (HP):</strong>
+            <br>A simplified industry model.
+            <br>- <strong>F</strong>unctionality (Features, Security)
+            <br>- <strong>U</strong>sability (Human factors)
+            <br>- <strong>R</strong>eliability (Frequency of failure)
+            <br>- <strong>P</strong>erformance (Response time, Throughput)
+            <br>- <strong>S</strong>upportability (Extensibility, Serviceability)</p>
 
-                <p><strong>4. ISO 9126:</strong><br>
-                The consensus standard. It unifies the previous models into 6 categories: Functionality, Reliability, Usability, Efficiency, Maintainability, Portability.</p>
-            </div>
+            <p><strong>4. ISO 9126:</strong>
+            <br>The consensus standard that unified the others into 6 main characteristics (Functionality, Reliability, Usability, Efficiency, Maintainability, Portability).</p>
+        </div>
 
-            <div class="sample-answer" id="q4-sa">
-                <h3>Sample Answer (7 Marks)</h3>
-                <p><strong>1. McCall’s Model:</strong> Classifies quality into three dimensions regarding the product's lifecycle: Product Operation (Correctness, Efficiency), Product Revision (Maintainability, Flexibility), and Product Transition (Portability, Reusability).</p>
-                <p><strong>2. Boehm’s Model:</strong> A hierarchical model focusing on "General Utility". It suggests that for a system to be useful, it must be reliable, efficient, and maintainable. It emphasizes maintainability more than McCall.</p>
-                <p><strong>3. FURPS Model:</strong> Developed by HP, defining quality as:
-                <br>- <strong>F</strong>unctionality (Feature set)
-                <br>- <strong>U</strong>sability (UX)
-                <br>- <strong>R</strong>eliability (Failures)
-                <br>- <strong>P</strong>erformance (Speed)
-                <br>- <strong>S</strong>upportability (Maintenance)</p>
-                <p><strong>4. ISO 9126:</strong> The international standard that synthesized these models into six characteristics: Functionality, Reliability, Usability, Efficiency, Maintainability, and Portability.</p>
-            </div>
-            
-             <div class="cheat-sheet hidden" id="q4-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li>McCall = Rev, Trans, Ops.</li>
-                    <li>FURPS = F-U-R-P-S.</li>
-                    <li>Boehm = Hierarchy of Utility.</li>
-                    <li>ISO = The standard that won.</li>
-                </ul>
-            </div>
-        </section>
+        <div class="checklist">
+            <h4>What to write to get 7/7:</h4>
+            <ul>
+                <li>List all 4 models clearly.</li>
+                <li>For McCall, mention the 3 "Product" categories.</li>
+                <li>For FURPS, spell out the acronym.</li>
+                <li>Mention that ISO 9126 is the international standard.</li>
+            </ul>
+        </div>
+    </section>
 
-        <!-- Q5 -->
-        <section class="question-block" id="q5">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q5-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="toggleSection('q5-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q5: Explain structural, framework, dynamic, and process models of software architecture.</h2>
-            <div class="deep-dive">
-                <p>Architecture is too complex to view from just one angle. We use different "Views" or models.</p>
-                <ul>
-                    <li><strong>Structural Model (The "Skeleton"):</strong><br>
-                    Describes the static organization of the system. <br>
-                    - <em>What:</em> Components, Classes, Servers.<br>
-                    - <em>Diagrams:</em> Class Diagram, Component Diagram, Deployment Diagram.</li>
+    <!-- Q5 -->
+    <section class="question-block" id="q5">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q5-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 12 min</span>
+        </div>
+        <h2>Q5: Explain structural, framework, dynamic, and process models of software architecture.</h2>
 
-                    <li><strong>Dynamic Model (The "Blood Flow"):</strong><br>
-                    Describes the runtime behavior. How does the system react to input? <br>
-                    - <em>What:</em> Control flow, Data flow, Event handling.<br>
-                    - <em>Diagrams:</em> Sequence Diagram, State Chart, Activity Diagram.</li>
+        <div class="quick-summary">
+            1. Different "Views" to understand a complex system.<br>
+            2. Structural = Static parts.<br>
+            3. Dynamic = Runtime behavior.<br>
+            4. Process = Build steps.
+        </div>
 
-                    <li><strong>Process Model (The "Construction"):</strong><br>
-                    Describes the build and deployment steps. <br>
-                    - <em>What:</em> IDEs, Build Scripts, CI/CD pipelines, Team assignments.<br>
-                    - <em>Diagrams:</em> Gantt charts, Build flow diagrams.</li>
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> These models represent different <strong>__Viewpoints__</strong> of a system. No single model can describe an entire architecture.</p>
 
-                    <li><strong>Framework Model (The "Pattern"):</strong><br>
-                    Describes the architectural style or reference architecture used. <br>
-                    - <em>What:</em> "This is an MVC app" or "This is a Pipe-and-Filter system".<br>
-                    - <em>Usage:</em> Helps new developers understand the high-level rules immediately.</li>
-                </ul>
-            </div>
-             <div class="cheat-sheet hidden" id="q5-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li><strong>Structural:</strong> Static parts (Nouns).</li>
-                    <li><strong>Dynamic:</strong> Behavior/Events (Verbs).</li>
-                    <li><strong>Process:</strong> Building/Teams.</li>
-                    <li><strong>Framework:</strong> Patterns/Styles.</li>
-                </ul>
-            </div>
-        </section>
+            <p><strong>1. Structural Model (The Skeleton):</strong>
+            <br>Describes the static organization of the system. "What is it made of?"
+            <br>- <em>Components:</em> Classes, Objects, Modules, Servers.
+            <br>- <em>Diagrams:</em> Class Diagrams, Component Diagrams.
+            <br>- <em>Use:</em> For developers to understand the code structure.</p>
 
-        <!-- Q6 -->
-        <section class="question-block" id="q6">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q6-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q6-diag')">Copy Diagram</button>
-                 <button class="btn-sm" onclick="toggleSection('q6-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q6: Describe major architectural styles: Data-flow architecture; Pipes and Filters architecture; Call-and-return architecture.</h2>
+            <p><strong>2. Dynamic Model (The Blood Flow):</strong>
+            <br>Describes the runtime behavior. "What happens when I click this?"
+            <br>- <em>Elements:</em> State transitions, Message passing, Data flow.
+            <br>- <em>Diagrams:</em> Sequence Diagrams, State Charts.
+            <br>- <em>Use:</em> For debugging and performance analysis.</p>
 
-            <div class="ascii-container">
+            <p><strong>3. Process Model (The Construction):</strong>
+            <br>Describes the steps to build and run the system. "Who does what?"
+            <br>- <em>Elements:</em> IDEs, Build scripts, CI/CD pipelines, Team assignments.
+            <br>- <em>Use:</em> For project managers and DevOps.</p>
+
+            <p><strong>4. Framework Model (The Pattern):</strong>
+            <br>Describes the high-level architectural style or reference architecture.
+            <br>- <em>Examples:</em> "This is an MVC app", "This is a Pipe-and-Filter system".
+            <br>- <em>Use:</em> For quick understanding of the system's philosophy.</p>
+        </div>
+
+        <div class="sample-answer" id="q5-sa">
+            <h3>Sample Answer (7 Marks)</h3>
+            <p>Software architecture is described using multiple models (views):</p>
+            <ol>
+                <li><strong>Structural Model:</strong> Focuses on the static components (modules, classes, databases) and their relationships. It answers "What is the system composed of?".</li>
+                <li><strong>Dynamic Model:</strong> Focuses on the behavioral aspect. It describes how the system changes state and how components interact during execution (e.g., sequence of events).</li>
+                <li><strong>Process Model:</strong> Focuses on the construction steps, deployment processes, and concurrency. It answers "How is the system built and run?".</li>
+                <li><strong>Framework Model:</strong> Refers to the skeletal structures or patterns (like MVC or CORBA) used to solve specific problems, providing a template for the architecture.</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Q6 -->
+    <section class="question-block" id="q6">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q6-sa')">Copy Ans</button>
+            <button class="q-btn" onclick="toggleID('q6-cs')">Cheat Sheet</button>
+            <span class="rec-time">Rec: 18 min</span>
+        </div>
+        <h2>Q6: Describe major architectural styles: Data-flow architecture; Pipes and Filters architecture; Call-and-return architecture.</h2>
+
+        <div class="quick-summary">
+            1. <strong>Data-Flow:</strong> Data availability triggers processing.<br>
+            2. <strong>Pipes & Filters:</strong> Stream processing (Unix style).<br>
+            3. <strong>Call & Return:</strong> Standard Main/Subroutine style.
+        </div>
+
+        <div class="deep-dive">
+            <p><strong>1. Data-Flow Architecture:</strong>
+            <br>In this style, the entire structure is determined by the motion of data. Components are "workers" that wait for input data, transform it, and output it. There is <strong>__no_global_state__</strong>.</p>
+
+            <p><strong>2. Pipes and Filters (Subtype of Data-Flow):</strong>
+            <br>- <strong>Filters:</strong> Independent processing units. They read a stream, process it incrementally, and write to output. They do NOT know identity of upstream/downstream filters.
+            <br>- <strong>Pipes:</strong> Connectors that buffer and carry data.
+            <br>- <em>Example:</em> UNIX Shell (`cat file | grep "err" | sort`).
+            <br>- <em>Pros:</em> High Reusability (mix & match filters), Concurrency.
+            <br>- <em>Cons:</em> Data parsing overhead between filters.</p>
+
+            <p><strong>3. Call-and-Return Architecture:</strong>
+            <br>The dominant style in classical programming.
+            <br>- <strong>Main-Subroutine:</strong> A main controller explicitly calls sub-routines. The caller waits for the callee.
+            <br>- <strong>Object-Oriented:</strong> Objects encapsulate data and call methods on each other.
+            <br>- <em>Pros:</em> Easy to reason about (sequential flow).
+            <br>- <em>Cons:</em> Tightly coupled components. Hard to distribute.</p>
+        </div>
+
+        <div class="ascii-container">
 <pre id="q6-diag">
-1. PIPE & FILTER:
-   [Source] -> (Pipe) -> [Filter A] -> (Pipe) -> [Filter B] -> [Sink]
-   (Data moves continuously. Filter A and B work in parallel if possible.)
+DIAGRAM (ASCII — exam-drawable):
 
-2. CALL & RETURN:
-        [ Main Program ]
-           /       \
-      (Calls)     (Calls)
-       /             \
-   [Sub A]         [Sub B]
-      \               /
-    (Returns)     (Returns)
+PIPE & FILTER:
+ [Source] -> (Pipe) -> [Filter A] -> (Pipe) -> [Filter B] -> [Sink]
+ (Data flows continuously like water)
+
+CALL & RETURN:
+      [ Main Program ]
+      /      |       \
+   (Call)  (Call)   (Call)
+    /        |         \
+ [Sub A]   [Sub B]    [Sub C]
+    \________|_________/
+         (Returns)
 </pre>
-            </div>
+            <div class="draw-tip">Top: Linear chain of boxes. Bottom: Hierarchy tree (Main calling subs).</div>
+        </div>
 
-            <div class="deep-dive">
-                <p><strong>1. Data-Flow Architecture:</strong><br>
-                The structure is determined by the flow of data, not the flow of control. There is no "global state". Components are stateless "workers" that transform inputs to outputs.</p>
+        <div class="sample-answer" id="q6-sa">
+            <h3>Sample Answer (7 Marks)</h3>
+            <p><strong>1. Data-Flow Architecture:</strong> Access and movement of data define the system. Availability of data triggers computation. It promotes loose coupling.</p>
+            <p><strong>2. Pipes and Filters Style:</strong> A specific data-flow style where:
+            <br>- <strong>Filters:</strong> Are independent components that transform data streams.
+            <br>- <strong>Pipes:</strong> Are conduits connecting filters.
+            <br>- It is highly flexible; filters can be rearranged easily (e.g., Unix commands). However, it suffers from data parsing overhead.</p>
+            <p><strong>3. Call-and-Return Style:</strong> The classical imperative approach.
+            <br>- <strong>Main-Subroutine:</strong> A hierarchy where a main program invokes subroutines. Execution is sequential and synchronous.
+            <br>- It is simple to understand but scales poorly for distributed applications due to tight coupling.</p>
+        </div>
+    </section>
 
-                <p><strong>2. Pipes and Filters (Specific Data-Flow style):</strong><br>
-                - <strong>Filter:</strong> Independent processing unit. Reads input stream, processes, writes output stream. Ideally, it doesn't wait for the whole file; it processes chunk-by-chunk.<br>
-                - <strong>Pipe:</strong> The connector buffer.<br>
-                - <em>Example:</em> UNIX shell: `cat logs.txt | grep "ERROR" | sort`.<br>
-                - <em>Pros:</em> Reusability (mix and match filters), Concurrency.<br>
-                - <em>Cons:</em> Performance overhead (parsing/unparsing data between filters).</p>
+    <!-- Q7 -->
+    <section class="question-block" id="q7">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q7-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q7: What are the Architectural Constraints of RESTful API?</h2>
+        
+        <div class="quick-summary">
+            1. REST is not just "using HTTP".<br>
+            2. It is defined by <strong>6 Constraints</strong> (Fielding).<br>
+            3. Breaking constraints = Not RESTful.
+        </div>
 
-                <p><strong>3. Call-and-Return Architecture:</strong><br>
-                The classic style used in C/Java/C++.<br>
-                - <strong>Main-Subroutine:</strong> Hierarchical. Main calls Sub, Sub waits until done, returns control.<br>
-                - <strong>OO Systems:</strong> Objects call methods on other objects.<br>
-                - <em>Pros:</em> Easy to reason about ("I know what line runs next").<br>
-                - <em>Cons:</em> Tightly coupled. Hard to distribute across networks (requires RPC).</p>
-            </div>
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> REST (Representational State Transfer) is a resource-based architectural style defined by Roy Fielding. To be RESTful, a system MUST adhere to these 6 constraints:</p>
 
-            <div class="sample-answer" id="q6-sa">
-                <h3>Sample Answer (7 Marks)</h3>
-                <p><strong>1. Data-Flow Architecture:</strong><br>
-                In this style, the system is viewed as a series of transformations on data. Components (transformers) are connected by data pathways. Availability of data triggers the computation.</p>
-                <p><strong>2. Pipes and Filters:</strong><br>
-                A sub-style of Data-Flow.
-                <br>- <strong>Filters:</strong> Independent components that process data streams. They do not share state.
-                <br>- <strong>Pipes:</strong> Conduits that transfer data.
-                <br>- <em>Key Feature:</em> Filters are ignorant of who sends or receives data, enabling high reusability (e.g., UNIX commands).</p>
-                <p><strong>3. Call-and-Return:</strong><br>
-                The dominant style in imperative programming. Control flows in a hierarchy.
-                <br>- <strong>Main-Subroutine:</strong> A main controller invokes specific subroutines.
-                <br>- <strong>Object-Oriented:</strong> Objects encapsulate state and interact via method invocations.
-                <br>- <em>Key Feature:</em> Execution is synchronous and sequential.</p>
-            </div>
-             <div class="cheat-sheet hidden" id="q6-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li><strong>Pipe & Filter:</strong> Stream processing. No shared state.</li>
-                    <li><strong>Call & Return:</strong> Synchronous. Hierarchy.</li>
-                    <li><strong>Data Flow:</strong> Data drives the system.</li>
-                </ul>
-            </div>
-        </section>
+            <ol>
+                <li><strong>Client-Server:</strong> Strict separation of concerns. The server stores data; the client handles UI. They can evolve independently.</li>
+                <li><strong>__Stateless__ (Critical):</strong> The server contains NO client state. Each request must contain all information (e.g., Auth Token) necessary to understand it. The server does not remember "User X is logged in".</li>
+                <li><strong>Cacheable:</strong> Responses must explicitly label themselves as cacheable or non-cacheable. This improves client-side performance.</li>
+                <li><strong>Uniform Interface:</strong> The core constraint.
+                    <ul>
+                        <li>Resource Identification (URIs).</li>
+                        <li>Standard Methods (GET, POST, PUT, DELETE).</li>
+                        <li><strong>HATEOAS</strong> (Hypermedia as Engine of Application State) - API returns links to next actions.</li>
+                    </ul>
+                </li>
+                <li><strong>Layered System:</strong> The client cannot tell if it is connected directly to the end server or an intermediary (Load Balancer, CDN).</li>
+                <li><strong>Code on Demand (Optional):</strong> The server can extend client functionality by sending executable code (e.g., JavaScript).</li>
+            </ol>
+        </div>
 
-        <!-- Q7 -->
-        <section class="question-block" id="q7">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q7-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q7-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q7: What are the Architectural Constraints of RESTful API?</h2>
-            <div class="quick-summary">
-                <p><strong>Summary:</strong> REST isn't just "using JSON". It's a set of 6 strict constraints defined by Roy Fielding. If you break them, it's just an HTTP API, not REST.</p>
-            </div>
-            <div class="deep-dive">
-                <p><strong>The 6 Constraints of REST:</strong></p>
-                <ol>
-                    <li><strong>Client-Server:</strong> Strict separation. Server stores data; Client handles UI. They can evolve separately.</li>
-                    <li><strong>Stateless (CRITICAL):</strong> The server contains <em>no client state</em>. Each request contains all info needed (e.g., Token). Server doesn't remember "User X is logged in".</li>
-                    <li><strong>Cacheable:</strong> Responses must define if they can be cached. (e.g., "Images are cached for 1 day"). Reduces server load.</li>
-                    <li><strong>Uniform Interface:</strong>
-                        <ul>
-                            <li>Standard Identifiers (URIs).</li>
-                            <li>Standard Methods (GET, POST, PUT, DELETE).</li>
-                            <li>HATEOAS (Hypermedia as Engine of Application State) - API returns links to next actions.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Layered System:</strong> Client doesn't know if it's talking to the DB server, a Load Balancer, or a CDN. Allows adding security/caching layers transparently.</li>
-                    <li><strong>Code on Demand (Optional):</strong> Server can send logic (JavaScript) to client to extend functionality.</li>
-                </ol>
-            </div>
-             <div class="mnemonic">
-                <strong>Mnemonic:</strong> <strong>S-C-U-L-C-S</strong> (Skulls) -> <strong>S</strong>tateless, <strong>C</strong>lient-Server, <strong>U</strong>niform Interface, <strong>L</strong>ayered, <strong>C</strong>acheable, <strong>S</strong>cript (Code on demand).
-            </div>
-             <div class="cheat-sheet hidden" id="q7-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li><strong>Stateless:</strong> No sessions on server.</li>
-                    <li><strong>Uniform Interface:</strong> Standard verbs (GET/POST).</li>
-                    <li><strong>Cacheable:</strong> Browser saves data.</li>
-                    <li><strong>HATEOAS:</strong> API provides links.</li>
-                </ul>
-            </div>
-        </section>
+        <div class="mnemonic"><strong>S-C-U-L-C-S</strong> (Stateless, Client-Server, Uniform, Layered, Cacheable, Script).</div>
 
-        <!-- Q8 -->
-        <section class="question-block" id="q8">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q8-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q8-diag')">Copy Diagram</button>
-                 <button class="btn-sm" onclick="toggleSection('q8-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q8: Explain layered architecture and data-centered architecture with diagrams.</h2>
-            <div class="ascii-container">
+        <div class="checklist">
+            <h4>What to write to get 7/7:</h4>
+            <ul>
+                <li>List exactly 6 constraints.</li>
+                <li>Emphasize <strong>Statelessness</strong>.</li>
+                <li>Mention HATEOAS under Uniform Interface.</li>
+                <li>Mention that "Code on Demand" is optional.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Q8 -->
+    <section class="question-block" id="q8">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q8-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q8: Explain layered architecture and data-centered architecture with diagrams.</h2>
+
+        <div class="deep-dive">
+            <p><strong>1. Layered Architecture:</strong>
+            <br>Organizes the system into horizontal layers of abstraction.
+            <br>- <strong>Rule:</strong> Layer N provides services to Layer N+1. Layer N+1 only calls Layer N (Strict layering).
+            <br>- <strong>Common Layers:</strong> Presentation (UI) -> Business Logic -> Data Access (DAO) -> Database.
+            <br>- <em>Pros:</em> Separation of concerns, Testability, Easy to swap layers (e.g., change DB without touching UI).
+            <br>- <em>Cons:</em> Performance overhead ("Sinkhole antipattern" - data passing through layers without logic).</p>
+
+            <p><strong>2. Data-Centered (Repository) Architecture:</strong>
+            <br>A central data store is the primary means of communication.
+            <br>- <strong>Components:</strong> A Central Repository (Database) and independent Clients that access it.
+            <br>- <em>Passive Repository:</em> Clients pull/push data (e.g., Standard DB apps).
+            <br>- <em>Active Blackboard:</em> Repository notifies clients when data changes (e.g., AI systems, IDEs).
+            <br>- <em>Pros:</em> Data integrity is centralized. Clients are decoupled from each other.
+            <br>- <em>Cons:</em> Repository is a <strong>__Single_Point_of_Failure__</strong> and performance bottleneck.</p>
+        </div>
+
+        <div class="ascii-container">
 <pre id="q8-diag">
+DIAGRAM (ASCII — exam-drawable):
+
 A. LAYERED STYLE:              B. DATA-CENTERED (Repository):
 _____________________              [ Client A ]    [ Client B ]
 | Presentation (UI) |                    \            /
@@ -871,504 +823,536 @@ _____________________                     ^          ^
 | Data Access (DAO) |                    /            \
 |___________________|              [ Client C ]    [ Client D ]
 </pre>
-            </div>
-            <div class="deep-dive">
-                <p><strong>1. Layered Architecture:</strong><br>
-                Organizes the system into horizontal layers of abstraction.<br>
-                - <em>Rules:</em> Layer N provides services to Layer N+1. Layer N+1 only calls Layer N (Strict layering).<br>
-                - <em>Pros:</em> Separation of concerns. You can replace the DB layer (Oracle -> Mongo) without touching the UI.<br>
-                - <em>Cons:</em> Performance overhead (data must pass through every layer, even if logic layer does nothing - "Sinkhole antipattern").</p>
+            <div class="draw-tip">Left: Stack of 3 boxes. Right: Big box in middle surrounded by small clients.</div>
+        </div>
 
-                <p><strong>2. Data-Centered (Repository) Architecture:</strong><br>
-                A central data store (Database, Registry, Blackboard) is the primary means of communication.<br>
-                - <em>Passive Repository:</em> Clients pull/push data (e.g., Traditional DB apps).<br>
-                - <em>Active Blackboard:</em> The data store notifies clients when data changes (e.g., AI systems).<br>
-                - <em>Pros:</em> Data integrity is easy to manage in one place. Clients are decoupled from each other.<br>
-                - <em>Cons:</em> The Repository is a bottleneck and single point of failure.</p>
-            </div>
-             <div class="cheat-sheet hidden" id="q8-cs">
-                <h4>Cheat Sheet</h4>
+        <div class="sample-answer" id="q8-sa">
+            <h3>Sample Answer (7 Marks)</h3>
+            <p><strong>1. Layered Architecture:</strong> A hierarchical style where components are grouped into layers (Presentation, Business, Data). Each layer serves the one above it.
+            <br><em>Benefit:</em> It supports separation of concerns and maintainability.
+            <br><em>Drawback:</em> Request latency increases as data traverses multiple layers.</p>
+            <p><strong>2. Data-Centered Architecture:</strong> Relies on a central <strong>__Repository__</strong> accessible by all components. Components interact via the data store, not directly with each other.
+            <br><em>Benefit:</em> Excellent for data integrity and integrating independent tools (e.g., Eclipse IDE).
+            <br><em>Drawback:</em> The repository becomes a performance bottleneck.</p>
+        </div>
+    </section>
+
+    <!-- Q9 -->
+    <section class="question-block" id="q9">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q9-sa')">Copy Ans</button>
+            <button class="q-btn" onclick="toggleID('q9-cs')">Cheat Sheet</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q9: What is Microservices Architecture? Explain benefits and challenges.</h2>
+
+        <div class="quick-summary">
+            1. Small, independent services.<br>
+            2. <strong>Database per service</strong>.<br>
+            3. Enables massive scaling but adds complexity.
+        </div>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> An architectural style where an application is a collection of small, autonomous services, each running in its own process, communicating via lightweight mechanisms (HTTP/REST), and independently deployable.</p>
+
+            <p><strong>Core Principles:</strong>
+            <br>- <strong>Database per Service:</strong> No shared big database.
+            <br>- <strong>Smart Endpoints, Dumb Pipes:</strong> Logic is in the service, not the bus.
+            <br>- <strong>Decentralized Governance:</strong> Teams choose their own tools.</p>
+
+            <p><strong>Benefits:</strong>
+            <br>1. <strong>Agility:</strong> Small teams can work in parallel. Faster time-to-market.
+            <br>2. <strong>Flexible Scaling:</strong> Scale only the "Search" service during high traffic, not the "Login" service.
+            <br>3. <strong>Technology Heterogeneity:</strong> Use Python for AI service, Java for Banking service.
+            <br>4. <strong>Fault Isolation:</strong> If one service crashes, the rest of the app survives.</p>
+
+            <p><strong>Challenges:</strong>
+            <br>1. <strong>Distributed Complexity:</strong> Network latency, debugging is hard (Tracing).
+            <br>2. <strong>Data Consistency:</strong> No ACID transactions across services. Must use "Eventual Consistency" (Sagas).
+            <br>3. <strong>Operational Overhead:</strong> Requires DevOps (Docker, Kubernetes).</p>
+        </div>
+
+        <div class="mnemonic"><strong>S-I-D</strong> (Small, Independent, Distributed).</div>
+
+        <div class="cheat-sheet hidden" id="q9-cs">
+            <h3>Cheat Sheet</h3>
+            <ul>
+                <li><strong>Key:</strong> Independence.</li>
+                <li><strong>Pattern:</strong> Database per service.</li>
+                <li><strong>Pros:</strong> Scale, Speed, Fault tolerance.</li>
+                <li><strong>Cons:</strong> Network latency, Data sync issues.</li>
+                <li><strong>Example:</strong> Netflix, Amazon.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Q10 -->
+    <section class="question-block" id="q10">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q10-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q10: Describe agent-based architecture and reactive architecture.</h2>
+
+        <div class="deep-dive">
+            <p><strong>Part 1: Agent-Based Architecture</strong>
+            <br>Composed of "Agents"—autonomous components that perceive their environment and act to achieve goals.
+            <br>- <strong>Characteristics:</strong>
                 <ul>
-                    <li><strong>Layered:</strong> UI -> Logic -> Data. Abstraction stack.</li>
-                    <li><strong>Data-Centered:</strong> Hub and Spoke. Star topology.</li>
-                    <li><strong>Use Layered for:</strong> Web Apps.</li>
-                    <li><strong>Use Data-Centered for:</strong> IDEs, CAD tools, AI.</li>
+                    <li><strong>Autonomy:</strong> Acts without direct intervention.</li>
+                    <li><strong>Reactivity:</strong> Perceives environment changes.</li>
+                    <li><strong>Social Ability:</strong> Negotiates/Collaborates with other agents.</li>
                 </ul>
-            </div>
-        </section>
+            <br>- <em>Use Cases:</em> Robotics, Stock trading bots, Traffic control systems.</p>
 
-        <!-- Q9 -->
-        <section class="question-block" id="q9">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q9-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q9-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q9: What is Microservices Architecture? Explain benefits and challenges.</h2>
-            <div class="definition">
-                <p><strong>Definition:</strong> An architectural style where an application is a collection of small, autonomous services, each running in its own process, communicating via lightweight mechanisms (HTTP), and independently deployable.</p>
-            </div>
-            <div class="deep-dive">
-                <p><strong>Core Principles:</strong><br>
-                - <strong>Database per Service:</strong> No shared big database.<br>
-                - <strong>Smart Endpoints, Dumb Pipes:</strong> Logic is in the service, not the bus.<br>
-                - <strong>Decentralized Governance:</strong> Teams choose their own tools.</p>
+            <p><strong>Part 2: Reactive Architecture (The Reactive Manifesto)</strong>
+            <br>Systems designed to be robust in the modern cloud/mobile era. Defined by 4 traits:
+            <br>1. <strong>Responsive:</strong> Responds in a timely manner (Low latency).
+            <br>2. <strong>Resilient:</strong> Stays responsive even when failures occur (Fault tolerance).
+            <br>3. <strong>Elastic:</strong> Stays responsive under varying workload (Auto-scaling).
+            <br>4. <strong>Message Driven:</strong> Uses asynchronous message passing to ensure loose coupling (The Foundation).</p>
+        </div>
 
-                <p><strong>Benefits:</strong><br>
-                1. <strong>Agility & Speed:</strong> Small teams work in parallel. Faster release cycles.<br>
-                2. <strong>Flexible Scaling:</strong> Scale only the "Search" service during high traffic, not the "About Us" page.<br>
-                3. <strong>Technology Freedom:</strong> Use the best tool for the job (Node for I/O, Python for AI).<br>
-                4. <strong>Resilience:</strong> If "Reviews" service fails, "Checkout" still works.</p>
+        <div class="mnemonic"><strong>R-R-E-M</strong> (Responsive, Resilient, Elastic, Message-driven).</div>
+    </section>
 
-                <p><strong>Challenges:</strong><br>
-                1. <strong>Distributed Complexity:</strong> Network latency, partial failures, debugging across services.<br>
-                2. <strong>Data Consistency:</strong> No ACID transactions across services. Must use "Eventual Consistency" (Sagas).<br>
-                3. <strong>Operational Overhead:</strong> Need complex DevOps (Docker, Kubernetes, Monitoring).</p>
-            </div>
-             <div class="cheat-sheet hidden" id="q9-cs">
-                <h4>Cheat Sheet</h4>
-                <ul>
-                    <li><strong>Keyword:</strong> Independence.</li>
-                    <li><strong>Pros:</strong> Scale, Speed, Resilience.</li>
-                    <li><strong>Cons:</strong> Complexity, Network issues, Data sync.</li>
-                    <li><strong>Mnemonic:</strong> <strong>S-I-D</strong> -> Small, Independent, Distributed.</li>
-                </ul>
-            </div>
-        </section>
+    <!-- Q11 -->
+    <section class="question-block" id="q11">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q11-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 12 min</span>
+        </div>
+        <h2>Q11: Give explanation on event-driven architecture.</h2>
+        
+        <div class="quick-summary">
+            1. Decouples producers and consumers.<br>
+            2. "Fire and Forget" model.<br>
+            3. Highly scalable.
+        </div>
 
-        <!-- Q10 -->
-        <section class="question-block" id="q10">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q10-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q10-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q10: Describe agent-based architecture and reactive architecture.</h2>
-            <div class="deep-dive">
-                <p><strong>1. Agent-Based Architecture:</strong><br>
-                Components are "Agents" - autonomous entities with goals.<br>
-                - <strong>Autonomy:</strong> They act without human intervention.<br>
-                - <strong>Social Ability:</strong> They negotiate with other agents.<br>
-                - <strong>Reactivity:</strong> They perceive environment changes.<br>
-                - <em>Example:</em> Robotics swarm, Stock trading bots.</p>
-
-                <p><strong>2. Reactive Architecture (The Reactive Manifesto):</strong><br>
-                Systems designed to be robust in the modern cloud era. Defined by 4 traits:<br>
-                1. <strong>Responsive:</strong> Respond quickly to users (Latency control).<br>
-                2. <strong>Resilient:</strong> Remain responsive even when things fail (Fault tolerance).<br>
-                3. <strong>Elastic:</strong> Remain responsive under varying workload (Auto-scaling).<br>
-                4. <strong>Message Driven:</strong> The foundation. Use async message passing to achieve the above.</p>
-            </div>
-             <div class="mnemonic">
-                 <strong>Reactive Traits:</strong> <strong>R-R-E-M</strong> -> Responsive, Resilient, Elastic, Message-Driven.
-             </div>
-        </section>
-
-        <!-- Q11 -->
-        <section class="question-block" id="q11">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q11-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q11-diag')">Copy Diagram</button>
-                 <button class="btn-sm" onclick="toggleSection('q11-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q11: Give explanation on event-driven architecture.</h2>
-            <div class="quick-summary">
-                <p><strong>Summary:</strong> A pattern where components communicate by emitting "Events" (Facts that happened). Decouples producers from consumers.</p>
-            </div>
-            <div class="ascii-container">
+        <div class="ascii-container">
 <pre id="q11-diag">
-   [ Producer ] --> (Event: "User Created") --> [ EVENT BROKER ]
-                                                     |
-                                    -----------------------------------
-                                    |                |                |
-                                    v                v                v
-                               [Consumer A]     [Consumer B]     [Consumer C]
-                               (Send Email)     (Create Log)     (Update Analytics)
+DIAGRAM (ASCII — exam-drawable):
+
+  [ Producer ] ---> (Event: "OrderPlaced")
+                          |
+                    [ EVENT BROKER ]
+                    /      |       \
+             (Push)     (Push)     (Push)
+              /            |           \
+       [Email Svc]    [Stock Svc]   [Log Svc]
 </pre>
-            </div>
-            <div class="deep-dive">
-                <p><strong>Concept:</strong><br>
-                In traditional Request/Response, A calls B (A waits for B).<br>
-                In Event-Driven, A says "X happened" and forgets it. B, C, and D listen for "X" and react.<br>
-                - <strong>Decoupling:</strong> The producer doesn't care who listens.<br>
-                - <strong>Asynchronous:</strong> Non-blocking.</p>
+            <div class="draw-tip">Producer emits event to a central Broker. Broker pushes to multiple Consumers.</div>
+        </div>
 
-                <p><strong>Topologies:</strong><br>
-                1. <strong>Mediator Topology:</strong> Events go to a central "brain" (Mediator) which decides the steps. Good for complex workflows.<br>
-                2. <strong>Broker Topology:</strong> No central brain. Events flow in a chain. Good for simple, high-performance flows.</p>
-            </div>
-        </section>
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> A pattern where components communicate by emitting <strong>__Events__</strong> (facts that happened, e.g., "UserClickedBuy") rather than direct calls. Consumers listen for events and react.</p>
+            <p><strong>Key Concepts:</strong>
+            <br>- <strong>Decoupling:</strong> The producer does not know who is listening. It just yells "Order Placed!" and moves on.
+            <br>- <strong>Asynchronous:</strong> Non-blocking. The producer doesn't wait for the consumer.
+            <br>- <strong>Broker Topology:</strong> A central Event Bus (like Kafka/RabbitMQ) manages the flow.</p>
+            <p><strong>Pros:</strong> High scalability, easy to add new features (just add a new listener).
+            <br><strong>Cons:</strong> Hard to trace execution flow (no linear stack trace).</p>
+        </div>
 
-        <!-- Q12 -->
-        <section class="question-block" id="q12">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q12-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q12-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q12: Explain Software Architecture Description Languages (ADLs). Discuss types and features.</h2>
-            <div class="deep-dive">
-                <p><strong>Definition:</strong> Before UML was standard, we used ADLs. These are formal languages to write down architecture precisely.</p>
-                <p><strong>Essential Features of an ADL:</strong><br>
-                1. <strong>Components:</strong> Ability to define computational units.<br>
-                2. <strong>Connectors:</strong> Ability to define interactions (pipes, calls).<br>
-                3. <strong>Configurations:</strong> Ability to show the graph/topology.<br>
-                4. <strong>Analysis:</strong> Ability to mathematically check for deadlocks or speed.</p>
-                
-                <p><strong>Famous ADLs:</strong><br>
-                - <strong>ACME:</strong> The "XML" of architectures. Interchange format.<br>
-                - <strong>Wright:</strong> Used for formal analysis of deadlocks.<br>
-                - <strong>Darwin:</strong> Used for distributed systems structure.</p>
-            </div>
-        </section>
+        <div class="sample-answer" id="q11-sa">
+            <h3>Sample Answer (7 Marks)</h3>
+            <p><strong>Event-Driven Architecture (EDA)</strong> is a design pattern that promotes the production, detection, and consumption of events.
+            <br><strong>Mechanism:</strong> Instead of direct requests, components emit events to an <strong>Event Bus</strong>. Subscribers listen to specific events and react asynchronously.
+            <br><strong>Benefits:</strong> It creates highly decoupled systems. Producers don't need to know about consumers, allowing for easy extensibility and high throughput.
+            <br><strong>Use Case:</strong> Real-time systems like Uber or Stock Markets.</p>
+        </div>
+    </section>
 
-        <!-- Q13 -->
-        <section class="question-block" id="q13">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q13-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q13-diag')">Copy Diagram</button>
-                 <button class="btn-sm" onclick="toggleSection('q13-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q13: Explain CORBA and Java RMI architecture with use cases.</h2>
-            <div class="ascii-container">
+    <!-- Q12 -->
+    <section class="question-block" id="q12">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q12-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 12 min</span>
+        </div>
+        <h2>Q12: Explain Software Architecture Description Languages (ADLs). Discuss types and features.</h2>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> ADLs are formal languages used to describe software architecture precisely, focusing on components and connectors (unlike programming languages which focus on algorithms).</p>
+            
+            <p><strong>Essential Features of an ADL:</strong>
+            <br>1. <strong>Components:</strong> Defines units of computation (e.g., database, server).
+            <br>2. <strong>Connectors:</strong> Defines interactions (e.g., pipes, SQL link).
+            <br>3. <strong>Configuration:</strong> Defines the topology/graph.
+            <br>4. <strong>Tool Support:</strong> Allows analysis (deadlock detection) and code generation.</p>
+
+            <p><strong>Types/Examples:</strong>
+            <br>- <strong>ACME:</strong> A generic interchange language to swap data between tools.
+            <br>- <strong>Wright:</strong> Focuses on formal analysis of deadlocks and protocols.
+            <br>- <strong>Darwin:</strong> Focuses on distributed systems and dynamic structures.</p>
+            
+            <p><em>Note:</em> In modern industry, <strong>UML</strong> has largely replaced specialized ADLs.</p>
+        </div>
+    </section>
+
+    <!-- Q13 -->
+    <section class="question-block" id="q13">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q13-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q13: Explain CORBA and Java RMI architecture with use cases.</h2>
+
+        <div class="ascii-container">
 <pre id="q13-diag">
-      CLIENT MACHINE                 SERVER MACHINE
-   ____________________           ____________________
-  |    [ Object ]      |         |    [ Object ]      |
-  |        |           |         |        ^           |
-  |     (Stub)         |         |    (Skeleton)      |
-  |________|___________|         |________|___________|
-           |                              ^
-           |______________________________|
-                     NETWORK
+DIAGRAM (ASCII — exam-drawable):
+
+ [ Client Object ]        [ Server Object ]
+        |                        ^
+     (Stub)                  (Skeleton)
+        |________________________|
+             NETWORK / ORB
 </pre>
-            </div>
-            <div class="deep-dive">
-                <p>Both are legacy technologies for <strong>Distributed Objects</strong>.</p>
-                <p><strong>1. CORBA (Common Object Request Broker Architecture):</strong><br>
-                - <strong>Goal:</strong> Language Independence. A C++ object calls a Java object.<br>
-                - <strong>Key:</strong> ORB (Object Request Broker). The middleware bus that translates messages.<br>
-                - <strong>IDL:</strong> Interface Definition Language. You write the interface in IDL, and compile it to C++ or Java code.</p>
+        </div>
 
-                <p><strong>2. Java RMI (Remote Method Invocation):</strong><br>
-                - <strong>Goal:</strong> Java-to-Java communication.<br>
-                - <strong>Mechanism:</strong> Uses serialization. The Client has a "Stub" (fake object). When you call the Stub, it sends data over network to the "Skeleton" on server, which calls the real object.<br>
-                - <strong>Advantage:</strong> Easy if you only use Java.</p>
-            </div>
-        </section>
+        <div class="deep-dive">
+            <p><strong>1. CORBA (Common Object Request Broker Architecture):</strong>
+            <br>- <strong>Goal:</strong> Language Independence. A C++ object calls a Java object.
+            <br>- <strong>Mechanism:</strong> Uses an <strong>__ORB__</strong> (Object Request Broker) as a middleware bus. Interfaces are defined in <strong>IDL</strong> (Interface Definition Language).
+            <br>- <em>Use Case:</em> Legacy banking systems mixing Cobol mainframes with C++ clients.</p>
 
-        <!-- Q14 -->
-        <section class="question-block" id="q14">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q14-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q14-diag')">Copy Diagram</button>
-                 <button class="btn-sm" onclick="toggleSection('q14-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q14: Explain Model View Architecture.</h2>
-            <div class="ascii-container">
+            <p><strong>2. Java RMI (Remote Method Invocation):</strong>
+            <br>- <strong>Goal:</strong> Java-to-Java communication.
+            <br>- <strong>Mechanism:</strong> Uses Stubs (Client-side proxy) and Skeletons (Server-side helper). It uses Java Serialization to send objects over the wire.
+            <br>- <em>Use Case:</em> Pure Java enterprise applications (EJB) in the early 2000s.</p>
+
+            <p><strong>Comparison:</strong> CORBA is complex but universal. RMI is simple but Java-only.</p>
+        </div>
+    </section>
+
+    <!-- Q14 -->
+    <section class="question-block" id="q14">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q14-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 12 min</span>
+        </div>
+        <h2>Q14: Explain Model View Architecture.</h2>
+
+        <div class="ascii-container">
 <pre id="q14-diag">
-      User Action
-          |
-          v
-    [ CONTROLLER ] ------------> [ MODEL ]
-    (Handles Input)            (Data/Logic)
-          |                        |
-      Selects View             Updates View
-          |                        |
-          v                        v
-      [ VIEW ] <-------------------|
-    (Displays UI)
+DIAGRAM (ASCII — exam-drawable):
+
+     User Input
+         |
+         v
+   [ CONTROLLER ] ------------> [ MODEL ]
+   (Handles logic)             (Data/State)
+         |                          |
+    Selects View               Updates View
+         |                          |
+         v                          v
+     [ VIEW ] <---------------------|
+    (Display UI)
 </pre>
-            </div>
-            <div class="deep-dive">
-                <p><strong>MVC (Model-View-Controller):</strong><br>
-                The standard for interactive applications (Web & Desktop).<br>
-                1. <strong>Model:</strong> The brain. Contains data and business rules. It is <strong>independent</strong> of the UI. It notifies observers when data changes.<br>
-                2. <strong>View:</strong> The face. Displays data. It observes the Model.<br>
-                3. <strong>Controller:</strong> The coordinator. Handles user input (keyboard/mouse), updates the Model, and selects the View.</p>
-                <p><em>Variants:</em> MVP (Model View Presenter), MVVM (Model View ViewModel - used in React/Angular).</p>
-            </div>
-        </section>
+            <div class="draw-tip">Triangle flow: Controller updates Model. Model updates View. User interacts with Controller.</div>
+        </div>
 
-        <!-- Q15 -->
-        <section class="question-block" id="q15">
-            <h2>Q15: Explain the role of UML in software architecture.</h2>
-            <div class="deep-dive">
-                <p><strong>UML (Unified Modeling Language)</strong> is the standard visual language.</p>
-                <p><strong>Roles:</strong><br>
-                1. <strong>Visualization:</strong> "A picture is worth 1000 lines of code."<br>
-                2. <strong>Specification:</strong> Defines interfaces precisely before coding.<br>
-                3. <strong>Documentation:</strong> For future maintenance.</p>
-                <p><strong>Key Diagram Types:</strong><br>
-                - <strong>Class Diagram:</strong> (Structural) Shows classes and inheritance.<br>
-                - <strong>Sequence Diagram:</strong> (Dynamic) Shows order of messages.<br>
-                - <strong>Use Case Diagram:</strong> (Behavioral) Shows user goals.<br>
-                - <strong>Deployment Diagram:</strong> (Physical) Shows servers and nodes.</p>
-            </div>
-        </section>
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> MVC (Model-View-Controller) is a pattern to separate internal representation of information from the way it is presented to the user.</p>
+            
+            <p><strong>Components:</strong>
+            <br>1. <strong>Model:</strong> The Brain. Contains data, state, and business logic. It is <strong>independent</strong> of the UI. It notifies the View when data changes.
+            <br>2. <strong>View:</strong> The Face. Displays data to the user. It observes the Model.
+            <br>3. <strong>Controller:</strong> The Coordinator. Handles user input (clicks, keys), updates the Model, and selects the View.</p>
 
-        <!-- Q16 -->
-        <section class="question-block" id="q16">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q16-sa')">Copy Answer</button>
-                <button class="btn-sm" onclick="copyDiagram('q16-diag')">Copy Diagram</button>
-                 <button class="btn-sm" onclick="toggleSection('q16-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q16: Explain JSP, and lifecycle of servlets.</h2>
-            <div class="ascii-container">
-<pre id="q16-diag">
-      [ Load Class ]
-            |
-        [ Instantiation ]
-            |
-         [ init() ]  <--- Called ONCE
-            |
-  -------> [ service() ] <--- Called per Request (Thread)
-  |         |
-  |______ [ doXxx() ]
-            |
-        [ destroy() ] <--- Called on Shutdown
-</pre>
-            </div>
-            <div class="deep-dive">
-                <p><strong>1. JSP (JavaServer Pages):</strong><br>
-                A way to write HTML with embedded Java code (`<% code %>`). <br>
-                - <em>Process:</em> JSP file -> Translated to Java Source -> Compiled to Servlet Class -> Run.<br>
-                - <em>Use:</em> View layer (presentation).</p>
-                
-                <p><strong>2. Servlet Lifecycle:</strong><br>
-                Servlets are the Java classes that handle HTTP requests. The Container (Tomcat) manages them:<br>
-                1. <strong>Load & Instantiate:</strong> Server creates object.<br>
-                2. <strong>init():</strong> Initialization logic (DB connection). Runs ONCE.<br>
-                3. <strong>service():</strong> The main loop. Runs for EVERY request. Dispatches to `doGet`/`doPost`.<br>
-                4. <strong>destroy():</strong> Cleanup logic. Runs ONCE on shutdown.</p>
-            </div>
-             <div class="mnemonic">
-                 <strong>Mnemonic:</strong> <strong>L-I-S-D</strong> -> Load, Init, Service, Destroy.
-             </div>
-        </section>
+            <p><strong>Web MVC Variant:</strong>
+            <br>Controller (Server) receives request -> Updates DB (Model) -> Selects HTML Template (View) -> Returns to Browser.</p>
+        </div>
+    </section>
 
-        <!-- Q17 -->
-        <section class="question-block" id="q17">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q17-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q17-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q17: What is the Cost Benefit Analysis Method (CBAM)? Explain the steps.</h2>
-            <div class="deep-dive">
-                <p><strong>CBAM</strong> answers the question: "We have 5 good architectural ideas, but only budget for 2. Which ones give the most ROI?"<br>
-                It adds <strong>Economic</strong> modeling to technical decisions.</p>
-                <p><strong>Steps:</strong><br>
-                1. <strong>Collate Scenarios:</strong> Collect ideas.<br>
-                2. <strong>Refine Scenarios:</strong> Filter the best ones.<br>
-                3. <strong>Prioritize Scenarios:</strong> Vote on importance.<br>
-                4. <strong>Assign Utility:</strong> Give a "Benefit Score".<br>
-                5. <strong>Develop Strategies:</strong> How to implement them?<br>
-                6. <strong>Determine Cost:</strong> Estimate price/time.<br>
-                7. <strong>Calculate ROI:</strong> Benefit divided by Cost. Rank them.</p>
-            </div>
-             <div class="mnemonic">
-                 <strong>Keywords:</strong> ROI, Economics, Budget, Priority.
-             </div>
-        </section>
+    <!-- Q15 -->
+    <section class="question-block" id="q15">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q15-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 10 min</span>
+        </div>
+        <h2>Q15: Explain the role of UML in software architecture.</h2>
 
-        <!-- Q18 -->
-        <section class="question-block" id="q18">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q18-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q18-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q18: Explain Attribute Driven Design (ADD) with an example.</h2>
-            <div class="deep-dive">
-                <p><strong>ADD</strong> is a design process where the Quality Attributes (Performance, Security) drive the structure.<br>
-                - <em>Philosophy:</em> Don't just design for features. Design for qualities.</p>
-                <p><strong>Recursive Steps:</strong><br>
-                1. Pick a module.<br>
-                2. Identify top drivers (e.g., "Must handle 10k users").<br>
-                3. Select a pattern that solves it (e.g., "Load Balancer").<br>
-                4. Instantiate the pattern.<br>
-                5. Repeat for children.</p>
-                <p><strong>Example:</strong><br>
-                - Goal: <strong>High Availability</strong>.<br>
-                - Tactic: Active-Passive Redundancy.<br>
-                - Design: Add a backup server and heartbeat monitor.</p>
-            </div>
-        </section>
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> UML (Unified Modeling Language) is the standard visual language for specifying, visualizing, constructing, and documenting the artifacts of software systems.</p>
 
-        <!-- Q19 -->
-        <section class="question-block" id="q19">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q19-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q19-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q19: Describe Architecture Tradeoff Analysis Method (ATAM) with phases and outputs.</h2>
-            <div class="deep-dive">
-                <p><strong>ATAM</strong> is a review method. We evaluate the architecture <em>before</em> coding to find risks.</p>
-                <p><strong>4 Phases:</strong><br>
-                1. <strong>Presentation:</strong> Present business goals and architecture.<br>
-                2. <strong>Investigation:</strong> Analyze approaches and generate Utility Tree.<br>
-                3. <strong>Testing:</strong> Brainstorm scenarios (Failures, Growth) and test the design against them.<br>
-                4. <strong>Reporting:</strong> Document findings.</p>
-                <p><strong>Outputs (Mnemonic: R-N-S-T):</strong><br>
-                - <strong>Risks:</strong> Bad decisions.<br>
-                - <strong>Non-Risks:</strong> Good decisions.<br>
-                - <strong>Sensitivity Points:</strong> Where a small change has big impact.<br>
-                - <strong>Trade-off Points:</strong> Where improving X hurts Y.</p>
-            </div>
-        </section>
+            <p><strong>Roles:</strong>
+            <br>1. <strong>Visualization:</strong> "A picture is worth 1000 lines of code." It helps stakeholders understand complex flows.
+            <br>2. <strong>Specification:</strong> It defines precise interfaces and behaviors before coding starts.
+            <br>3. <strong>Blueprint for Construction:</strong> CASE tools can generate code skeletons from UML diagrams.
+            <br>4. <strong>Documentation:</strong> It serves as a permanent record for maintenance teams.</p>
 
-        <!-- Q20 -->
-        <section class="question-block" id="q20">
-            <h2>Q20: Describe Active Reviews for Intermediate Design (ARID).</h2>
-            <div class="deep-dive">
-                <p><strong>ARID</strong> is for reviewing <strong>partial</strong> designs (e.g., just the subsystem interface).<br>
-                - <strong>The Problem:</strong> ATAM is for the whole system. What if I just want to check my API design?<br>
-                - <strong>The Process:</strong> Gather the <strong>Developers</strong> who will use the design. Give them a scenario. Ask them to write pseudo-code using your design. If they can't do it easily, your design fails.<br>
-                - <strong>Hybrid:</strong> It's part "Design Review" and part "Code Walkthrough".</p>
-            </div>
-        </section>
+            <p><strong>Key Diagrams for Architects:</strong>
+            <br>- <strong>Class Diagram:</strong> Static structure.
+            <br>- <strong>Sequence Diagram:</strong> Runtime interaction/timing.
+            <br>- <strong>Deployment Diagram:</strong> Physical hardware mapping.</p>
+        </div>
+    </section>
 
-        <!-- Q21 -->
-        <section class="question-block" id="q21">
-            <h2>Q21: Define Refinement and also explain principle of sound documentation in detail.</h2>
-            <div class="deep-dive">
-                <p><strong>Refinement:</strong> The gradual process of converting high-level specifications into low-level executable code. (Concept -> Architecture -> Design -> Code).</p>
-                <p><strong>Sound Documentation Principles:</strong><br>
-                1. <strong>Write for the Reader:</strong> Know your audience (Manager vs Developer).<br>
-                2. <strong>Don't Repeat:</strong> Have a "Single Source of Truth".<br>
-                3. <strong>Record Rationale:</strong> Explain <em>WHY</em> you chose X, not just <em>THAT</em> you chose X.<br>
-                4. <strong>Keep Current:</strong> Wrong documentation is dangerous. Update it or delete it.<br>
-                5. <strong>Standardize:</strong> Use templates.</p>
-            </div>
-        </section>
+    <!-- Q16 -->
+    <section class="question-block" id="q16">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q16-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q16: Explain JSP, and lifecycle of servlets.</h2>
 
-        <!-- Q22 -->
-        <section class="question-block" id="q22">
-            <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q22-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q22-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q22: Describe seven parts template for documentation package.</h2>
-            <div class="deep-dive">
-                <p>When documenting a View (e.g., Component View), use this standard 7-part structure:</p>
-                <ol>
-                    <li><strong>Primary Presentation:</strong> The diagram itself (UML).</li>
-                    <li><strong>Element Catalog:</strong> Dictionary describing each box in the diagram.</li>
-                    <li><strong>Context Diagram:</strong> How this view fits into the larger system.</li>
-                    <li><strong>Variability Guide:</strong> How to configure/change it.</li>
-                    <li><strong>Architecture Background:</strong> Rationale and analysis.</li>
-                    <li><strong>Glossary:</strong> Terms used.</li>
-                    <li><strong>Other Info:</strong> Authors, dates.</li>
-                </ol>
-            </div>
-             <div class="mnemonic">
-                 <strong>Mnemonic:</strong> <strong>P-E-C-V-A-G-O</strong> -> Primary, Element, Context, Variability, Architecture, Glossary, Other.
-             </div>
-        </section>
+        <div class="quick-summary">
+            1. JSP = HTML + Java.<br>
+            2. Servlet = Java class handling HTTP.<br>
+            3. Lifecycle: Load -> Init -> Service -> Destroy.
+        </div>
 
-        <!-- Q23 -->
-        <section class="question-block" id="q23">
-             <div class="q-controls">
-                <button class="btn-sm" onclick="copyAnswer('q23-sa')">Copy Answer</button>
-                 <button class="btn-sm" onclick="toggleSection('q23-cs')">Cheat Sheet</button>
-            </div>
-            <h2>Q23: What are architecture software interfaces? Explain with examples.</h2>
-            <div class="deep-dive">
-                <p>An <strong>Interface</strong> is a contract. It defines <em>what</em> a component does, hiding <em>how</em> it does it.</p>
-                <p><strong>Types:</strong><br>
-                1. <strong>Provided Interface (Lollipop):</strong> "I can do this for you." (e.g., `PaymentService.process()` )<br>
-                2. <strong>Required Interface (Socket):</strong> "I need this to work." (e.g., `PaymentService` needs `DatabaseConnection`).</p>
-                <p><strong>Importance:</strong><br>
-                Interfaces allow teams to work in parallel. As long as the interface doesn't change, you can rewrite the internal code completely without breaking the system.</p>
-            </div>
-        </section>
+        <div class="deep-dive">
+            <p><strong>1. JSP (JavaServer Pages):</strong>
+            <br>A technology for developing web pages that support dynamic content. It allows inserting Java code in HTML using tags (`<% code %>`).
+            <br>- <em>How it works:</em> The server translates the JSP into a Servlet (Java code) automatically upon the first request.</p>
 
-    </main>
+            <p><strong>2. Servlet Lifecycle:</strong>
+            <br>Servlets are managed by a Web Container (e.g., Tomcat). The lifecycle has 4 phases:</p>
+            <ol>
+                <li><strong>Loading & Instantiation:</strong> The container loads the class and creates an instance.</li>
+                <li><strong>init():</strong> Called <strong>ONCE</strong>. Used for one-time setup (e.g., DB connection).</li>
+                <li><strong>service():</strong> Called for <strong>EVERY</strong> request. It runs in a separate thread and dispatches to `doGet()` or `doPost()`.</li>
+                <li><strong>destroy():</strong> Called <strong>ONCE</strong> when the server shuts down. Used to release resources.</li>
+            </ol>
+        </div>
+
+        <div class="mnemonic"><strong>L-I-S-D</strong> (Load, Init, Service, Destroy).</div>
+    </section>
+
+    <!-- Q17 -->
+    <section class="question-block" id="q17">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q17-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q17: What is the Cost Benefit Analysis Method (CBAM)? Explain the steps.</h2>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> CBAM is an economic modeling method used to decide <strong>__which__</strong> architectural strategies should be implemented given a budget. It adds "Cost" and "ROI" to the technical analysis.</p>
+
+            <p><strong>The Steps:</strong>
+            <br>1. <strong>Collate Scenarios:</strong> Gather feature requests/scenarios.
+            <br>2. <strong>Refine Scenarios:</strong> Pick the top ones based on business goals.
+            <br>3. <strong>Prioritize Scenarios:</strong> Stakeholders vote (allocate 100 points).
+            <br>4. <strong>Assign Utility:</strong> How much "benefit" does this scenario provide?
+            <br>5. <strong>Develop Strategies:</strong> What architectural change is needed for this?
+            <br>6. <strong>Determine Cost:</strong> How much money/time to build it?
+            <br>7. <strong>Calculate ROI:</strong> (Benefit / Cost). Rank strategies by ROI and select top ones until budget runs out.</p>
+        </div>
+    </section>
+
+    <!-- Q18 -->
+    <section class="question-block" id="q18">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q18-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q18: Explain Attribute Driven Design (ADD) with an example.</h2>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> ADD is a recursive design method where the architecture is generated by prioritizing <strong>__Quality_Attributes__</strong> (Performance, Security) rather than just functional requirements.</p>
+
+            <p><strong>The Recursive Process:</strong>
+            <br>1. <strong>Choose a Module</strong> to design.
+            <br>2. <strong>Identify Drivers:</strong> Pick the high-priority quality attributes (e.g., "Must handle 10k users").
+            <br>3. <strong>Choose a Pattern:</strong> Select an architectural tactic that satisfies the driver (e.g., "Use Load Balancer").
+            <br>4. <strong>Instantiate:</strong> Apply the pattern.
+            <br>5. <strong>Decompose:</strong> Break down the module and repeat step 1 for sub-modules.</p>
+
+            <p><strong>Example:</strong>
+            <br>- <em>Requirement:</em> High Availability for a Banking App.
+            <br>- <em>ADD Step:</em> Select "Active-Passive Redundancy" pattern.
+            <br>- <em>Result:</em> Architecture now includes a Primary Server, Backup Server, and Heartbeat Monitor.</p>
+        </div>
+    </section>
+
+    <!-- Q19 -->
+    <section class="question-block" id="q19">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q19-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q19: Describe Architecture Tradeoff Analysis Method (ATAM) with phases and outputs.</h2>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> ATAM is a method to evaluate an architecture <strong>__before__</strong> coding begins to identify risks.</p>
+
+            <p><strong>Phases:</strong>
+            <br>1. <strong>Presentation:</strong> Architect presents the design; Stakeholders present business goals.
+            <br>2. <strong>Investigation:</strong> Generate a "Utility Tree" (prioritized quality goals).
+            <br>3. <strong>Testing:</strong> Brainstorm scenarios (e.g., "What if the DB fails?"). Walk through the design to see if it holds up.
+            <br>4. <strong>Reporting:</strong> Present the findings.</p>
+
+            <p><strong>Key Outputs (R-N-S-T):</strong>
+            <br>- <strong>Risks:</strong> Decisions that might hurt quality.
+            <br>- <strong>Non-Risks:</strong> Good decisions.
+            <br>- <strong>Sensitivity Points:</strong> A component where a small change causes a big impact (e.g., "Encryption level heavily affects latency").
+            <br>- <strong>Trade-off Points:</strong> Decisions that improve one attribute but hurt another (e.g., "Compression saves storage but hurts speed").</p>
+        </div>
+        <div class="mnemonic"><strong>R-N-S-T</strong> (Risks, Non-risks, Sensitivity, Trade-offs).</div>
+    </section>
+
+    <!-- Q20 -->
+    <section class="question-block" id="q20">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q20-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 12 min</span>
+        </div>
+        <h2>Q20: Describe Active Reviews for Intermediate Design (ARID).</h2>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> ARID is a review method for <strong>__partial__</strong> designs or subsystems (unlike ATAM which is for the whole system). It checks if the design is actually usable by the developers.</p>
+
+            <p><strong>How it works:</strong>
+            <br>1. It is a hybrid of a <strong>Design Review</strong> and a <strong>Code Walkthrough</strong>.
+            <br>2. <strong>Reviewers:</strong> The developers who will use the design (e.g., who will consume the API).
+            <br>3. <strong>Process:</strong> Present a scenario. Ask the reviewers to write pseudo-code using the design to solve it.
+            <br>4. <strong>Pass/Fail:</strong> If the developers struggle to use the interface, the design fails.</p>
+        </div>
+    </section>
+
+    <!-- Q21 -->
+    <section class="question-block" id="q21">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q21-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 15 min</span>
+        </div>
+        <h2>Q21: Define Refinement and also explain principle of sound documentation in detail.</h2>
+
+        <div class="deep-dive">
+            <p><strong>Part 1: Refinement</strong>
+            <br>Refinement is the gradual process of converting high-level abstract specifications into low-level executable code.
+            <br><em>Chain:</em> Conceptual Arch -> Logical Design -> Physical Design -> Code.</p>
+
+            <p><strong>Part 2: Principles of Sound Documentation</strong>
+            <br>1. <strong>Write for the Reader:</strong> Identify who is reading (Manager vs Coder) and write for them.
+            <br>2. <strong>Avoid Repetition:</strong> Maintain a "Single Source of Truth".
+            <br>3. <strong>Record Rationale:</strong> Document <strong>__WHY__</strong> a decision was made, not just WHAT was made. This helps future maintainers.
+            <br>4. <strong>Keep it Current:</strong> Outdated documentation is worse than no documentation.
+            <br>5. <strong>Standardize:</strong> Use standard templates (Views and Viewpoints).</p>
+        </div>
+    </section>
+
+    <!-- Q22 -->
+    <section class="question-block" id="q22">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q22-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 12 min</span>
+        </div>
+        <h2>Q22: Describe seven parts template for documentation package.</h2>
+
+        <div class="deep-dive">
+            <p>When documenting a specific View (e.g., Component View), use this standard template:</p>
+            <ol>
+                <li><strong>Primary Presentation:</strong> The main diagram (e.g., the UML Class diagram).</li>
+                <li><strong>Element Catalog:</strong> A dictionary describing every box/line in the diagram.</li>
+                <li><strong>Context Diagram:</strong> Shows how this part fits into the larger system.</li>
+                <li><strong>Variability Guide:</strong> Explains what is configurable or changeable.</li>
+                <li><strong>Architecture Background:</strong> Rationale, analysis, and why choices were made.</li>
+                <li><strong>Glossary:</strong> Definitions of terms used.</li>
+                <li><strong>Other Info:</strong> Authors, dates, version history.</li>
+            </ol>
+        </div>
+        <div class="mnemonic"><strong>P-E-C-V-A-G-O</strong> (Primary, Element, Context, Variability, Architecture, Glossary, Other).</div>
+    </section>
+
+    <!-- Q23 -->
+    <section class="question-block" id="q23">
+        <div class="q-controls">
+            <button class="q-btn" onclick="copyText('q23-sa')">Copy Ans</button>
+            <span class="rec-time">Rec: 12 min</span>
+        </div>
+        <h2>Q23: What are architecture software interfaces? Explain with examples.</h2>
+
+        <div class="deep-dive">
+            <p><strong>Definition:</strong> An <strong>__Interface__</strong> is a boundary across which two components exchange information. It defines a contract: "What I do" vs "How I do it".</p>
+
+            <p><strong>Types:</strong>
+            <br>1. <strong>Provided Interface (Lollipop):</strong> Services a component offers to others. (e.g., `API.getUser()`).
+            <br>2. <strong>Required Interface (Socket):</strong> Services a component needs to function. (e.g., `Needs DatabaseConnection`).</p>
+
+            <p><strong>Importance:</strong>
+            <br>- Allows <strong>__Parallel_Development__</strong> (Team A builds client, Team B builds server).
+            <br>- Allows <strong>__Modifiability__</strong> (You can rewrite the internals as long as the interface stays the same).</p>
+            
+            <p><strong>Example:</strong> A REST API Swagger file is an architectural interface definition.</p>
+        </div>
+    </section>
+
 </div>
 
 <footer>
-    <p>Made by Maverick</p>
-    <p class="text-small">&copy; 2025 — For personal exam study only.</p>
+    Made by Maverick<br>© 2025
 </footer>
 
 <script>
-    // --- LOGIC ---
-
-    // TOC Generation
-    document.addEventListener('DOMContentLoaded', () => {
-        const toc = document.getElementById('toc');
-        const headers = document.querySelectorAll('h2');
+    // Menu Logic
+    const menuOverlay = document.getElementById('menu-overlay');
+    const mainContainer = document.getElementById('main-container');
+    
+    function toggleMenu() {
+        menuOverlay.classList.toggle('open');
+        document.body.style.overflow = menuOverlay.classList.contains('open') ? 'hidden' : 'auto';
         
-        headers.forEach((h, index) => {
-            const id = h.parentElement.id;
-            if(!id) return;
-            const link = document.createElement('a');
-            link.href = '#' + id;
-            link.className = 'toc-link';
-            // Clean text: remove "Q#: "
-            link.innerText = h.innerText.split(':')[0]; 
-            link.title = h.innerText;
-            link.onclick = () => {
-                if(window.innerWidth < 768) toggleTOC();
-            };
-            toc.appendChild(link);
-        });
-
-        // Check LocalStorage for Revision Mode
-        if(localStorage.getItem('revisionMode') === 'true') {
-            document.body.classList.add('revision-mode');
-            document.getElementById('btn-rev').classList.add('active');
+        // Generate TOC if opening
+        if(menuOverlay.classList.contains('open') && document.getElementById('toc-list').innerHTML.trim() === '') {
+            generateTOC();
         }
-    });
-
-    // Toggles
-    function toggleTOC() {
-        const toc = document.getElementById('toc');
-        const isHidden = window.getComputedStyle(toc).display === 'none';
-        toc.style.display = isHidden ? 'flex' : 'none';
     }
 
-    function expandAll() {
-        document.querySelectorAll('.cheat-sheet').forEach(el => el.classList.remove('hidden'));
-        // Logic to expand sample answers if they were collapsible (they are visible by default here, but good for future)
+    function generateTOC() {
+        const list = document.getElementById('toc-list');
+        document.querySelectorAll('h2').forEach(h2 => {
+            const id = h2.parentElement.id;
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.innerText = h2.innerText.split(':')[0]; // Just Q number
+            a.innerText += ": " + h2.innerText.split(':')[1].substring(0, 25) + "...";
+            a.onclick = toggleMenu; // Close on click
+            list.appendChild(a);
+        });
     }
 
-    function collapseAll() {
-        document.querySelectorAll('.cheat-sheet').forEach(el => el.classList.add('hidden'));
-    }
-
-    function toggleSection(id) {
-        document.getElementById(id).classList.toggle('hidden');
-    }
-
+    // View Modes
     function toggleRevisionMode() {
         document.body.classList.toggle('revision-mode');
-        const btn = document.getElementById('btn-rev');
-        btn.classList.toggle('active');
-        localStorage.setItem('revisionMode', document.body.classList.contains('revision-mode'));
+        document.getElementById('btn-rev').classList.toggle('active');
+        toggleMenu();
     }
 
     function toggleDiagramsOnly() {
         document.body.classList.toggle('diagrams-only');
         document.getElementById('btn-diag').classList.toggle('active');
+        toggleMenu();
     }
 
-    // Copy Functions
-    function copyAnswer(id) {
-        const text = document.getElementById(id).innerText;
-        copyToClipboard(text);
+    // Utilities
+    function expandAll() {
+        document.querySelectorAll('.cheat-sheet').forEach(el => el.classList.remove('hidden'));
+        toggleMenu();
     }
 
-    function copyDiagram(id) {
-        const text = document.getElementById(id).innerText;
-        copyToClipboard(text);
+    function collapseAll() {
+        document.querySelectorAll('.cheat-sheet').forEach(el => el.classList.add('hidden'));
+        toggleMenu();
+    }
+    
+    function toggleID(id) {
+        document.getElementById(id).classList.toggle('hidden');
     }
 
-    function copyToClipboard(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
+    function copyText(id) {
+        const el = document.getElementById(id);
+        if(!el) return;
+        const textArea = document.createElement('textarea');
+        textArea.value = el.innerText;
+        document.body.appendChild(textArea);
+        textArea.select();
         document.execCommand('copy');
-        document.body.removeChild(ta);
-        alert('Copied to clipboard!');
+        document.body.removeChild(textArea);
+        alert('Copied!');
     }
 
     // Search
@@ -1380,38 +1364,29 @@ _____________________                     ^          ^
         });
     });
 
-    // Print
-    function printPDF() {
-        expandAll();
-        document.body.classList.remove('diagrams-only');
-        document.body.classList.remove('revision-mode');
-        setTimeout(() => {
-            window.print();
-        }, 500);
-    }
-
-    // Export Text
+    // Export
     function exportText() {
-        let content = "SOFTWARE ARCHITECTURE NOTES - EXAM PREP\nMade by Maverick\n\n";
+        let txt = "EXAM NOTES\n\n";
         document.querySelectorAll('.question-block').forEach(q => {
             if(q.style.display !== 'none') {
-                content += "--------------------------------------------------\n";
-                content += q.querySelector('h2').innerText + "\n\n";
-                content += "SUMMARY: " + q.querySelector('.quick-summary').innerText + "\n\n";
-                
-                const diag = q.querySelector('pre');
-                if(diag) content += "DIAGRAM:\n" + diag.innerText + "\n\n";
-                
-                content += "ANSWER:\n" + q.querySelector('.sample-answer')?.innerText + "\n\n";
+                txt += q.querySelector('h2').innerText + "\n";
+                txt += "SUMMARY: " + q.querySelector('.quick-summary')?.innerText.replace(/\n/g, ' ') + "\n";
+                txt += "ANSWER: " + q.querySelector('.deep-dive')?.innerText + "\n\n";
+                txt += "----------------\n";
             }
         });
-        
-        const blob = new Blob([content], { type: 'text/plain' });
+        const blob = new Blob([txt], {type: 'text/plain'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'Software_Arch_Notes.txt';
+        a.download = 'notes.txt';
         a.click();
     }
+
+    function printPDF() {
+        toggleMenu(); // ensure closed
+        window.print();
+    }
 </script>
+
 </body>
 </html>
