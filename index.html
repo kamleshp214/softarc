@@ -94,13 +94,7 @@
             position: relative;
             border-bottom: 1px solid var(--border);
         }
-        .cover-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            opacity: 0.7;
-            display: block;
-        }
+
         .hero-text {
             position: absolute;
             bottom: 0;
@@ -278,9 +272,7 @@
         </aside>
 
         <main class="main">
-            <div class="hero">
-                <img src="/mnt/data/WhatsApp Image 2025-11-20 at 14.07.34_b9daf329.jpg" alt="Course Cover" class="cover-img">
-                <div class="hero-text">
+           
                     <h1>Software Architecture</h1>
                     <p>Complete Exam Notes • Dark Mode • Offline Ready</p>
                 </div>
@@ -289,10 +281,10 @@
             <div class="controls">
                 <button class="btn" onclick="expandAll()">Expand All</button>
                 <button class="btn" onclick="collapseAll()">Collapse All</button>
-                <button class="btn" id="btnRevision" onclick="toggleMode('revision')">⚡ Revision Mode</button>
-                <button class="btn" id="btnDiagrams" onclick="toggleMode('diagrams')">🖼️ Diagrams Only</button>
-                <button class="btn" onclick="exportTxt()">📄 Export Text</button>
-                <button class="btn btn-primary" onclick="printPage()">🖨️ Download PDF</button>
+                <button class="btn" id="btnRevision" onclick="toggleMode('revision')"> Revision Mode</button>
+                <button class="btn" id="btnDiagrams" onclick="toggleMode('diagrams')">Diagrams Only</button>
+                <button class="btn" onclick="exportTxt()">Export Text</button>
+                <button class="btn btn-primary" onclick="printPage()">Download PDF</button>
             </div>
 
             <div id="content-area">
@@ -929,8 +921,8 @@ function renderQuestions() {
             <div class="q-header">
                 <div class="q-title">Q${q.id}: ${q.title}</div>
                 <div class="q-meta">
-                    <span>⏱️ ${q.time}</span>
-                    <span>🧠 ${q.mnemonic}</span>
+                    <span> ${q.time}</span>
+                    <span>${q.mnemonic}</span>
                 </div>
             </div>
 
@@ -964,17 +956,17 @@ function renderQuestions() {
             </div>
 
             <div class="checklist-box">
-                <h4>✅ To Get 7/7 Write:</h4>
+                <h4>To Get 7/7 Write:</h4>
                 <ul>${q.checklist.map(i => `<li>${i}</li>`).join('')}</ul>
             </div>
 
             <div class="forget-box">
-                <strong>⚠️ Stuff students forget:</strong>
+                <strong>Stuff students forget:</strong>
                 <ul>${q.forget.map(i => `<li>${i}</li>`).join('')}</ul>
             </div>
 
             <div class="wording-box">
-                <strong>📝 Expected Exam Wording:</strong> "${q.wording}"
+                <strong>Expected Exam Wording:</strong> "${q.wording}"
             </div>
 
             <div class="cheat-sheet">
