@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SA Exam Master (Mobile Study)</title>
+    <title>Software Architecture — Exam Notes</title>
     <style>
         :root {
-            --bg-app: #121212;
+            --bg-app: #0a0a0a;
+            --bg-panel: #161616;
             --bg-card: #1e1e1e;
-            --bg-inset: #252525;
-            --text-primary: #e0e0e0;
-            --text-secondary: #a0a0a0;
-            --accent: #64b5f6; /* Soft Blue */
-            --accent-dim: rgba(100, 181, 246, 0.15);
-            --success: #81c784;
-            --warning: #ffb74d;
-            --border: #333333;
+            --bg-inset: #2c2c2c;
+            --text-main: #e5e5e5;
+            --text-muted: #a3a3a3;
+            --accent: #3b82f6; /* Blue */
+            --accent-glow: rgba(59, 130, 246, 0.15);
+            --success: #10b981; /* Green */
+            --warning: #f59e0b; /* Amber */
+            --danger: #ef4444; /* Red */
+            --border: #333;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
             --nav-height: 60px;
         }
 
@@ -23,501 +27,536 @@
 
         body {
             background-color: var(--bg-app);
-            color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            font-family: var(--font-main);
             line-height: 1.6;
+            font-size: 16px;
             padding-bottom: 80px; /* Space for bottom nav */
-            overflow-x: hidden; /* Prevent page drift */
+            overflow-x: hidden;
         }
 
-        /* --- Utilities --- */
-        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
-        .hidden { display: none !important; }
+        /* --- Typography --- */
+        h1, h2, h3, h4 { color: #fff; font-weight: 700; line-height: 1.3; }
+        h3 { font-size: 1.2rem; margin-top: 1.5rem; margin-bottom: 0.5rem; border-left: 4px solid var(--accent); padding-left: 10px; }
+        p { margin-bottom: 1rem; text-align: justify; }
+        strong { color: #fff; }
         
+        /* --- Layout --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 16px; }
+
         /* --- Header --- */
         header {
-            padding: 20px 16px;
-            background: var(--bg-app);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 50;
+            z-index: 100;
             border-bottom: 1px solid var(--border);
+            padding: 15px 0;
         }
-        h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 4px; }
-        .subtitle { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .header-content { display: flex; flex-direction: column; gap: 10px; }
+        .title-row h1 { font-size: 1.4rem; color: var(--accent); }
+        .title-row span { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- Search --- */
-        .search-wrapper {
-            margin-top: 10px;
-            position: relative;
+        /* --- Controls --- */
+        .controls-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: none;
         }
-        .search-bar {
-            width: 100%;
+        .controls-scroll::-webkit-scrollbar { display: none; }
+
+        .btn {
             background: var(--bg-inset);
             border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px; /* Prevents iOS zoom */
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .search-bar:focus { outline: 2px solid var(--accent); border-color: transparent; }
+        .btn:hover { border-color: var(--accent); color: #fff; }
+        .btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .btn-sm { padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; }
 
-        /* --- Card Design --- */
+        .search-box {
+            width: 100%;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            color: #fff;
+            margin-top: 10px;
+        }
+
+        /* --- Question Card --- */
         .card {
             background: var(--bg-card);
-            border-radius: 12px;
-            margin-bottom: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            margin-bottom: 24px;
             overflow: hidden;
+            scroll-margin-top: 160px;
         }
 
         .card-header {
             padding: 16px;
+            background: linear-gradient(to bottom, var(--bg-panel), var(--bg-card));
             border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
+            cursor: pointer;
         }
-        
-        .q-title { font-weight: 700; font-size: 1.1rem; color: white; margin-bottom: 4px; }
-        .q-tags { display: flex; gap: 8px; font-size: 0.75rem; color: var(--accent); font-family: monospace; }
-        
-        .card-body { padding: 16px; }
 
-        /* --- Diagrams (The Fix) --- */
-        .diagram-container {
-            background: var(--bg-inset);
-            border-radius: 8px;
-            padding: 16px;
-            margin: 16px 0;
-            text-align: center;
-            border: 1px solid var(--border);
-            overflow-x: auto; /* Allows diagram to scroll internally */
-        }
-        
-        svg {
-            max-width: 100%;
-            height: auto;
-            min-width: 250px; /* Ensures SVG doesn't get crushed */
-        }
-        
-        /* Ensure Diagram Lines are Visible */
-        svg path, svg line, svg rect, svg circle, svg polygon {
-            stroke: var(--text-primary);
-            stroke-width: 2;
-            fill: none;
-        }
-        svg text {
-            fill: var(--text-primary);
-            font-family: sans-serif;
-            font-size: 12px;
-        }
-        /* Accent colors in SVG */
-        .svg-accent { stroke: var(--accent) !important; fill: var(--accent) !important; stroke-width: 0 !important; }
-        .svg-dashed { stroke-dasharray: 5,5; }
+        .q-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-family: var(--font-mono); }
+        .q-title { font-size: 1.1rem; color: var(--accent); }
+
+        .card-body { padding: 16px; display: block; }
+        .card-body.collapsed { display: none; }
 
         /* --- Content Sections --- */
-        .definition {
-            font-size: 1.05rem;
-            border-left: 3px solid var(--accent);
-            padding-left: 12px;
+        .quick-summary {
+            background: var(--accent-glow);
+            border-left: 4px solid var(--accent);
+            padding: 12px;
+            font-size: 0.9rem;
             margin-bottom: 16px;
-            background: linear-gradient(90deg, var(--accent-dim), transparent);
-            padding: 10px;
             border-radius: 0 4px 4px 0;
         }
 
-        .mnemonic-chip {
-            display: inline-block;
-            background: var(--warning);
-            color: #000;
+        .definition { font-size: 1.1rem; margin-bottom: 16px; font-weight: 500; }
+        
+        .mnemonic-box {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            padding: 8px 12px;
+            border-radius: 6px;
             font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            display: inline-block;
         }
 
-        .bullet-points ul { padding-left: 20px; color: var(--text-secondary); }
-        .bullet-points li { margin-bottom: 8px; }
-        .bullet-points strong { color: var(--text-primary); }
+        /* --- Diagrams --- */
+        .diagram-wrapper {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        
+        .vis-label {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;
+        }
 
-        /* --- Bottom Navigation --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: var(--nav-height);
-            background: var(--bg-card);
+        pre.ascii-art {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.2;
+            color: var(--success);
+            white-space: pre;
+            text-align: left;
+            overflow-x: auto;
+        }
+
+        svg.diagram { width: 100%; height: auto; max-height: 300px; min-width: 300px; }
+        svg text { fill: var(--text-main); font-family: sans-serif; font-size: 12px; }
+        svg path, svg line, svg rect, svg circle, svg polygon { stroke: var(--text-main); stroke-width: 2; fill: none; }
+        svg .accent { stroke: var(--accent); }
+        svg .fill-accent { fill: var(--accent); stroke: none; }
+
+        /* --- Exam Aids --- */
+        .checklist { background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px; margin-top: 20px; border: 1px solid var(--success); }
+        .checklist h4 { color: var(--success); font-size: 0.9rem; margin-top: 0; margin-bottom: 5px; }
+        .checklist ul { list-style: none; padding: 0; margin: 0; font-size: 0.85rem; }
+        .checklist li:before { content: "✓ "; color: var(--success); }
+
+        .forget-box { border-left: 3px solid var(--danger); padding-left: 10px; margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); }
+        .wording-box { font-family: serif; font-style: italic; color: #fff; background: var(--bg-inset); padding: 10px; border-radius: 6px; margin-top: 15px; border: 1px dashed var(--text-muted); }
+
+        /* --- Cheat Sheet --- */
+        .cheat-sheet { margin-top: 20px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .cs-toggle { background: var(--bg-panel); padding: 10px; cursor: pointer; font-size: 0.9rem; font-weight: bold; display: flex; justify-content: space-between; }
+        .cs-content { padding: 15px; display: none; background: var(--bg-card); font-size: 0.9rem; }
+        .cs-content.show { display: block; }
+        .cs-content ul { padding-left: 20px; columns: 1; }
+
+        /* --- Footer Actions --- */
+        .card-footer {
+            padding: 12px;
             border-top: 1px solid var(--border);
             display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
+            gap: 10px;
+            flex-wrap: wrap;
+            background: var(--bg-panel);
         }
 
-        .nav-item {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 8px;
-            width: 33%;
-        }
-        .nav-item.active { color: var(--accent); }
-        .nav-icon { font-size: 1.2rem; }
+        /* --- Modes --- */
+        body.revision-mode .deep-content { display: none; }
+        body.revision-mode .cheat-sheet .cs-content { display: block; }
+        
+        body.diagrams-only .deep-content,
+        body.diagrams-only .checklist,
+        body.diagrams-only .forget-box,
+        body.diagrams-only .wording-box,
+        body.diagrams-only .cheat-sheet { display: none; }
 
-        /* --- Drawer/TOC --- */
+        /* --- Print --- */
+        @media print {
+            body { background: #fff; color: #000; padding: 0; }
+            header, .controls-scroll, .bottom-nav, .search-box, .card-footer, .btn { display: none !important; }
+            .card { border: none; margin-bottom: 30px; page-break-inside: avoid; }
+            .card-header { background: none; border-bottom: 2px solid #000; padding: 0; margin-bottom: 10px; }
+            .q-title { color: #000; font-size: 1.5rem; }
+            h3 { color: #000; border-left-color: #000; }
+            .deep-content, .cs-content { display: block !important; }
+            .diagram-wrapper { border: 1px solid #ccc; background: #fff; }
+            pre.ascii-art { color: #000; }
+            svg path, svg line, svg rect, svg circle { stroke: #000; }
+            svg text { fill: #000; }
+        }
+
+        /* --- Mobile Drawer --- */
         .drawer {
-            position: fixed;
-            bottom: var(--nav-height);
-            left: 0;
-            width: 100%;
-            height: calc(70vh - var(--nav-height));
-            background: var(--bg-card);
-            border-radius: 20px 20px 0 0;
-            z-index: 90;
-            transform: translateY(110%);
-            transition: transform 0.3s ease;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
+            position: fixed; bottom: 60px; left: 0; width: 100%; height: 70vh;
+            background: var(--bg-panel); border-radius: 20px 20px 0 0;
+            z-index: 90; transform: translateY(110%); transition: transform 0.3s ease;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column;
         }
         .drawer.open { transform: translateY(0); }
-        .drawer-header {
-            padding: 16px;
-            text-align: center;
-            font-weight: bold;
-            border-bottom: 1px solid var(--border);
-        }
-        .drawer-content { overflow-y: auto; padding: 16px; flex: 1; }
-        .toc-link {
-            display: block;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-secondary);
-            text-decoration: none;
-        }
-        .toc-link:active { color: var(--accent); background: var(--bg-inset); }
+        .drawer-header { padding: 15px; border-bottom: 1px solid var(--border); font-weight: bold; display: flex; justify-content: space-between; }
+        .drawer-content { flex: 1; overflow-y: auto; padding: 15px; }
+        .toc-link { display: block; padding: 12px 0; border-bottom: 1px solid var(--bg-app); color: var(--text-muted); text-decoration: none; }
+        .toc-link:hover { color: var(--accent); }
 
+        /* --- Bottom Nav --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: var(--bg-panel); border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around; align-items: center; z-index: 95;
+        }
+        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <defs>
-            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-                <path d="M0,0 L0,6 L9,3 z" fill="#e0e0e0" />
-            </marker>
-        </defs>
-    </svg>
-
     <header>
-        <h1>SA Exam Master</h1>
-        <div class="subtitle">7th Sem • RGPV • Complete Notes</div>
-        <div class="search-wrapper">
-            <input type="text" id="search" class="search-bar" placeholder="Search topics..." onkeyup="filterContent()">
+        <div class="container">
+            <div class="header-content">
+                <div class="title-row">
+                    <h1>Software Architecture</h1>
+                    <span>Exam Master Notes • RGPV • 7th Sem</span>
+                </div>
+                <div class="controls-scroll">
+                    <button class="btn" onclick="expandAll()">Expand All</button>
+                    <button class="btn" onclick="collapseAll()">Collapse All</button>
+                    <button class="btn" id="btnRev" onclick="toggleMode('revision')">📝 Revision Mode</button>
+                    <button class="btn" id="btnDia" onclick="toggleMode('diagrams')">🖼️ Diagrams Only</button>
+                    <button class="btn" onclick="exportTxt()">💾 Save TXT</button>
+                    <button class="btn" onclick="printPage()">🖨️ PDF</button>
+                </div>
+                <input type="text" id="search" class="search-box" placeholder="Search questions..." onkeyup="filterContent()">
+            </div>
         </div>
     </header>
 
-    <div class="container" id="content-area">
-        </div>
-
-    <div style="height: 20px;"></div>
+    <main class="container" id="content-area">
+        </main>
 
     <div class="drawer" id="tocDrawer">
         <div class="drawer-header">
-            Table of Contents
-            <span style="float:right; color:var(--accent);" onclick="toggleDrawer()">Close</span>
+            <span>Questions List</span>
+            <span style="color:var(--accent); cursor:pointer;" onclick="toggleDrawer()">Close</span>
         </div>
         <div class="drawer-content" id="tocList"></div>
     </div>
 
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="scrollToTop()">
-            <span class="nav-icon">🏠</span>
-            <span>Home</span>
+            <span>🏠 Home</span>
         </button>
         <button class="nav-item" onclick="toggleDrawer()">
-            <span class="nav-icon">📑</span>
-            <span>Topics</span>
+            <span>📑 Topics</span>
         </button>
-        <button class="nav-item" onclick="toggleCheatSheet()">
-            <span class="nav-icon">⚡</span>
-            <span>CheatSheet</span>
+        <button class="nav-item" onclick="toggleMode('revision')">
+            <span>⚡ Quick Rev</span>
         </button>
     </nav>
 
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
+        <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#e5e5e5" />
+            </marker>
+            <marker id="arrow-acc" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6" />
+            </marker>
+        </defs>
+    </svg>
+
 <script>
-/* --- DATA --- */
 const questions = [
     {
         id: 1,
         title: "Evolution of Software Architecture",
-        tags: ["M.C.D.S.", "Basics"],
-        def: "From Monoliths (Mainframes) to Microservices (Cloud). Driven by the need for scale.",
+        time: "18 min",
+        summary: "Traces the journey from Monolithic mainframes to modern Microservices, driven by the need for scalability, flexibility, and internet-scale handling.",
+        def: "<strong>Software Architecture Evolution</strong> is the progressive shift from centralized, tightly coupled structures to decentralized, loosely coupled distributed systems.",
         mnemonic: "M.C.D.S. (Monolith > Client-Server > Distributed > SOA)",
-        svg: `<svg viewBox="0 0 320 100">
-                <rect x="10" y="30" width="60" height="40" rx="4"/><text x="40" y="55" text-anchor="middle">Mono</text>
-                <line x1="70" y1="50" x2="100" y2="50" marker-end="url(#arrow)"/>
-                <rect x="100" y="30" width="60" height="40" rx="4"/><text x="130" y="55" text-anchor="middle">C-S</text>
-                <line x1="160" y1="50" x2="190" y2="50" marker-end="url(#arrow)"/>
-                <rect x="190" y="30" width="60" height="40" rx="4"/><text x="220" y="55" text-anchor="middle">Distr</text>
-                <line x1="250" y1="50" x2="280" y2="50" marker-end="url(#arrow)"/>
-                <text x="300" y="55" text-anchor="middle" fill="#64b5f6" font-weight="bold">Micro</text>
-              </svg>`,
-        points: [
-            "<strong>Monolithic:</strong> Single unit. Hard to scale. Single point of failure.",
-            "<strong>Client-Server:</strong> Split UI and Data. (2-Tier / 3-Tier).",
-            "<strong>Distributed:</strong> Components on different machines.",
-            "<strong>Microservices:</strong> Independent, loosely coupled services."
-        ]
+        ascii: `
+[ Phase 1: Monolithic ]      [ Phase 4: Microservices ]
++---------------------+      +-----+   +-----+
+| UI + Logic + DB     |      | Svc |---| Svc |
+| (All in one block)  |      +-----+   +-----+
++---------------------+         ^         ^
+          |                     | Network |
+   (Single Machine)          +---------------+
+`,
+        svg: `<svg class="diagram" viewBox="0 0 400 150"><rect x="20" y="50" width="80" height="60" rx="4"/><text x="60" y="85" text-anchor="middle">Monolith</text><line x1="110" y1="80" x2="150" y2="80" class="accent" marker-end="url(#arrow-acc)"/><rect x="160" y="30" width="60" height="40" rx="4"/><rect x="160" y="100" width="60" height="40" rx="4"/><line x1="190" y1="70" x2="190" y2="100" stroke-dasharray="4"/><text x="190" y="55" text-anchor="middle">Client</text><text x="190" y="125" text-anchor="middle">Server</text><line x1="230" y1="80" x2="270" y2="80" class="accent" marker-end="url(#arrow-acc)"/><rect x="280" y="40" width="30" height="30" rx="4"/><rect x="330" y="40" width="30" height="30" rx="4"/><rect x="305" y="100" width="30" height="30" rx="4"/><text x="320" y="145" text-anchor="middle">Distributed</text></svg>`,
+        body: `
+            <h3>1. Introduction</h3>
+            <p>Software architecture has evolved to solve problems of scale and maintenance. Early hardware was expensive (Mainframes), leading to centralized code. Today, hardware is cheap but complexity is high, leading to distributed systems.</p>
+            <h3>2. Stages of Evolution</h3>
+            <ul>
+                <li><strong>Monolithic (1970s):</strong> All components (UI, Logic, Data) in one executable. Fast but hard to update. If one part fails, everything crashes.</li>
+                <li><strong>Client-Server (1990s):</strong> Split into Tier 1 (Client/UI) and Tier 2 (Server/DB). Allowed multiple users to access central data.</li>
+                <li><strong>Distributed (2000s):</strong> Components spread across network nodes. Improved resilience.</li>
+                <li><strong>Service Oriented Architecture (SOA):</strong> Enterprise bus connecting distinct business services.</li>
+                <li><strong>Microservices (Modern):</strong> Tiny, independent services. Highly scalable (Netflix/Amazon style).</li>
+            </ul>`,
+        checklist: ["Timeline (1970s -> Now)", "Monolith vs Distributed", "Driver: Internet Scale", "Client-Server Split"],
+        forget: ["Mentioning 'Internet' as the main driver.", "Vertical vs Horizontal scaling distinction."],
+        wording: "Architecture evolved from centralized, tightly coupled monolithic mainframes to decentralized, loosely coupled distributed systems.",
+        cheatsheet: ["M.C.D.S.", "Monolith = One Block", "Distributed = Networked", "Driver = Scale", "Coupling: High -> Low", "Resilience increases"]
     },
     {
         id: 2,
-        title: "ISO 9126 Quality Model",
-        tags: ["FRUEMP", "Quality"],
-        def: "Standard for evaluating software quality using 6 key characteristics.",
+        title: "Methodologies & Quality Model (ISO 9126)",
+        time: "15 min",
+        summary: "Covers how we build software (Waterfall/Agile) and how we measure it (ISO 9126).",
+        def: "<strong>Methodologies</strong> are process frameworks (Waterfall, Agile), while <strong>Quality Models</strong> (ISO 9126) provide metrics to evaluate software excellence.",
         mnemonic: "FRUEMP (Func, Rel, Use, Eff, Main, Port)",
-        svg: `<svg viewBox="0 0 320 80">
-                <rect x="110" y="5" width="100" height="25"/><text x="160" y="22" text-anchor="middle">ISO 9126</text>
-                <line x1="160" y1="30" x2="160" y2="45"/>
-                <line x1="20" y1="45" x2="300" y2="45"/>
-                <line x1="20" y1="45" x2="20" y2="60"/><text x="20" y="75" text-anchor="middle">F</text>
-                <line x1="76" y1="45" x2="76" y2="60"/><text x="76" y="75" text-anchor="middle">R</text>
-                <line x1="132" y1="45" x2="132" y2="60"/><text x="132" y="75" text-anchor="middle">U</text>
-                <line x1="188" y1="45" x2="188" y2="60"/><text x="188" y="75" text-anchor="middle">E</text>
-                <line x1="244" y1="45" x2="244" y2="60"/><text x="244" y="75" text-anchor="middle">M</text>
-                <line x1="300" y1="45" x2="300" y2="60"/><text x="300" y="75" text-anchor="middle">P</text>
-              </svg>`,
-        points: [
-            "<strong>Functionality:</strong> Suitability, Security.",
-            "<strong>Reliability:</strong> Fault tolerance, Recoverability.",
-            "<strong>Usability:</strong> Learnability, Operability.",
-            "<strong>Efficiency:</strong> Resource behavior, Time behavior.",
-            "<strong>Maintainability:</strong> Testability, Changeability.",
-            "<strong>Portability:</strong> Installability."
-        ]
+        ascii: `
+[ Methodologies ]       [ ISO 9126 Quality ]
+   |                          |
+1. Waterfall (Linear)      F-R-U-E-M-P
+2. Agile (Iterative)       (Attributes)
+3. Spiral (Risk)
+`,
+        svg: `<svg class="diagram" viewBox="0 0 350 120"><rect x="130" y="10" width="90" height="30" rx="4"/><text x="175" y="30" text-anchor="middle">ISO 9126</text><line x1="175" y1="40" x2="175" y2="60" class="accent"/><line x1="20" y1="60" x2="330" y2="60" class="accent"/><text x="20" y="80" font-size="10">Func</text><text x="80" y="80" font-size="10">Rel</text><text x="140" y="80" font-size="10">Use</text><text x="200" y="80" font-size="10">Eff</text><text x="260" y="80" font-size="10">Main</text><text x="320" y="80" font-size="10">Port</text></svg>`,
+        body: `<h3>1. Development Methodologies</h3>
+        <ul>
+            <li><strong>Waterfall:</strong> Sequential (Req -> Design -> Code). rigid, good for fixed reqs.</li>
+            <li><strong>Agile:</strong> Iterative, feedback-driven. Good for changing reqs.</li>
+            <li><strong>Spiral:</strong> Risk-driven. Combines Waterfall + Prototyping.</li>
+        </ul>
+        <h3>2. ISO 9126 Quality Model (FRUEMP)</h3>
+        <ul>
+            <li><strong>Functionality:</strong> Does it do the job? (Security, Accuracy).</li>
+            <li><strong>Reliability:</strong> Does it crash? (Fault tolerance).</li>
+            <li><strong>Usability:</strong> Easy to learn?</li>
+            <li><strong>Efficiency:</strong> Resource usage (Speed/RAM).</li>
+            <li><strong>Maintainability:</strong> Easy to test/fix?</li>
+            <li><strong>Portability:</strong> Install on different OS?</li>
+        </ul>`,
+        checklist: ["Waterfall vs Agile", "Spiral = Risk", "FRUEMP definition", "Functionality vs Non-functional"],
+        forget: ["Sub-characteristics (e.g. Security is part of Functionality)."],
+        wording: "ISO 9126 standardizes software quality into six characteristics: Functionality, Reliability, Usability, Efficiency, Maintainability, and Portability.",
+        cheatsheet: ["Waterfall = Linear", "Agile = Iterative", "Spiral = Risk", "FRUEMP", "Func", "Rel", "Use", "Eff", "Main", "Port"]
     },
     {
         id: 3,
         title: "Architecture Business Cycle (ABC)",
-        tags: ["Feedback Loop"],
-        def: "The loop where Business Goals drive Architecture, and the System creates new Goals.",
+        time: "15 min",
+        summary: "Business goals drive architecture, and the resulting system creates new goals, forming a loop.",
+        def: "The <strong>Architecture Business Cycle</strong> illustrates the feedback loop where organizational goals determine architecture, and the system's existence subsequently alters the organization.",
         mnemonic: "Org -> Arch -> System -> Org",
-        svg: `<svg viewBox="0 0 300 100">
-                <rect x="10" y="10" width="80" height="30"/><text x="50" y="30" text-anchor="middle">Goals</text>
-                <line x1="90" y1="25" x2="120" y2="25" marker-end="url(#arrow)"/>
-                <rect x="120" y="10" width="80" height="30" stroke="#64b5f6"/><text x="160" y="30" text-anchor="middle">Arch</text>
-                <line x1="200" y1="25" x2="230" y2="25" marker-end="url(#arrow)"/>
-                <rect x="230" y="10" width="60" height="30"/><text x="260" y="30" text-anchor="middle">Sys</text>
-                <path d="M 260 40 Q 150 90 50 40" fill="none" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
-                <text x="150" y="80" text-anchor="middle" font-size="10" fill="#a0a0a0">Feedback Loop</text>
-              </svg>`,
-        points: [
-            "<strong>Input:</strong> Stakeholders, Tech Environment, Organization.",
-            "<strong>Output:</strong> The System.",
-            "<strong>Feedback:</strong> The system changes the organization (e.g., Amazon Books -> AWS Cloud)."
-        ]
+        ascii: `
+Goals -> [ Architecture ] -> System
+  ^                            |
+  |_______(Feedback Loop)______|
+`,
+        svg: `<svg class="diagram" viewBox="0 0 300 100"><rect x="10" y="40" width="60" height="30"/><text x="40" y="60" text-anchor="middle">Org</text><line x1="40" y1="40" x2="70" y2="20" marker-end="url(#arrow)"/><rect x="120" y="10" width="60" height="30" class="accent" stroke="var(--accent)"/><text x="150" y="30" text-anchor="middle">Arch</text><line x1="180" y1="25" x2="230" y2="40" marker-end="url(#arrow)"/><rect x="230" y="40" width="60" height="30"/><text x="260" y="60" text-anchor="middle">Sys</text><path d="M260 70 Q 150 100 40 70" stroke-dasharray="4" marker-end="url(#arrow)"/><text x="150" y="90" text-anchor="middle" fill="#a3a3a3">Feedback</text></svg>`,
+        body: `<h3>The Cycle Steps</h3>
+        <ol>
+            <li><strong>Inputs:</strong> Stakeholders, Technical Environment, Organization goals.</li>
+            <li><strong>Architecture:</strong> The blueprint created to meet inputs.</li>
+            <li><strong>System:</strong> The running software built from architecture.</li>
+            <li><strong>Feedback:</strong> The system changes the world (e.g., Amazon AWS changed Amazon from a bookstore to a cloud provider), creating <em>new</em> goals.</li>
+        </ol>`,
+        checklist: ["Stakeholders", "Tech Environment", "Feedback Loop", "Conway's Law"],
+        forget: ["The arrow returning to Organization (Feedback)."],
+        wording: "The ABC demonstrates that architecture is a function of organizational requirements, and its existence subsequently alters the organizational environment.",
+        cheatsheet: ["ABC = Loop", "Input: Stakeholders", "Input: Tech Env", "Output: System", "Feedback changes Org"]
+    },
+    {
+        id: 4,
+        title: "Quality Models: McCall, Boehm, FURPS",
+        time: "18 min",
+        summary: "Comparison of different taxonomies for software quality.",
+        def: "<strong>Quality Models</strong> provide hierarchical frameworks to define 'what is good software'.",
+        mnemonic: "McCall's PRI (Product Revision, Operation, Transition)",
+        ascii: `
+[ McCall's Triangle ]
+      /    \
+Revision   Operation
+     \    /
+   Transition
+`,
+        svg: `<svg class="diagram" viewBox="0 0 300 120"><polygon points="150,20 50,100 250,100" stroke="var(--accent)"/><text x="150" y="50" text-anchor="middle">Revision</text><text x="100" y="90" text-anchor="middle">Transition</text><text x="200" y="90" text-anchor="middle">Operation</text><text x="150" y="115" text-anchor="middle" font-size="10">McCall's Model</text></svg>`,
+        body: `<h3>1. McCall’s Model (1977)</h3>
+        <p>Three perspectives:</p>
+        <ul>
+            <li><strong>Product Operation:</strong> Correctness, Efficiency, Usability.</li>
+            <li><strong>Product Revision:</strong> Maintainability, Testability.</li>
+            <li><strong>Product Transition:</strong> Portability, Reusability.</li>
+        </ul>
+        <h3>2. Boehm’s Model</h3>
+        <p>Focuses on <strong>Utility</strong>. Hierarchical: General Utility -> As-is Utility -> Maintainability.</p>
+        <h3>3. FURPS (HP Model)</h3>
+        <ul>
+            <li><strong>F</strong>unctionality</li>
+            <li><strong>U</strong>sability</li>
+            <li><strong>R</strong>eliability</li>
+            <li><strong>P</strong>erformance</li>
+            <li><strong>S</strong>upportability</li>
+        </ul>`,
+        checklist: ["McCall = PRI", "FURPS acronym", "Boehm = Utility", "Functional vs Non-functional"],
+        forget: ["Listing sub-attributes for McCall."],
+        wording: "McCall's model bridges the gap between users (Operation) and developers (Revision).",
+        cheatsheet: ["McCall = PRI", "Revision", "Operation", "Transition", "FURPS", "Boehm = Utility"]
+    },
+    {
+        id: 5,
+        title: "Structural, Framework, Dynamic, Process Models",
+        time: "15 min",
+        summary: "Different 'views' required to fully describe an architecture.",
+        def: "A complete architecture requires multiple <strong>View Models</strong>: Structural (static), Dynamic (behavior), Process (concurrency), and Framework (patterns).",
+        mnemonic: "SDPF (Structure, Dynamic, Process, Framework)",
+        ascii: `
+View 1: [Structure] (Code units)
+View 2: [Dynamic]   (States/Events)
+View 3: [Process]   (Threads/Perf)
+View 4: [Framework] (Skeleton)
+`,
+        svg: `<svg class="diagram" viewBox="0 0 400 100"><rect x="20" y="20" width="80" height="60" rx="4"/><text x="60" y="55" text-anchor="middle">Struct</text><rect x="110" y="20" width="80" height="60" rx="4"/><text x="150" y="55" text-anchor="middle">Dynam</text><rect x="200" y="20" width="80" height="60" rx="4"/><text x="240" y="55" text-anchor="middle">Process</text><rect x="290" y="20" width="80" height="60" rx="4"/><text x="330" y="55" text-anchor="middle">Frame</text></svg>`,
+        body: `<ul>
+            <li><strong>Structural (Static):</strong> Components, Classes, Packages. (e.g., Class Diagram).</li>
+            <li><strong>Dynamic (Behavioral):</strong> How system behaves over time. (e.g., Sequence Diagram, State Chart).</li>
+            <li><strong>Process (Concurrency):</strong> Threads, processes, synchronization, performance.</li>
+            <li><strong>Framework:</strong> The skeleton or architectural pattern used (e.g., MVC, Pipes & Filters).</li>
+        </ul>`,
+        checklist: ["Static vs Dynamic", "Process = Threads", "Framework = Pattern", "Need all for completeness"],
+        forget: ["Connecting Process model to performance."],
+        wording: "To capture system complexity, we use multiple views: Structural for code, Dynamic for behavior, and Process for runtime concurrency.",
+        cheatsheet: ["Structural=Static", "Dynamic=Behavior", "Process=Threads", "Framework=Pattern"]
     },
     {
         id: 6,
-        title: "Pipes and Filters",
-        tags: ["Data Flow"],
-        def: "Data flows through independent processing steps (Filters) connected by buffers (Pipes).",
-        mnemonic: "Stream Processing",
-        svg: `<svg viewBox="0 0 300 60">
-                <rect x="10" y="15" width="60" height="30"/><text x="40" y="35" text-anchor="middle">Input</text>
-                <line x1="70" y1="30" x2="110" y2="30" marker-end="url(#arrow)"/>
-                <text x="90" y="20" text-anchor="middle" font-size="10">Pipe</text>
-                <rect x="110" y="15" width="80" height="30"/><text x="150" y="35" text-anchor="middle">Filter</text>
-                <line x1="190" y1="30" x2="230" y2="30" marker-end="url(#arrow)"/>
-                <text x="210" y="20" text-anchor="middle" font-size="10">Pipe</text>
-                <rect x="230" y="15" width="60" height="30"/><text x="260" y="35" text-anchor="middle">Output</text>
-              </svg>`,
-        points: [
-            "<strong>Filter:</strong> Independent data transformer. No shared state.",
-            "<strong>Pipe:</strong> Data buffer/conduit.",
-            "<strong>Example:</strong> Unix Shell (ls | grep), Compilers."
-        ]
+        title: "Major Architectural Styles",
+        time: "18 min",
+        summary: "Data-flow (Pipes), and Call-and-Return (Main/Sub).",
+        def: "<strong>Architectural Styles</strong> are reusable patterns. <strong>Pipes & Filters</strong> focuses on data streams; <strong>Call-and-Return</strong> on control hierarchy.",
+        mnemonic: "Pipe=Stream, Call=Tree",
+        ascii: `
+[Filter A] -> (Pipe) -> [Filter B]
+   (Independent Data Processing)
+
+      [ Main ]
+      /      \
+  [Sub A]  [Sub B]
+   (Control Hierarchy)
+`,
+        svg: `<svg class="diagram" viewBox="0 0 300 120"><text x="10" y="20" font-weight="bold">1. Pipe-Filter</text><rect x="10" y="30" width="60" height="30"/><line x1="70" y1="45" x2="110" y2="45" marker-end="url(#arrow)"/><rect x="110" y="30" width="60" height="30"/><text x="140" y="50" text-anchor="middle">Filter</text><text x="10" y="85" font-weight="bold">2. Call-Return</text><rect x="110" y="80" width="60" height="30"/><text x="140" y="100" text-anchor="middle">Main</text><line x1="140" y1="110" x2="120" y2="130"/><line x1="140" y1="110" x2="160" y2="130"/></svg>`,
+        body: `<h3>1. Data-Flow (Pipes and Filters)</h3>
+        <ul>
+            <li><strong>Filter:</strong> Independent data transformer.</li>
+            <li><strong>Pipe:</strong> Data buffer/conduit.</li>
+            <li><strong>Pros:</strong> Reusable, Parallel processing. <strong>Example:</strong> Unix Shell, Compilers.</li>
+        </ul>
+        <h3>2. Call-and-Return</h3>
+        <ul>
+            <li><strong>Main-Subroutine:</strong> Classic top-down programming.</li>
+            <li><strong>OO Systems:</strong> Objects calling methods.</li>
+            <li><strong>Pros:</strong> Clear control structure. <strong>Cons:</strong> Tightly coupled.</li>
+        </ul>`,
+        checklist: ["Filters are independent", "Pipes are buffers", "Main-Sub vs OO", "Sequential vs Parallel"],
+        forget: ["Filters do not share state.", "Batch sequential is a subtype."],
+        wording: "Pipes and Filters decouple processing steps into independent filters connected by data buffers.",
+        cheatsheet: ["Pipes = Data Flow", "Filter = Independent", "Call-Return = Hierarchy", "Unix Example"]
     },
     {
         id: 7,
-        title: "REST Constraints",
-        tags: ["SCCLUC", "Web"],
-        def: "Architectural style for distributed hypermedia systems.",
-        mnemonic: "SCCLUC",
-        svg: `<svg viewBox="0 0 300 80">
-                <rect x="20" y="20" width="60" height="40"/><text x="50" y="45" text-anchor="middle">Client</text>
-                <line x1="80" y1="40" x2="120" y2="40"/>
-                <rect x="120" y="20" width="60" height="40" stroke-dasharray="5,5"/><text x="150" y="45" text-anchor="middle">Cache</text>
-                <line x1="180" y1="40" x2="220" y2="40" marker-end="url(#arrow)"/>
-                <rect x="220" y="20" width="60" height="40"/><text x="250" y="45" text-anchor="middle">Server</text>
-                <text x="150" y="75" text-anchor="middle" fill="#64b5f6" font-size="10">Stateless Communication</text>
-              </svg>`,
-        points: [
-            "<strong>S</strong>tateless: No session on server.",
-            "<strong>C</strong>lient-Server: Separation of concerns.",
-            "<strong>C</strong>acheable: Responses defined as cacheable.",
-            "<strong>L</strong>ayered: Load balancers allowed.",
-            "<strong>U</strong>niform Interface: Standard API.",
-            "<strong>C</strong>ode on Demand: Optional (JS)."
-        ]
+        title: "RESTful API Constraints",
+        time: "15 min",
+        summary: "The rules that make an API 'RESTful'.",
+        def: "<strong>REST</strong> (Representational State Transfer) is an architectural style defined by 6 constraints ensuring scalability and simplicity.",
+        mnemonic: "SCCLUC (Stateless, Client-Server, Cacheable, Layered, Uniform, Code)",
+        ascii: `
+Client <-> [Cache] <-> Server
+   |          |          |
+Stateless   Layered    Uniform
+`,
+        svg: `<svg class="diagram" viewBox="0 0 300 100"><rect x="20" y="30" width="60" height="40"/><text x="50" y="55" text-anchor="middle">Client</text><line x1="80" y1="50" x2="120" y2="50"/><rect x="120" y="30" width="60" height="40" stroke-dasharray="4"/><text x="150" y="55" text-anchor="middle">Cache</text><line x1="180" y1="50" x2="220" y2="50" marker-end="url(#arrow)"/><rect x="220" y="30" width="60" height="40"/><text x="250" y="55" text-anchor="middle">Server</text><text x="150" y="90" text-anchor="middle" class="accent">Stateless</text></svg>`,
+        body: `<ol>
+            <li><strong>Stateless:</strong> Server stores no session. Every request has all info (Auth tokens).</li>
+            <li><strong>Client-Server:</strong> Separation of UI and Data.</li>
+            <li><strong>Cacheable:</strong> Responses explicitly marked cacheable.</li>
+            <li><strong>Layered System:</strong> Intermediaries (Load balancers) allowed.</li>
+            <li><strong>Uniform Interface:</strong> Standard methods (GET/POST), Resources (URIs).</li>
+            <li><strong>Code on Demand:</strong> (Optional) Server sends executable code (JS).</li>
+        </ol>`,
+        checklist: ["SCCLUC Acronym", "Stateless explained", "Uniform Interface", "Resources/URIs"],
+        forget: ["Code on Demand is optional.", "Why statelessness improves scaling."],
+        wording: "REST relies on a stateless, client-server protocol where every request is self-contained.",
+        cheatsheet: ["SCCLUC", "Stateless", "Client-Server", "Cacheable", "Layered", "Uniform", "Code-on-Demand"]
+    },
+    {
+        id: 8,
+        title: "Layered & Data-Centered Architecture",
+        time: "18 min",
+        summary: "Hierarchical layers vs Central repository.",
+        def: "<strong>Layered</strong> organizes code into hierarchical tiers. <strong>Data-Centered</strong> revolves around a central shared repository.",
+        mnemonic: "Stack vs Hub",
+        ascii: `
+[ Layered ]         [ Data-Centered ]
+   [UI]                   [Client]
+    |                        |
+ [Logic]              [Cl]--[DB]--[Cl]
+    |                        |
+  [Data]                  [Client]
+`,
+        svg: `<svg class="diagram" viewBox="0 0 400 150"><g><rect x="50" y="20" width="100" height="30"/><text x="100" y="40" text-anchor="middle">Presentation</text><rect x="50" y="60" width="100" height="30"/><text x="100" y="80" text-anchor="middle">Business</text><rect x="50" y="100" width="100" height="30"/><text x="100" y="120" text-anchor="middle">Data</text><text x="100" y="145" text-anchor="middle" font-size="10">Layered</text></g><g transform="translate(200,0)"><circle cx="100" cy="80" r="30" class="accent"/><text x="100" y="85" text-anchor="middle">Repo</text><rect x="40" y="20" width="40" height="20"/><line x1="60" y1="40" x2="90" y2="60"/><rect x="120" y="20" width="40" height="20"/><line x1="140" y1="40" x2="110" y2="60"/><text x="100" y="145" text-anchor="middle" font-size="10">Data-Centered</text></g></svg>`,
+        body: `<h3>1. Layered Architecture</h3>
+        <p>Strict hierarchy. Layer N only calls Layer N-1.</p>
+        <ul><li><strong>Pros:</strong> Separation of concerns, easy to test.</li><li><strong>Cons:</strong> Performance overhead (pass-through).</li></ul>
+        <h3>2. Data-Centered (Repository)</h3>
+        <p>Central data store with independent agents.</p>
+        <ul><li><strong>Examples:</strong> Database systems, IDEs, Blackboard systems.</li><li><strong>Pros:</strong> Data integrity, easy to add clients.</li><li><strong>Cons:</strong> Repository is bottleneck/single point of failure.</li></ul>`,
+        checklist: ["Strict Layering", "Repository Bottleneck", "Blackboard mention", "Separation of Concerns"],
+        forget: ["Layer skipping (Relaxed layering)."],
+        wording: "Layered architecture enforces hierarchical separation, while Data-Centered architecture facilitates integration via a shared repository.",
+        cheatsheet: ["Layered = Stack", "Data-Centered = Hub", "Repo = Central", "Bottleneck risk"]
     },
     {
         id: 9,
-        title: "Microservices",
-        tags: ["Distributed", "Modern"],
-        def: "Application as a collection of loosely coupled services.",
-        mnemonic: "Indep. Deploy & DB",
-        svg: `<svg viewBox="0 0 300 120">
-                <rect x="110" y="5" width="80" height="30"/><text x="150" y="25" text-anchor="middle">Gateway</text>
-                <line x1="130" y1="35" x2="80" y2="55" marker-end="url(#arrow)"/>
-                <line x1="170" y1="35" x2="220" y2="55" marker-end="url(#arrow)"/>
-                <rect x="50" y="55" width="60" height="30"/><text x="80" y="75" text-anchor="middle">Svc A</text>
-                <circle cx="80" cy="100" r="10"/><text x="80" y="104" text-anchor="middle" font-size="8">DB</text>
-                <rect x="190" y="55" width="60" height="30"/><text x="220" y="75" text-anchor="middle">Svc B</text>
-                <circle cx="220" cy="100" r="10"/><text x="220" y="104" text-anchor="middle" font-size="8">DB</text>
-              </svg>`,
-        points: [
-            "<strong>Database per Service:</strong> Decoupled data.",
-            "<strong>Independently Deployable:</strong> Update one without stopping others.",
-            "<strong>Polyglot:</strong> Use different languages.",
-            "<strong>Cons:</strong> Complexity, Eventual Consistency."
-        ]
-    },
-    {
-        id: 14,
-        title: "MVC Pattern",
-        tags: ["UI Pattern"],
-        def: "Separates internal representation from user presentation.",
-        mnemonic: "Model-View-Controller",
-        svg: `<svg viewBox="0 0 250 120">
-                <rect x="95" y="10" width="60" height="30"/><text x="125" y="30" text-anchor="middle">Model</text>
-                <line x1="125" y1="40" x2="60" y2="70" marker-end="url(#arrow)" stroke-dasharray="5,5"/>
-                <rect x="20" y="70" width="60" height="30"/><text x="50" y="90" text-anchor="middle">View</text>
-                <rect x="170" y="70" width="60" height="30"/><text x="200" y="90" text-anchor="middle">Ctrl</text>
-                <line x1="200" y1="70" x2="155" y2="30" marker-end="url(#arrow)"/>
-                <text x="125" y="60" text-anchor="middle" font-size="10">Updates</text>
-              </svg>`,
-        points: [
-            "<strong>Model:</strong> Data & Logic. Independent.",
-            "<strong>View:</strong> UI Display. Observes Model.",
-            "<strong>Controller:</strong> Handles Input. Updates Model."
-        ]
-    },
-    {
-        id: 19,
-        title: "ATAM (Evaluation)",
-        tags: ["Risk Analysis"],
-        def: "Architecture Tradeoff Analysis Method.",
-        mnemonic: "Risk / Tradeoff / Sensitivity",
-        svg: `<svg viewBox="0 0 300 60">
-                <rect x="10" y="15" width="60" height="30"/><text x="40" y="35" text-anchor="middle">Arch</text>
-                <line x1="70" y1="30" x2="110" y2="30"/>
-                <text x="90" y="25" text-anchor="middle" font-size="10">+</text>
-                <rect x="110" y="15" width="60" height="30"/><text x="140" y="35" text-anchor="middle">Scenes</text>
-                <line x1="170" y1="30" x2="210" y2="30" marker-end="url(#arrow)"/>
-                <rect x="210" y="15" width="80" height="30" stroke="#ffb74d"/><text x="250" y="35" text-anchor="middle">Risks</text>
-              </svg>`,
-        points: [
-            "Evaluates architecture against <strong>Quality Scenarios</strong>.",
-            "<strong>Outputs:</strong> Risks, Trade-offs, Sensitivity Points.",
-            "Does not fix the architecture, just finds issues."
-        ]
-    }
-];
-
-/* --- RENDER LOGIC --- */
-
-function renderContent() {
-    const container = document.getElementById('content-area');
-    const tocList = document.getElementById('tocList');
-    
-    container.innerHTML = '';
-    tocList.innerHTML = '';
-
-    questions.forEach(q => {
-        // Render Card
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <div class="card-header">
-                <div>
-                    <div class="q-title">Q${q.id}: ${q.title}</div>
-                    <div class="q-tags">${q.tags.map(t => `<span>#${t}</span>`).join('')}</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="definition">
-                    ${q.def}
-                </div>
-                
-                ${q.mnemonic ? `<div class="mnemonic-chip">🧠 ${q.mnemonic}</div>` : ''}
-
-                <div class="diagram-container">
-                    ${q.svg}
-                </div>
-
-                <div class="bullet-points">
-                    <ul>${q.points.map(p => `<li>${p}</li>`).join('')}</ul>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-
-        // Render TOC
-        const link = document.createElement('a');
-        link.className = 'toc-link';
-        link.innerText = `Q${q.id}: ${q.title}`;
-        link.href = '#';
-        link.onclick = (e) => {
-            e.preventDefault();
-            toggleDrawer();
-            card.scrollIntoView({behavior: 'smooth', block: 'start'});
-        };
-        tocList.appendChild(link);
-    });
-}
-
-/* --- INTERACTIONS --- */
-
-function filterContent() {
-    const term = document.getElementById('search').value.toLowerCase();
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        const text = card.innerText.toLowerCase();
-        if(text.includes(term)) {
-            card.classList.remove('hidden');
-        } else {
-            card.classList.add('hidden');
-        }
-    });
-}
-
-function toggleDrawer() {
-    document.getElementById('tocDrawer').classList.toggle('open');
-}
-
-function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function toggleCheatSheet() {
-    // Quick alert for now, could be a modal
-    alert("Cheat Sheet Mode: \n1. M.C.D.S (Evolution)\n2. FRUEMP (Quality)\n3. SCCLUC (REST)\n4. ABC (Feedback Loop)");
-}
-
-// Init
-renderContent();
-
-</script>
-</body>
-</html>
+        title: "Microservices Architecture",
+        time: "20 min",
+        summary: "Decomposing apps into small, independent services.",
+        def: "<strong>Microservices</strong> structure an application as a collection of loosely coupled services, independently deployable and organized around business capabilities.",
+        mnemonic: "Small, Independent, Decoupled",
+        ascii: `
+    [ API Gateway ]
+      /        \
+ [User Svc]
