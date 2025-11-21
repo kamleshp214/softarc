@@ -3,558 +3,520 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SA Exam Master — Mobile Optimized</title>
+    <title>SA Exam Master (Mobile Study)</title>
     <style>
         :root {
-            --bg-body: #0f172a;
-            --bg-panel: #1e293b;
-            --bg-card: #334155;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --success: #22c55e;
-            --success-bg: rgba(34, 197, 94, 0.1);
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --border: #475569;
-            --code-bg: #020617;
-            --header-height: 60px; /* Fixed height for calculations */
+            --bg-app: #121212;
+            --bg-card: #1e1e1e;
+            --bg-inset: #252525;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #64b5f6; /* Soft Blue */
+            --accent-dim: rgba(100, 181, 246, 0.15);
+            --success: #81c784;
+            --warning: #ffb74d;
+            --border: #333333;
+            --nav-height: 60px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: calc(var(--header-height) + 20px); /* Prevents sticky header overlap */
-        }
-
         body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
+            background-color: var(--bg-app);
+            color: var(--text-primary);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            font-size: 16px;
-            overflow-x: hidden; /* Strictly prevent body side-scroll */
-            width: 100%;
+            padding-bottom: 80px; /* Space for bottom nav */
+            overflow-x: hidden; /* Prevent page drift */
         }
 
-        /* --- Layout Components --- */
+        /* --- Utilities --- */
+        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+        .hidden { display: none !important; }
         
-        /* Mobile Header / Controls */
-        .mobile-header {
+        /* --- Header --- */
+        header {
+            padding: 20px 16px;
+            background: var(--bg-app);
             position: sticky;
             top: 0;
-            z-index: 100;
-            background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(12px);
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+        }
+        h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 4px; }
+        .subtitle { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- Search --- */
+        .search-wrapper {
+            margin-top: 10px;
+            position: relative;
+        }
+        .search-bar {
+            width: 100%;
+            background: var(--bg-inset);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px; /* Prevents iOS zoom */
+        }
+        .search-bar:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+        /* --- Card Design --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px;
             border-bottom: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            height: var(--header-height);
-            padding: 0 1rem;
-            gap: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            justify-content: space-between;
+            align-items: start;
+        }
+        
+        .q-title { font-weight: 700; font-size: 1.1rem; color: white; margin-bottom: 4px; }
+        .q-tags { display: flex; gap: 8px; font-size: 0.75rem; color: var(--accent); font-family: monospace; }
+        
+        .card-body { padding: 16px; }
+
+        /* --- Diagrams (The Fix) --- */
+        .diagram-container {
+            background: var(--bg-inset);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            border: 1px solid var(--border);
+            overflow-x: auto; /* Allows diagram to scroll internally */
+        }
+        
+        svg {
+            max-width: 100%;
+            height: auto;
+            min-width: 250px; /* Ensures SVG doesn't get crushed */
+        }
+        
+        /* Ensure Diagram Lines are Visible */
+        svg path, svg line, svg rect, svg circle, svg polygon {
+            stroke: var(--text-primary);
+            stroke-width: 2;
+            fill: none;
+        }
+        svg text {
+            fill: var(--text-primary);
+            font-family: sans-serif;
+            font-size: 12px;
+        }
+        /* Accent colors in SVG */
+        .svg-accent { stroke: var(--accent) !important; fill: var(--accent) !important; stroke-width: 0 !important; }
+        .svg-dashed { stroke-dasharray: 5,5; }
+
+        /* --- Content Sections --- */
+        .definition {
+            font-size: 1.05rem;
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+            margin-bottom: 16px;
+            background: linear-gradient(90deg, var(--accent-dim), transparent);
+            padding: 10px;
+            border-radius: 0 4px 4px 0;
         }
 
-        .menu-btn {
+        .mnemonic-chip {
+            display: inline-block;
+            background: var(--warning);
+            color: #000;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .bullet-points ul { padding-left: 20px; color: var(--text-secondary); }
+        .bullet-points li { margin-bottom: 8px; }
+        .bullet-points strong { color: var(--text-primary); }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
+        }
+
+        .nav-item {
             background: none;
             border: none;
-            color: var(--accent);
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 0 5px;
-            flex-shrink: 0;
-        }
-
-        /* Scrollable Toolbar */
-        .toolbar {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
             display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 5px 0;
-            flex: 1;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none;  /* IE 10+ */
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            width: 33%;
         }
-        .toolbar::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
+        .nav-item.active { color: var(--accent); }
+        .nav-icon { font-size: 1.2rem; }
 
-        .btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px; /* Pill shape for mobile */
-            font-size: 0.8rem;
-            font-weight: 600;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .btn.active { background: var(--accent); border-color: var(--accent); color: white; }
-        .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
-
-        /* Sidebar / Drawer */
-        .sidebar {
+        /* --- Drawer/TOC --- */
+        .drawer {
             position: fixed;
-            top: 0;
+            bottom: var(--nav-height);
             left: 0;
-            width: 85%; /* Leave a gap on the right */
-            max-width: 300px;
-            height: 100vh;
-            background: var(--bg-panel);
-            z-index: 1000;
-            transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            width: 100%;
+            height: calc(70vh - var(--nav-height));
+            background: var(--bg-card);
+            border-radius: 20px 20px 0 0;
+            z-index: 90;
+            transform: translateY(110%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
         }
-        .sidebar.active { transform: translateX(0); }
-        
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            backdrop-filter: blur(2px);
-        }
-        .overlay.active { opacity: 1; pointer-events: auto; }
-
-        .sidebar-header { padding: 1.5rem; background: var(--code-bg); border-bottom: 1px solid var(--border); }
-        .search-box {
-            width: 100%; padding: 10px; margin-top: 10px;
-            background: var(--bg-body); border: 1px solid var(--border);
-            color: white; border-radius: 8px; font-size: 16px; /* Prevents iOS zoom on focus */
-        }
-        .toc-list { overflow-y: auto; flex: 1; list-style: none; padding-bottom: 2rem; }
-        .toc-item a {
-            display: block; padding: 1rem 1.5rem;
-            color: var(--text-muted); text-decoration: none;
-            border-bottom: 1px solid var(--bg-body);
-        }
-        .toc-item a:active { background: var(--bg-card); color: white; }
-
-        /* Main Content */
-        .main {
-            padding: 1rem;
-            padding-bottom: 4rem;
-            width: 100%;
-            max-width: 100%;
-        }
-
-        .hero h1 { font-size: 1.8rem; line-height: 1.2; margin-bottom: 0.5rem; color: var(--accent); }
-        .hero p { font-size: 0.9rem; color: var(--text-muted); }
-
-        /* Question Cards */
-        .question-block {
-            background: var(--bg-panel);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-            overflow: hidden; /* Clips content inside rounded corners */
-        }
-        
-        .q-header { padding: 1.2rem; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); }
-        .q-title { font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; }
-        .q-meta { display: flex; gap: 10px; font-size: 0.75rem; color: var(--text-muted); font-family: monospace; text-transform: uppercase; }
-        .q-meta span { background: var(--bg-card); padding: 2px 6px; border-radius: 4px; }
-
-        .deep-content { padding: 1.2rem; font-size: 0.95rem; }
-        .deep-content p { margin-bottom: 1rem; text-align: left; }
-        .deep-content ul, .deep-content ol { padding-left: 1.2rem; margin-bottom: 1rem; }
-        .deep-content li { margin-bottom: 0.5rem; }
-
-        /* Visuals & Code - Preventing Horizontal Scroll on Body */
-        .vis-box {
-            background: var(--code-bg);
-            margin: 1rem -1.2rem; /* Pull to edges */
-            padding: 1rem;
-            border-top: 1px solid var(--border);
+        .drawer.open { transform: translateY(0); }
+        .drawer-header {
+            padding: 16px;
+            text-align: center;
+            font-weight: bold;
             border-bottom: 1px solid var(--border);
         }
-        
-        pre.ascii-art {
-            font-family: 'Courier New', monospace;
-            font-size: 11px; /* Smaller font for mobile */
-            line-height: 1.1;
-            overflow-x: auto; /* Scroll ONLY the code block */
-            white-space: pre;
-            color: var(--success);
-            padding-bottom: 10px;
+        .drawer-content { overflow-y: auto; padding: 16px; flex: 1; }
+        .toc-link {
+            display: block;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            text-decoration: none;
         }
+        .toc-link:active { color: var(--accent); background: var(--bg-inset); }
 
-        svg.diagram {
-            width: 100%;
-            height: auto;
-            max-height: 250px;
-        }
-
-        /* Helper Boxes */
-        .checklist-box { background: var(--success-bg); padding: 1rem; border-radius: 8px; margin: 1rem 0; border: 1px solid var(--success); }
-        .forget-box { background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 1rem; margin: 1rem 0; }
-        .wording-box { font-style: italic; font-family: serif; color: var(--text-muted); padding: 1rem; border: 1px dashed var(--border); border-radius: 8px; }
-
-        /* Cheat Sheet Accordion */
-        .cheat-sheet { margin: 1rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .cs-header { padding: 1rem; background: var(--bg-card); font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        .cs-body { display: none; padding: 1rem; background: var(--bg-panel); border-top: 1px solid var(--border); }
-        .cs-body.show { display: block; }
-        .cs-body ul { columns: 1; padding-left: 1.2rem; } /* Single column for mobile */
-
-        /* Modes */
-        body.revision-mode .deep-content, body.revision-mode .vis-box { display: none; }
-        body.revision-mode .cs-body { display: block; }
-        
-        body.diagrams-only .deep-content, 
-        body.diagrams-only .checklist-box, 
-        body.diagrams-only .forget-box, 
-        body.diagrams-only .cheat-sheet { display: none; }
-
-        /* Desktop tweaks just in case */
-        @media (min-width: 769px) {
-            .sidebar { transform: translateX(0); width: 300px; border-right: 1px solid var(--border); }
-            .main { margin-left: 300px; max-width: calc(100% - 300px); }
-            .menu-btn { display: none; }
-            .overlay { display: none; }
-            .cs-body ul { columns: 2; }
-        }
     </style>
 </head>
 <body>
 
-    <div class="overlay" onclick="closeSidebar()"></div>
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#e0e0e0" />
+            </marker>
+        </defs>
+    </svg>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2 style="color: var(--accent);">SA Master</h2>
-            <p style="font-size: 0.8rem; color: var(--text-muted);">7th Sem • RGPV</p>
-            <input type="text" id="search" class="search-box" placeholder="Search..." onkeyup="filterContent()">
+    <header>
+        <h1>SA Exam Master</h1>
+        <div class="subtitle">7th Sem • RGPV • Complete Notes</div>
+        <div class="search-wrapper">
+            <input type="text" id="search" class="search-bar" placeholder="Search topics..." onkeyup="filterContent()">
         </div>
-        <ul class="toc-list" id="toc">
-            </ul>
-    </aside>
+    </header>
 
-    <div class="mobile-header">
-        <button class="menu-btn" onclick="openSidebar()">☰</button>
-        <div class="toolbar">
-            <button class="btn" onclick="expandAll()">Expand All</button>
-            <button class="btn" onclick="collapseAll()">Collapse All</button>
-            <button class="btn" id="btnRevision" onclick="toggleMode('revision')">📝 Revision</button>
-            <button class="btn" id="btnDiagrams" onclick="toggleMode('diagrams')">🖼️ Diagrams</button>
-            <button class="btn" onclick="exportTxt()">💾 Save Text</button>
+    <div class="container" id="content-area">
         </div>
+
+    <div style="height: 20px;"></div>
+
+    <div class="drawer" id="tocDrawer">
+        <div class="drawer-header">
+            Table of Contents
+            <span style="float:right; color:var(--accent);" onclick="toggleDrawer()">Close</span>
+        </div>
+        <div class="drawer-content" id="tocList"></div>
     </div>
 
-    <main class="main">
-        <div class="hero" style="margin-bottom: 2rem;">
-            <h1>Software Architecture</h1>
-            <p>Exam Master Notes • Offline Ready</p>
-        </div>
-
-        <div id="content-area">
-            </div>
-
-        <footer style="text-align: center; padding: 2rem; color: var(--border); font-size: 0.8rem;">
-            Generated for Mobile • 2025
-        </footer>
-    </main>
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="scrollToTop()">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="toggleDrawer()">
+            <span class="nav-icon">📑</span>
+            <span>Topics</span>
+        </button>
+        <button class="nav-item" onclick="toggleCheatSheet()">
+            <span class="nav-icon">⚡</span>
+            <span>CheatSheet</span>
+        </button>
+    </nav>
 
 <script>
-// --- Data ---
+/* --- DATA --- */
 const questions = [
     {
         id: 1,
-        title: "Evolution of Architecture",
-        time: "20 min",
-        mnemonic: "M.C.D.S.",
-        summary: "From Monoliths to Microservices.",
-        definition: "<strong>Evolution</strong> traces the shift from single-unit <strong>Monolithic</strong> systems to loosely coupled <strong>Distributed</strong> systems.",
-        ascii: `
-[Monolith] -> [Client-Server] -> [Microservices]
-   |              |                  |
- Single          2-Tier            Many
-`,
-        drawTip: "Draw a timeline showing blocks getting smaller and more numerous.",
-        svgContent: `<svg class="diagram" viewBox="0 0 300 100"><rect x="10" y="30" width="50" height="50" rx="4" fill="none" stroke="currentColor"/><text x="35" y="60" text-anchor="middle" font-size="10">Mono</text><line x1="70" y1="55" x2="100" y2="55" stroke="currentColor" marker-end="url(#arrow)"/><rect x="110" y="20" width="40" height="30" fill="none" stroke="currentColor"/><rect x="110" y="60" width="40" height="30" fill="none" stroke="currentColor"/><text x="130" y="40" text-anchor="middle" font-size="8">C</text><text x="130" y="80" text-anchor="middle" font-size="8">S</text><line x1="160" y1="55" x2="190" y2="55" stroke="currentColor" marker-end="url(#arrow)"/><rect x="200" y="20" width="20" height="20" fill="none" stroke="currentColor"/><rect x="230" y="20" width="20" height="20" fill="none" stroke="currentColor"/><rect x="200" y="50" width="20" height="20" fill="none" stroke="currentColor"/><rect x="230" y="50" width="20" height="20" fill="none" stroke="currentColor"/><text x="225" y="90" text-anchor="middle" font-size="10">Micro</text></svg>`,
-        body: `<h3>1. Evolution Stages</h3><ul><li><strong>Monolithic:</strong> One big file. Fast but hard to scale.</li><li><strong>Client-Server:</strong> Split UI (Client) and Data (Server).</li><li><strong>Distributed/SOA:</strong> Services talking over network.</li><li><strong>Microservices:</strong> Tiny, independent services (Netflix style).</li></ul>`,
-        example: "Netflix moved from a Monolith (one error crashes everything) to Microservices (one error only stops recommendations).",
-        checklist: ["Monolith defined", "Client-Server split", "Distributed scaling", "Microservices agility"],
-        forget: ["The driver was internet scale.", "Vertical vs Horizontal scaling."],
-        wording: "Architecture evolved from centralized monoliths to decentralized distributed systems to handle scale.",
-        cheatsheet: ["M.C.D.S.", "Monolith=One", "Distributed=Network", "Scaling Up vs Out"]
+        title: "Evolution of Software Architecture",
+        tags: ["M.C.D.S.", "Basics"],
+        def: "From Monoliths (Mainframes) to Microservices (Cloud). Driven by the need for scale.",
+        mnemonic: "M.C.D.S. (Monolith > Client-Server > Distributed > SOA)",
+        svg: `<svg viewBox="0 0 320 100">
+                <rect x="10" y="30" width="60" height="40" rx="4"/><text x="40" y="55" text-anchor="middle">Mono</text>
+                <line x1="70" y1="50" x2="100" y2="50" marker-end="url(#arrow)"/>
+                <rect x="100" y="30" width="60" height="40" rx="4"/><text x="130" y="55" text-anchor="middle">C-S</text>
+                <line x1="160" y1="50" x2="190" y2="50" marker-end="url(#arrow)"/>
+                <rect x="190" y="30" width="60" height="40" rx="4"/><text x="220" y="55" text-anchor="middle">Distr</text>
+                <line x1="250" y1="50" x2="280" y2="50" marker-end="url(#arrow)"/>
+                <text x="300" y="55" text-anchor="middle" fill="#64b5f6" font-weight="bold">Micro</text>
+              </svg>`,
+        points: [
+            "<strong>Monolithic:</strong> Single unit. Hard to scale. Single point of failure.",
+            "<strong>Client-Server:</strong> Split UI and Data. (2-Tier / 3-Tier).",
+            "<strong>Distributed:</strong> Components on different machines.",
+            "<strong>Microservices:</strong> Independent, loosely coupled services."
+        ]
     },
     {
         id: 2,
-        title: "Quality Models (ISO 9126)",
-        time: "15 min",
-        mnemonic: "FRUEMP",
-        summary: "How we measure if software is 'Good'.",
-        definition: "<strong>ISO 9126</strong> defines 6 characteristics for software quality: Functionality, Reliability, Usability, Efficiency, Maintainability, Portability.",
-        ascii: `
-    [ ISO 9126 ]
-         |
-  F-R-U-E-M-P
-`,
-        drawTip: "Tree diagram with ISO 9126 at top and 6 branches.",
-        svgContent: `<svg class="diagram" viewBox="0 0 300 80"><rect x="120" y="5" width="60" height="20"/><text x="150" y="20" text-anchor="middle" font-size="10">ISO 9126</text><line x1="10" y1="40" x2="290" y2="40" stroke="currentColor"/><line x1="150" y1="25" x2="150" y2="40" stroke="currentColor"/><text x="15" y="60" font-size="10">F</text><text x="70" y="60" font-size="10">R</text><text x="125" y="60" font-size="10">U</text><text x="180" y="60" font-size="10">E</text><text x="235" y="60" font-size="10">M</text><text x="290" y="60" font-size="10">P</text></svg>`,
-        body: `<h3>The FRUEMP Model</h3><ol><li><strong>Functionality:</strong> Does it work? (Security)</li><li><strong>Reliability:</strong> Does it crash? (Recovery)</li><li><strong>Usability:</strong> Is it easy? (Learning)</li><li><strong>Efficiency:</strong> Is it fast? (Resources)</li><li><strong>Maintainability:</strong> Easy to fix? (Testing)</li><li><strong>Portability:</strong> Works on Mobile? (Install)</li></ol>`,
-        example: "Banking apps prioritize Security (F) and Reliability (R). Games prioritize Efficiency (E).",
-        checklist: ["FRUEMP acronym", "Security is Functionality", "Time behavior is Efficiency"],
-        forget: ["Sub-characteristics.", "Methodology vs Quality Model difference."],
-        wording: "ISO 9126 standardizes quality into six characteristics: Functionality, Reliability, Usability, Efficiency, Maintainability, and Portability.",
-        cheatsheet: ["FRUEMP", "Func", "Rel", "Use", "Eff", "Main", "Port"]
+        title: "ISO 9126 Quality Model",
+        tags: ["FRUEMP", "Quality"],
+        def: "Standard for evaluating software quality using 6 key characteristics.",
+        mnemonic: "FRUEMP (Func, Rel, Use, Eff, Main, Port)",
+        svg: `<svg viewBox="0 0 320 80">
+                <rect x="110" y="5" width="100" height="25"/><text x="160" y="22" text-anchor="middle">ISO 9126</text>
+                <line x1="160" y1="30" x2="160" y2="45"/>
+                <line x1="20" y1="45" x2="300" y2="45"/>
+                <line x1="20" y1="45" x2="20" y2="60"/><text x="20" y="75" text-anchor="middle">F</text>
+                <line x1="76" y1="45" x2="76" y2="60"/><text x="76" y="75" text-anchor="middle">R</text>
+                <line x1="132" y1="45" x2="132" y2="60"/><text x="132" y="75" text-anchor="middle">U</text>
+                <line x1="188" y1="45" x2="188" y2="60"/><text x="188" y="75" text-anchor="middle">E</text>
+                <line x1="244" y1="45" x2="244" y2="60"/><text x="244" y="75" text-anchor="middle">M</text>
+                <line x1="300" y1="45" x2="300" y2="60"/><text x="300" y="75" text-anchor="middle">P</text>
+              </svg>`,
+        points: [
+            "<strong>Functionality:</strong> Suitability, Security.",
+            "<strong>Reliability:</strong> Fault tolerance, Recoverability.",
+            "<strong>Usability:</strong> Learnability, Operability.",
+            "<strong>Efficiency:</strong> Resource behavior, Time behavior.",
+            "<strong>Maintainability:</strong> Testability, Changeability.",
+            "<strong>Portability:</strong> Installability."
+        ]
     },
     {
         id: 3,
-        title: "Architecture Business Cycle",
-        time: "18 min",
-        mnemonic: "Cycle Loop",
-        summary: "Business drives Arch, Arch changes Business.",
-        definition: "The <strong>ABC</strong> describes the feedback loop where organizational goals drive architecture, and the resulting system creates new opportunities that change those goals.",
-        ascii: `
-Goals -> Arch -> System
-  ^                 |
-  |____Feedback_____|
-`,
-        drawTip: "Clockwise circle: Org -> Arch -> System -> Back to Org.",
-        svgContent: `<svg class="diagram" viewBox="0 0 300 100"><rect x="10" y="40" width="60" height="30"/><text x="40" y="60" text-anchor="middle" font-size="10">Org</text><line x1="40" y1="40" x2="70" y2="20" stroke="currentColor"/><rect x="120" y="10" width="60" height="30"/><text x="150" y="30" text-anchor="middle" font-size="10">Arch</text><line x1="180" y1="25" x2="230" y2="40" stroke="currentColor"/><rect x="230" y="40" width="60" height="30"/><text x="260" y="60" text-anchor="middle" font-size="10">Sys</text><path d="M260 70 Q 150 100 40 70" fill="none" stroke="currentColor" stroke-dasharray="4"/><text x="150" y="95" text-anchor="middle" font-size="10">Feedback</text></svg>`,
-        body: `<h3>The Cycle</h3><p>1. <strong>Inputs:</strong> Stakeholders, Tech, and Organization limitations (Conway's Law).</p><p>2. <strong>Output:</strong> The System.</p><p>3. <strong>Feedback:</strong> The system teaches the company new skills and opens new markets, changing the inputs for the next round.</p>`,
-        example: "Amazon built a system to sell books. The system was so good (AWS) it changed their business goal to selling Cloud Services.",
-        checklist: ["Stakeholders", "Conway's Law", "Feedback Loop", "Inputs/Outputs"],
-        forget: ["System changes the organization.", "Tech Environment influence."],
-        wording: "Architecture is a result of business goals, but its existence subsequently alters the business environment.",
-        cheatsheet: ["ABC=Loop", "Input=Stakeholders", "Output=System", "Feedback changes Org"]
+        title: "Architecture Business Cycle (ABC)",
+        tags: ["Feedback Loop"],
+        def: "The loop where Business Goals drive Architecture, and the System creates new Goals.",
+        mnemonic: "Org -> Arch -> System -> Org",
+        svg: `<svg viewBox="0 0 300 100">
+                <rect x="10" y="10" width="80" height="30"/><text x="50" y="30" text-anchor="middle">Goals</text>
+                <line x1="90" y1="25" x2="120" y2="25" marker-end="url(#arrow)"/>
+                <rect x="120" y="10" width="80" height="30" stroke="#64b5f6"/><text x="160" y="30" text-anchor="middle">Arch</text>
+                <line x1="200" y1="25" x2="230" y2="25" marker-end="url(#arrow)"/>
+                <rect x="230" y="10" width="60" height="30"/><text x="260" y="30" text-anchor="middle">Sys</text>
+                <path d="M 260 40 Q 150 90 50 40" fill="none" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+                <text x="150" y="80" text-anchor="middle" font-size="10" fill="#a0a0a0">Feedback Loop</text>
+              </svg>`,
+        points: [
+            "<strong>Input:</strong> Stakeholders, Tech Environment, Organization.",
+            "<strong>Output:</strong> The System.",
+            "<strong>Feedback:</strong> The system changes the organization (e.g., Amazon Books -> AWS Cloud)."
+        ]
     },
     {
         id: 6,
-        title: "Pipes and Filters Style",
-        time: "15 min",
+        title: "Pipes and Filters",
+        tags: ["Data Flow"],
+        def: "Data flows through independent processing steps (Filters) connected by buffers (Pipes).",
         mnemonic: "Stream Processing",
-        summary: "Data flows through independent processing steps.",
-        definition: "<strong>Pipes and Filters</strong> is an architecture where data passes through processing units (Filters) connected by buffers (Pipes).",
-        ascii: `
-[Read] -> (Pipe) -> [Process] -> (Pipe) -> [Write]
-`,
-        drawTip: "Boxes connected by arrows.",
-        svgContent: `<svg class="diagram" viewBox="0 0 300 60"><rect x="10" y="15" width="50" height="30"/><text x="35" y="35" text-anchor="middle" font-size="10">F1</text><line x1="60" y1="30" x2="100" y2="30" stroke="currentColor"/><text x="80" y="20" text-anchor="middle" font-size="8">Pipe</text><rect x="100" y="15" width="50" height="30"/><text x="125" y="35" text-anchor="middle" font-size="10">F2</text><line x1="150" y1="30" x2="190" y2="30" stroke="currentColor"/><text x="170" y="20" text-anchor="middle" font-size="8">Pipe</text><rect x="190" y="15" width="50" height="30"/><text x="215" y="35" text-anchor="middle" font-size="10">F3</text></svg>`,
-        body: `<h3>Components</h3><ul><li><strong>Filter:</strong> Transforms data. Independent.</li><li><strong>Pipe:</strong> Moves data. Buffers it.</li></ul><h3>Pros/Cons</h3><p><strong>Pros:</strong> Reusable, Parallel processing. <strong>Cons:</strong> Data parsing overhead.</p>`,
-        checklist: ["Independent Filters", "Buffers", "Unix/Compiler example"],
-        forget: ["Filters don't share state.", "Batch sequential variant."],
-        wording: "Decomposes tasks into independent data processing steps connected by pipes.",
-        cheatsheet: ["Stream", "Filter=Logic", "Pipe=Buffer", "Unix Example"]
+        svg: `<svg viewBox="0 0 300 60">
+                <rect x="10" y="15" width="60" height="30"/><text x="40" y="35" text-anchor="middle">Input</text>
+                <line x1="70" y1="30" x2="110" y2="30" marker-end="url(#arrow)"/>
+                <text x="90" y="20" text-anchor="middle" font-size="10">Pipe</text>
+                <rect x="110" y="15" width="80" height="30"/><text x="150" y="35" text-anchor="middle">Filter</text>
+                <line x1="190" y1="30" x2="230" y2="30" marker-end="url(#arrow)"/>
+                <text x="210" y="20" text-anchor="middle" font-size="10">Pipe</text>
+                <rect x="230" y="15" width="60" height="30"/><text x="260" y="35" text-anchor="middle">Output</text>
+              </svg>`,
+        points: [
+            "<strong>Filter:</strong> Independent data transformer. No shared state.",
+            "<strong>Pipe:</strong> Data buffer/conduit.",
+            "<strong>Example:</strong> Unix Shell (ls | grep), Compilers."
+        ]
     },
     {
         id: 7,
         title: "REST Constraints",
-        time: "15 min",
+        tags: ["SCCLUC", "Web"],
+        def: "Architectural style for distributed hypermedia systems.",
         mnemonic: "SCCLUC",
-        summary: "6 Rules for Web APIs.",
-        definition: "<strong>REST</strong> is defined by 6 constraints: Stateless, Client-Server, Cacheable, Layered, Uniform Interface, Code on Demand.",
-        ascii: `
-Client <-> [Cache] <-> Server
-   |          |          |
-Stateless   Layered    Uniform
-`,
-        drawTip: "Client/Server with Cache block in middle.",
-        svgContent: `<svg class="diagram" viewBox="0 0 300 80"><rect x="20" y="20" width="50" height="40"/><text x="45" y="45" text-anchor="middle" font-size="10">Cli</text><line x1="70" y1="40" x2="110" y2="40" stroke="currentColor"/><rect x="110" y="20" width="50" height="40" stroke-dasharray="4" fill="none" stroke="currentColor"/><text x="135" y="45" text-anchor="middle" font-size="10">Cache</text><line x1="160" y1="40" x2="200" y2="40" stroke="currentColor"/><rect x="200" y="20" width="50" height="40"/><text x="225" y="45" text-anchor="middle" font-size="10">Svr</text><text x="135" y="75" text-anchor="middle" font-size="10" fill="var(--accent)">Stateless</text></svg>`,
-        body: `<h3>The 6 Rules</h3><ol><li><strong>Stateless:</strong> Server stores no session. Request has all info.</li><li><strong>Client-Server:</strong> UI separated from Data.</li><li><strong>Cacheable:</strong> Responses marked as saveable.</li><li><strong>Layered:</strong> Can use load balancers.</li><li><strong>Uniform Interface:</strong> Standard URLs (GET/POST).</li><li><strong>Code on Demand:</strong> (Optional) JS.</li></ol>`,
-        checklist: ["SCCLUC", "Stateless defined", "Uniform Interface"],
-        forget: ["Code on Demand is optional.", "Why Stateless scales."],
-        wording: "REST relies on a stateless, client-server protocol ensuring scalability and reliability.",
-        cheatsheet: ["SCCLUC", "Stateless", "Cacheable", "Layered", "Uniform"]
+        svg: `<svg viewBox="0 0 300 80">
+                <rect x="20" y="20" width="60" height="40"/><text x="50" y="45" text-anchor="middle">Client</text>
+                <line x1="80" y1="40" x2="120" y2="40"/>
+                <rect x="120" y="20" width="60" height="40" stroke-dasharray="5,5"/><text x="150" y="45" text-anchor="middle">Cache</text>
+                <line x1="180" y1="40" x2="220" y2="40" marker-end="url(#arrow)"/>
+                <rect x="220" y="20" width="60" height="40"/><text x="250" y="45" text-anchor="middle">Server</text>
+                <text x="150" y="75" text-anchor="middle" fill="#64b5f6" font-size="10">Stateless Communication</text>
+              </svg>`,
+        points: [
+            "<strong>S</strong>tateless: No session on server.",
+            "<strong>C</strong>lient-Server: Separation of concerns.",
+            "<strong>C</strong>acheable: Responses defined as cacheable.",
+            "<strong>L</strong>ayered: Load balancers allowed.",
+            "<strong>U</strong>niform Interface: Standard API.",
+            "<strong>C</strong>ode on Demand: Optional (JS)."
+        ]
     },
     {
         id: 9,
         title: "Microservices",
-        time: "20 min",
-        mnemonic: "Indep. Deployment",
-        summary: "Small services, own DB, talk over network.",
-        definition: "<strong>Microservices</strong> structure an app as a collection of loosely coupled services organized around business capabilities.",
-        ascii: `
-   [Gateway]
-    /     \
- [Svc A] [Svc B]
-    |       |
-  (DB)    (DB)
-`,
-        drawTip: "Gateway at top, services below, EACH with own DB.",
-        svgContent: `<svg class="diagram" viewBox="0 0 300 100"><rect x="110" y="5" width="80" height="25"/><text x="150" y="22" text-anchor="middle" font-size="10">Gateway</text><line x1="130" y1="30" x2="80" y2="50" stroke="currentColor"/><line x1="170" y1="30" x2="220" y2="50" stroke="currentColor"/><rect x="50" y="50" width="60" height="25"/><text x="80" y="67" text-anchor="middle" font-size="10">User Svc</text><circle cx="80" cy="85" r="8" fill="none" stroke="currentColor"/><rect x="190" y="50" width="60" height="25"/><text x="220" y="67" text-anchor="middle" font-size="10">Order Svc</text><circle cx="220" cy="85" r="8" fill="none" stroke="currentColor"/></svg>`,
-        body: `<h3>Key Traits</h3><ul><li><strong>Database per Service:</strong> No shared DBs.</li><li><strong>Independently Deployable:</strong> Fix one without breaking all.</li><li><strong>Polyglot:</strong> Mix Java, Python, Node.</li></ul><h3>Pros/Cons</h3><p>Great for scaling, bad for complexity.</p>`,
-        checklist: ["DB per Service", "Smart endpoints/Dumb pipes", "Decoupled"],
-        forget: ["Testing is harder.", "Eventual consistency."],
-        wording: "Decomposition into loosely coupled, independently deployable services.",
-        cheatsheet: ["Small", "Independent", "Own DB", "Polyglot"]
+        tags: ["Distributed", "Modern"],
+        def: "Application as a collection of loosely coupled services.",
+        mnemonic: "Indep. Deploy & DB",
+        svg: `<svg viewBox="0 0 300 120">
+                <rect x="110" y="5" width="80" height="30"/><text x="150" y="25" text-anchor="middle">Gateway</text>
+                <line x1="130" y1="35" x2="80" y2="55" marker-end="url(#arrow)"/>
+                <line x1="170" y1="35" x2="220" y2="55" marker-end="url(#arrow)"/>
+                <rect x="50" y="55" width="60" height="30"/><text x="80" y="75" text-anchor="middle">Svc A</text>
+                <circle cx="80" cy="100" r="10"/><text x="80" y="104" text-anchor="middle" font-size="8">DB</text>
+                <rect x="190" y="55" width="60" height="30"/><text x="220" y="75" text-anchor="middle">Svc B</text>
+                <circle cx="220" cy="100" r="10"/><text x="220" y="104" text-anchor="middle" font-size="8">DB</text>
+              </svg>`,
+        points: [
+            "<strong>Database per Service:</strong> Decoupled data.",
+            "<strong>Independently Deployable:</strong> Update one without stopping others.",
+            "<strong>Polyglot:</strong> Use different languages.",
+            "<strong>Cons:</strong> Complexity, Eventual Consistency."
+        ]
     },
     {
         id: 14,
         title: "MVC Pattern",
-        time: "15 min",
-        mnemonic: "Sep of Concerns",
-        summary: "Splits UI, Logic, and Data.",
-        definition: "<strong>MVC</strong> separates the application into <strong>Model</strong> (Data), <strong>View</strong> (UI), and <strong>Controller</strong> (Logic).",
-        ascii: `
-User -> [Controller] -> [Model]
-            |              |
-          [View] <---------+
-`,
-        drawTip: "Triangle: Controller updates Model, Model updates View, View shows User.",
-        svgContent: `<svg class="diagram" viewBox="0 0 250 100"><rect x="95" y="10" width="60" height="25"/><text x="125" y="27" text-anchor="middle" font-size="10">Model</text><rect x="20" y="60" width="60" height="25"/><text x="50" y="77" text-anchor="middle" font-size="10">View</text><rect x="170" y="60" width="60" height="25"/><text x="200" y="77" text-anchor="middle" font-size="10">Contrl</text><line x1="200" y1="60" x2="155" y2="35" stroke="currentColor" marker-end="url(#arrow)"/><line x1="95" y1="35" x2="50" y2="60" stroke="currentColor" stroke-dasharray="4"/></svg>`,
-        body: `<h3>The Trio</h3><ul><li><strong>Model:</strong> Business data/rules. Knows nothing of UI.</li><li><strong>View:</strong> Displays data. Observes Model.</li><li><strong>Controller:</strong> Handles Input. Updates Model.</li></ul>`,
-        checklist: ["Separation of concerns", "Parallel dev", "Web standard"],
-        forget: ["Model does not depend on View.", "Controller handles input."],
-        wording: "MVC decouples the user interface from the underlying data logic.",
-        cheatsheet: ["Model=Data", "View=UI", "Controller=Logic", "Decoupled"]
+        tags: ["UI Pattern"],
+        def: "Separates internal representation from user presentation.",
+        mnemonic: "Model-View-Controller",
+        svg: `<svg viewBox="0 0 250 120">
+                <rect x="95" y="10" width="60" height="30"/><text x="125" y="30" text-anchor="middle">Model</text>
+                <line x1="125" y1="40" x2="60" y2="70" marker-end="url(#arrow)" stroke-dasharray="5,5"/>
+                <rect x="20" y="70" width="60" height="30"/><text x="50" y="90" text-anchor="middle">View</text>
+                <rect x="170" y="70" width="60" height="30"/><text x="200" y="90" text-anchor="middle">Ctrl</text>
+                <line x1="200" y1="70" x2="155" y2="30" marker-end="url(#arrow)"/>
+                <text x="125" y="60" text-anchor="middle" font-size="10">Updates</text>
+              </svg>`,
+        points: [
+            "<strong>Model:</strong> Data & Logic. Independent.",
+            "<strong>View:</strong> UI Display. Observes Model.",
+            "<strong>Controller:</strong> Handles Input. Updates Model."
+        ]
     },
     {
         id: 19,
-        title: "ATAM (Tradeoff Analysis)",
-        time: "20 min",
-        mnemonic: "Risk & Tradeoff",
-        summary: "Testing architecture with scenarios.",
-        definition: "<strong>ATAM</strong> evaluates architecture against quality goals to find <strong>Risks</strong>, <strong>Sensitivity Points</strong>, and <strong>Trade-offs</strong>.",
-        ascii: `
-[Arch] + [Scenarios] -> (ATAM) -> [Risks]
-`,
-        drawTip: "Funnel: Inputs (Arch, Scenarios) go in, Risks come out.",
-        svgContent: `<svg class="diagram" viewBox="0 0 300 60"><rect x="10" y="20" width="60" height="30"/><text x="40" y="40" text-anchor="middle" font-size="8">Arch</text><line x1="70" y1="35" x2="100" y2="35" stroke="currentColor"/><circle cx="130" cy="35" r="20" fill="none" stroke="currentColor"/><text x="130" y="40" text-anchor="middle" font-size="8">Eval</text><line x1="150" y1="35" x2="190" y2="35" stroke="currentColor" marker-end="url(#arrow)"/><rect x="190" y="20" width="80" height="30" stroke-dasharray="4" fill="none" stroke="currentColor"/><text x="230" y="40" text-anchor="middle" font-size="10">Risks</text></svg>`,
-        body: `<h3>Outputs</h3><ul><li><strong>Risks:</strong> What might fail?</li><li><strong>Sensitivity:</strong> Small change = Big impact.</li><li><strong>Trade-offs:</strong> Better Security = Worse Speed.</li></ul><h3>Method</h3><p>Uses <strong>Scenarios</strong> (Use cases) to test the design.</p>`,
-        checklist: ["Risks", "Sensitivity", "Trade-offs", "Scenarios"],
-        forget: ["It doesn't fix issues, just finds them.", "Stakeholders involved."],
-        wording: "ATAM uses quality scenarios to identify architectural risks and trade-offs.",
-        cheatsheet: ["ATAM", "Risks", "Trade-offs", "Sensitivity", "Scenarios"]
+        title: "ATAM (Evaluation)",
+        tags: ["Risk Analysis"],
+        def: "Architecture Tradeoff Analysis Method.",
+        mnemonic: "Risk / Tradeoff / Sensitivity",
+        svg: `<svg viewBox="0 0 300 60">
+                <rect x="10" y="15" width="60" height="30"/><text x="40" y="35" text-anchor="middle">Arch</text>
+                <line x1="70" y1="30" x2="110" y2="30"/>
+                <text x="90" y="25" text-anchor="middle" font-size="10">+</text>
+                <rect x="110" y="15" width="60" height="30"/><text x="140" y="35" text-anchor="middle">Scenes</text>
+                <line x1="170" y1="30" x2="210" y2="30" marker-end="url(#arrow)"/>
+                <rect x="210" y="15" width="80" height="30" stroke="#ffb74d"/><text x="250" y="35" text-anchor="middle">Risks</text>
+              </svg>`,
+        points: [
+            "Evaluates architecture against <strong>Quality Scenarios</strong>.",
+            "<strong>Outputs:</strong> Risks, Trade-offs, Sensitivity Points.",
+            "Does not fix the architecture, just finds issues."
+        ]
     }
 ];
 
-// --- Logic ---
+/* --- RENDER LOGIC --- */
 
-function renderQuestions() {
+function renderContent() {
     const container = document.getElementById('content-area');
-    const toc = document.getElementById('toc');
+    const tocList = document.getElementById('tocList');
     
+    container.innerHTML = '';
+    tocList.innerHTML = '';
+
     questions.forEach(q => {
-        // TOC
-        const tocItem = document.createElement('li');
-        tocItem.className = 'toc-item';
-        tocItem.innerHTML = `<a href="#q${q.id}" onclick="closeSidebar()">Q${q.id}: ${q.title}</a>`;
-        toc.appendChild(tocItem);
-
-        // Content
+        // Render Card
         const card = document.createElement('div');
-        card.className = 'question-block';
-        card.id = `q${q.id}`;
-        
+        card.className = 'card';
         card.innerHTML = `
-            <div class="q-header">
-                <div class="q-title">Q${q.id}: ${q.title}</div>
-                <div class="q-meta">
-                    <span>${q.time}</span>
-                    <span>${q.mnemonic}</span>
+            <div class="card-header">
+                <div>
+                    <div class="q-title">Q${q.id}: ${q.title}</div>
+                    <div class="q-tags">${q.tags.map(t => `<span>#${t}</span>`).join('')}</div>
                 </div>
             </div>
-            
-            <div class="deep-content">
-                <div style="margin-bottom:1rem; font-size:1rem;">${q.definition}</div>
-                <div style="font-size:0.9rem; color:var(--accent); margin-bottom:1rem;"><em>${q.summary}</em></div>
-            </div>
+            <div class="card-body">
+                <div class="definition">
+                    ${q.def}
+                </div>
+                
+                ${q.mnemonic ? `<div class="mnemonic-chip">🧠 ${q.mnemonic}</div>` : ''}
 
-            <div class="vis-box">
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span style="font-size:0.7rem; font-weight:bold; color:var(--text-muted);">ASCII</span>
-                    <span style="font-size:0.7rem; color:var(--warning);">Tip: ${q.drawTip}</span>
+                <div class="diagram-container">
+                    ${q.svg}
                 </div>
-                <pre class="ascii-art">${q.ascii.trim()}</pre>
-            </div>
-            
-            <div class="vis-box">
-                 <div style="font-size:0.7rem; font-weight:bold; color:var(--text-muted); margin-bottom:5px;">DIAGRAM</div>
-                ${q.svgContent}
-            </div>
 
-            <div class="deep-content">
-                ${q.body}
-                ${q.example ? `<div style="margin-top:1rem; padding:0.8rem; background:rgba(255,255,255,0.05); border-radius:6px; font-size:0.9rem;"><strong>💡 Ex:</strong> ${q.example}</div>` : ''}
-            </div>
-
-            <div class="deep-content">
-                <div class="checklist-box">
-                    <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--success);">Key Points:</h4>
-                    <ul style="padding-left:1rem; font-size:0.9rem;">${q.checklist.map(i => `<li>${i}</li>`).join('')}</ul>
-                </div>
-                <div class="wording-box">
-                    <strong>Write this:</strong> "${q.wording}"
-                </div>
-            </div>
-
-            <div class="cheat-sheet">
-                <div class="cs-header" onclick="this.nextElementSibling.classList.toggle('show')">
-                    <span>Cheat Sheet</span> <span>▼</span>
-                </div>
-                <div class="cs-body">
-                    <ul>${q.cheatsheet.map(i => `<li>${i}</li>`).join('')}</ul>
+                <div class="bullet-points">
+                    <ul>${q.points.map(p => `<li>${p}</li>`).join('')}</ul>
                 </div>
             </div>
         `;
         container.appendChild(card);
+
+        // Render TOC
+        const link = document.createElement('a');
+        link.className = 'toc-link';
+        link.innerText = `Q${q.id}: ${q.title}`;
+        link.href = '#';
+        link.onclick = (e) => {
+            e.preventDefault();
+            toggleDrawer();
+            card.scrollIntoView({behavior: 'smooth', block: 'start'});
+        };
+        tocList.appendChild(link);
     });
 }
 
-// UI Functions
-function openSidebar() {
-    document.getElementById('sidebar').classList.add('active');
-    document.querySelector('.overlay').classList.add('active');
-}
-
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('active');
-    document.querySelector('.overlay').classList.remove('active');
-}
-
-function toggleMode(mode) {
-    const body = document.body;
-    body.classList.remove('revision-mode', 'diagrams-only');
-    document.getElementById('btnRevision').classList.remove('active');
-    document.getElementById('btnDiagrams').classList.remove('active');
-
-    if(mode === 'revision') {
-        body.classList.add('revision-mode');
-        document.getElementById('btnRevision').classList.add('active');
-        expandAll();
-    } else if (mode === 'diagrams') {
-        body.classList.add('diagrams-only');
-        document.getElementById('btnDiagrams').classList.add('active');
-    }
-}
-
-function expandAll() { document.querySelectorAll('.cs-body').forEach(el => el.classList.add('show')); }
-function collapseAll() { document.querySelectorAll('.cs-body').forEach(el => el.classList.remove('show')); }
+/* --- INTERACTIONS --- */
 
 function filterContent() {
     const term = document.getElementById('search').value.toLowerCase();
-    questions.forEach(q => {
-        const el = document.getElementById(`q${q.id}`);
-        const text = (q.title + q.mnemonic).toLowerCase();
-        el.style.display = text.includes(term) ? 'block' : 'none';
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if(text.includes(term)) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
     });
 }
 
-function exportTxt() {
-    let txt = "SA MOBILE NOTES\n\n";
-    questions.forEach(q => {
-        txt += `Q${q.id}: ${q.title}\n${q.definition}\n\nMnemonic: ${q.mnemonic}\n----------------\n`;
-    });
-    const blob = new Blob([txt], {type: 'text/plain'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'SA_Mobile_Notes.txt';
-    a.click();
+function toggleDrawer() {
+    document.getElementById('tocDrawer').classList.toggle('open');
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleCheatSheet() {
+    // Quick alert for now, could be a modal
+    alert("Cheat Sheet Mode: \n1. M.C.D.S (Evolution)\n2. FRUEMP (Quality)\n3. SCCLUC (REST)\n4. ABC (Feedback Loop)");
 }
 
 // Init
-renderQuestions();
+renderContent();
 
 </script>
 </body>
