@@ -10,14 +10,16 @@
         :root {
             /* AMOLED MONOCHROMATIC THEME */
             --bg-core: #000000;
-            --bg-surface: #000000;
-            --bg-highlight: #121212;
-            --text-main: #ffffff;
+            --bg-surface: #050505;
+            --bg-highlight: #111111;
+            --text-main: #e0e0e0;
             --text-muted: #b0b0b0;
             --border: #333333;
-            --border-active: #ffffff;
+            --accent: #ffffff; 
+            
+            /* Typography */
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            --font-mono: "Menlo", "Consolas", "Monaco", "Liberation Mono", "Lucida Console", monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -26,7 +28,7 @@
             background-color: var(--bg-core);
             color: var(--text-main);
             font-family: var(--font-main);
-            line-height: 1.6;
+            line-height: 1.65; /* Improved reading comfort */
             font-size: 16px;
             display: flex;
             flex-direction: column;
@@ -37,10 +39,9 @@
         /* UTILITIES */
         .hidden { display: none !important; }
         .text-muted { color: var(--text-muted); font-size: 0.9em; }
-        .bold { font-weight: 700; color: #fff; }
-        strong { color: #fff; font-weight: 700; text-decoration: underline solid #333 1px; }
+        strong { color: var(--accent); font-weight: 700; text-decoration: underline 1px dotted #555; }
         
-        /* HEADER - Minimal for Mobile */
+        /* HEADER */
         header {
             position: sticky;
             top: 0;
@@ -48,28 +49,30 @@
             background-color: rgba(0, 0, 0, 0.95);
             border-bottom: 1px solid var(--border);
             backdrop-filter: blur(10px);
-            padding: 1rem;
+            padding: 0.8rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             height: 60px;
         }
 
-        .header-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
-        .header-title span { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; margin-left: 5px; }
+        .header-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+        .header-title span { font-weight: 400; color: var(--text-muted); font-size: 0.75rem; margin-left: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
         .menu-btn {
-            background: transparent;
+            background: var(--bg-highlight);
             border: 1px solid var(--border);
-            color: var(--text-main);
+            color: #fff;
             padding: 0.5rem 1rem;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* OVERLAY MENU (TOC + Controls) */
+        /* OVERLAY MENU */
         #menu-overlay {
             position: fixed;
             top: 60px;
@@ -78,214 +81,258 @@
             height: calc(100vh - 60px);
             background-color: var(--bg-core);
             z-index: 99;
-            display: none; /* Toggled via JS */
+            display: none;
             flex-direction: column;
-            padding: 1rem;
+            padding: 1.5rem;
             overflow-y: auto;
             border-top: 1px solid var(--border);
         }
 
         #menu-overlay.open { display: flex; }
 
-        .menu-section { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
-        .menu-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 1px; }
+        .menu-section { margin-bottom: 2rem; }
+        .menu-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.8rem; letter-spacing: 1px; font-weight: bold; }
 
-        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
         
         .app-btn {
             background: var(--bg-highlight);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 0.8rem;
+            padding: 1rem;
             border-radius: 8px;
             font-size: 0.9rem;
+            font-weight: 500;
             cursor: pointer;
             text-align: center;
-            width: 100%;
+            transition: all 0.2s;
         }
-        .app-btn:active { background: var(--border); transform: scale(0.98); }
-        .app-btn.active { background: var(--text-main); color: var(--bg-core); font-weight: bold; }
+        .app-btn:active { background: #333; transform: scale(0.98); }
+        .app-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 800; }
 
         #search-input {
             width: 100%;
             background: var(--bg-highlight);
             border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 0.8rem;
+            color: #fff;
+            padding: 1rem;
             border-radius: 8px;
             font-size: 1rem;
-            margin-bottom: 1rem;
         }
 
         .toc-list a {
             display: block;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid #1a1a1a;
+            padding: 1rem 0;
+            border-bottom: 1px solid #222;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
-        .toc-list a:hover { color: var(--text-main); }
+        .toc-list a:hover { color: #fff; padding-left: 5px; transition: 0.2s; }
 
-        /* CONTENT AREA */
-        .container { padding: 1rem; max-width: 800px; margin: 0 auto; }
+        /* MAIN CONTAINER */
+        .container { padding: 1rem; max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
 
         /* QUESTION BLOCK */
         section.question-block {
-            border-bottom: 4px solid var(--border); /* Thick separator */
+            border-bottom: 1px solid var(--border);
             padding-bottom: 3rem;
             margin-bottom: 3rem;
         }
 
+        /* Question Headings */
         h2 {
-            font-size: 1.4rem;
+            font-size: 1.3rem; /* Optimized for mobile width */
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin: 1.5rem 0 1rem 0;
             line-height: 1.4;
-            color: var(--text-main);
-            border-left: 4px solid var(--text-main);
+            color: #fff;
+            border-left: 3px solid #fff;
             padding-left: 1rem;
         }
 
-        h3 { font-size: 1rem; margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border); display: block; padding-bottom: 0.3rem;}
+        h3 { 
+            font-size: 0.9rem; 
+            margin: 1.5rem 0 0.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--text-muted); 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 0.5rem;
+            display: block; 
+        }
+        
+        h4 { font-size: 0.95rem; margin-top: 0; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* COMPONENTS */
+        /* SUMMARY & DEEP DIVE */
         .quick-summary {
+            background: var(--bg-highlight);
             border: 1px solid var(--border);
             padding: 1rem;
+            border-radius: 8px;
             margin-bottom: 1.5rem;
-            border-radius: 6px;
-            background: var(--bg-highlight);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            color: #ccc;
             font-style: italic;
         }
+        
+        .definition {
+            border-left: 2px solid var(--text-muted);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            color: var(--text-muted);
+        }
 
+        .deep-dive { font-size: 1.05rem; color: #ddd; }
+        .deep-dive p { margin-bottom: 1.2rem; }
+        .deep-dive ul, .deep-dive ol { padding-left: 1.2rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+        .deep-dive li { margin-bottom: 0.8rem; padding-left: 5px; }
+
+        /* DIAGRAMS - Optimized */
         .ascii-container {
-            background: var(--bg-highlight);
-            border: 1px solid var(--border);
-            padding: 1rem;
+            background: #000; /* Deep black for contrast */
+            border: 1px solid #333;
             border-radius: 6px;
-            overflow-x: auto;
             margin: 1.5rem 0;
+            padding: 1rem;
+            overflow-x: auto; /* Allows scrolling */
             -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+        
+        /* Scroll hint */
+        .ascii-container::after {
+            content: 'SCROLL →';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 0.6rem;
+            color: #444;
+            pointer-events: none;
         }
 
         pre {
             font-family: var(--font-mono);
-            font-size: 13px; 
+            font-size: 12.5px; /* Perfectly readable on mobile without huge wrapping */
             line-height: 1.4;
-            color: var(--text-main);
-            white-space: pre;
+            color: #fff;
+            white-space: pre; /* Forces no-wrap */
+            font-variant-ligatures: none; /* Fixes arrow rendering */
+            padding-right: 1rem;
         }
 
         .draw-tip {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            color: #888;
             margin-top: 0.8rem;
             padding-top: 0.5rem;
-            border-top: 1px dashed var(--border);
+            border-top: 1px dashed #333;
         }
 
-        .deep-dive { margin-top: 1rem; font-size: 1.05rem; letter-spacing: 0.2px; }
-        .deep-dive p { margin-bottom: 1.2rem; }
-        .deep-dive ul, .deep-dive ol { padding-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); }
-        .deep-dive li { margin-bottom: 0.6rem; }
-        .deep-dive strong { color: var(--text-main); }
-
+        /* SAMPLE ANSWER & CHECKLISTS */
         .sample-answer {
-            background: #0a0a0a;
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--text-main);
+            background: var(--bg-highlight);
+            border-left: 3px solid #fff;
             padding: 1.2rem;
             margin-top: 2rem;
-            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
         }
 
         .checklist, .omissions, .practice {
-            margin-top: 1.5rem;
+            background: #080808;
+            border: 1px solid #222;
             padding: 1rem;
-            background: var(--bg-highlight);
-            border-radius: 6px;
+            border-radius: 8px;
+            margin-top: 1.5rem;
         }
-
-        .checklist h4, .omissions h4, .practice h4 {
-            margin: 0 0 0.5rem 0;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            color: var(--text-muted);
+        
+        .checklist ul, .omissions ul, .practice ul {
+            list-style: none;
+            padding-left: 0;
         }
+        
+        .checklist li::before { content: "✓ "; color: #fff; }
+        .omissions li::before { content: "⚠ "; color: #999; }
 
+        /* MNEMONIC & CHEAT SHEET */
         .mnemonic {
-            border: 1px dashed var(--text-muted);
+            border: 1px solid #444;
+            background: #0a0a0a;
             padding: 1rem;
             margin-top: 1.5rem;
-            border-radius: 6px;
+            border-radius: 8px;
             text-align: center;
             font-weight: bold;
             font-size: 1.1rem;
+            color: #fff;
+            letter-spacing: 1px;
         }
 
-        /* Question Controls */
         .q-controls {
             display: flex;
             gap: 10px;
-            margin-bottom: 1.5rem;
             overflow-x: auto;
-            padding-bottom: 5px;
+            padding-bottom: 10px;
+            margin-bottom: 1rem;
+            scrollbar-width: none; /* Firefox */
         }
+        .q-controls::-webkit-scrollbar { display: none; }
+
         .q-btn {
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 0.4rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
             white-space: nowrap;
+            font-weight: 500;
         }
-        .q-btn:active { background: var(--text-main); color: black; }
-        
+        .q-btn:active { background: #fff; color: #000; }
+
         .rec-time {
             margin-left: auto;
-            color: var(--text-muted);
             font-size: 0.75rem;
+            color: #666;
             align-self: center;
             white-space: nowrap;
+            padding-left: 10px;
         }
-
-        /* TABLES */
-        table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
-        th, td { border: 1px solid var(--border); padding: 0.8rem; text-align: left; }
-        th { color: var(--text-main); font-weight: bold; background: var(--bg-highlight); }
-        td { color: var(--text-muted); }
 
         /* FOOTER */
         footer {
-            padding: 3rem 2rem;
+            padding: 3rem 1rem;
             text-align: center;
-            border-top: 1px solid var(--border);
-            color: var(--text-muted);
-            margin-top: auto;
+            color: #444;
+            font-size: 0.85rem;
+            border-top: 1px solid #222;
         }
 
-        /* VIEW MODES */
+        /* MODES */
+        body.revision-mode .deep-dive, 
+        body.revision-mode .sample-answer,
+        body.revision-mode .practice,
+        body.revision-mode .checklist,
+        body.revision-mode .omissions { display: none; }
+        body.revision-mode .cheat-sheet { display: block !important; }
+
         body.diagrams-only .deep-dive,
         body.diagrams-only .sample-answer,
         body.diagrams-only .checklist,
-        body.diagrams-only .omissions,
-        body.diagrams-only .practice { display: none; }
-
-        body.revision-mode .deep-dive, 
-        body.revision-mode .practice { display: none; }
-        body.revision-mode .cheat-sheet { display: block !important; }
+        body.diagrams-only .quick-summary,
+        body.diagrams-only .practice,
+        body.diagrams-only .omissions { display: none; }
 
         /* PRINT */
         @media print {
-            body { background: white; color: black; }
-            header, #menu-overlay, .q-controls { display: none; }
+            body { background: #fff; color: #000; }
+            header, #menu-overlay, .q-controls, footer { display: none; }
             section.question-block { border-bottom: 1px solid #ccc; page-break-inside: avoid; }
-            .ascii-container { border: 1px solid #000; background: none; }
-            pre { color: black; }
+            pre { color: #000; border: 1px solid #ccc; }
+            h2, h3, strong { color: #000; }
+            .sample-answer, .quick-summary { background: #f5f5f5; border: 1px solid #ddd; color: #000; }
         }
     </style>
 </head>
@@ -296,21 +343,19 @@
     <button class="menu-btn" onclick="toggleMenu()">MENU</button>
 </header>
 
-<!-- Full Screen Menu Overlay -->
+<!-- MENU -->
 <div id="menu-overlay">
     <div class="menu-section">
         <div class="menu-label">Search</div>
-        <input type="text" id="search-input" placeholder="Type to find questions...">
+        <input type="text" id="search-input" placeholder="Find topics...">
     </div>
-
     <div class="menu-section">
-        <div class="menu-label">View Modes</div>
+        <div class="menu-label">Modes</div>
         <div class="control-grid">
             <button class="app-btn" onclick="toggleRevisionMode()" id="btn-rev">Revision Mode</button>
             <button class="app-btn" onclick="toggleDiagramsOnly()" id="btn-diag">Diagrams Only</button>
         </div>
     </div>
-
     <div class="menu-section">
         <div class="menu-label">Actions</div>
         <div class="control-grid">
@@ -320,12 +365,9 @@
             <button class="app-btn" onclick="printPDF()">Save PDF</button>
         </div>
     </div>
-
     <div class="menu-section">
-        <div class="menu-label">Table of Contents</div>
-        <div id="toc-list" class="toc-list">
-            <!-- Injected via JS -->
-        </div>
+        <div class="menu-label">Questions</div>
+        <div id="toc-list" class="toc-list"></div>
     </div>
 </div>
 
@@ -336,33 +378,31 @@
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q1-sa')">Copy Ans</button>
             <button class="q-btn" onclick="toggleID('q1-cs')">Cheat Sheet</button>
-            <span class="rec-time">Rec: 18 min</span>
+            <span class="rec-time">18 min</span>
         </div>
-        <h2>Q1: Explain the evolution of software architecture. Discuss how architecture has changed from monolithic systems to modern distributed systems.</h2>
+        <h2>Q1: Evolution of Software Architecture (Monolith to Distributed)</h2>
         
         <div class="quick-summary">
-            1. Evolution driven by need for <strong>scalability</strong> and <strong>agility</strong>.<br>
-            2. Journey: Monolith -> Client-Server -> SOA -> Microservices.<br>
-            3. Shift from "Tight Coupling" to "Loose Coupling".
+            1. Driven by need for <strong>Scalability</strong> & <strong>Agility</strong>.<br>
+            2. Path: Monolith → Client-Server → SOA → Microservices.<br>
+            3. Shift: Tight Coupling → Loose Coupling.
         </div>
 
-        <div class="deep-dive">
-            <p><strong>Definition:</strong> The evolution of software architecture refers to the historical progression of design patterns from single-unit <strong>__Monoliths__</strong> to decentralized <strong>__Distributed_Systems__</strong>, aiming to solve complexity, scaling, and deployment challenges.</p>
+        <div class="definition">
+            The evolution of software architecture refers to the historical progression of design patterns from single-unit <strong>__Monoliths__</strong> to decentralized <strong>__Distributed_Systems__</strong>, aiming to solve complexity, scaling, and deployment challenges.
         </div>
 
         <div class="ascii-container">
 <pre id="q1-diag">
-DIAGRAM (ASCII — exam-drawable):
-
-  [ 1980s ]       [ 1990s ]          [ 2000s ]          [ 2010s+ ]
- MONOLITH      CLIENT-SERVER           SOA            MICROSERVICES
- _________      ___________        ___________       ________________
-|         |    |    UI     |      | Service A |     | [S1]   [S2]    |
-| All-in- |    |___________|      |___|___|___|     |  |      |      |
-|   One   |          |              |  ESB  |       | (DB)   (DB)    |
-|_________|    |___DB______|      |_________|       |________________|
+  [ 1980s ]      [ 1990s ]         [ 2000s ]         [ 2010s+ ]
+ MONOLITH     CLIENT-SERVER          SOA           MICROSERVICES
+ ________      ___________       ___________      ________________
+|        |    |    UI     |     | Service A |    | [S1]   [S2]    |
+| All-in |    |___________|     |___|___|___|    |  |      |      |
+|  One   |          |             |  ESB  |      | (DB)   (DB)    |
+|________|    |___DB______|     |_________|      |________________|
 </pre>
-            <div class="draw-tip">Draw a timeline. 1 Big box -> 2 Boxes (UI/DB) -> Bus (ESB) -> Many small floating boxes.</div>
+            <div class="draw-tip">Timeline: 1 Big box → 2 Boxes (UI/DB) → Bus (ESB) → Many floating boxes.</div>
         </div>
 
         <div class="deep-dive">
@@ -378,10 +418,6 @@ DIAGRAM (ASCII — exam-drawable):
 
             <p><strong>4. Microservices (Modern Distributed):</strong> Driven by Cloud (AWS/Azure) and DevOps. Applications are broken into tiny, autonomous services, each with its own database. They communicate via lightweight <strong>__REST_APIs__</strong>.
             <br><em>Key Benefit:</em> <strong>__Horizontal_Scaling__</strong> (add more cheap servers) and Fault Isolation (if one service fails, others survive).</p>
-
-            <p><strong>Comparison:</strong>
-            <br>- <em>Monolith:</em> Tight Coupling, Shared Database, Riskier Deployments.
-            <br>- <em>Distributed:</em> Loose Coupling, Decentralized Data, Independent Deployments.</p>
         </div>
 
         <div class="sample-answer" id="q1-sa">
@@ -393,7 +429,6 @@ DIAGRAM (ASCII — exam-drawable):
                 <li><strong>Service-Oriented Architecture (SOA):</strong> Focused on enterprise integration using an ESB and SOAP, allowing large systems to interoperate.</li>
                 <li><strong>Microservices:</strong> The current standard for cloud-native apps. It decomposes systems into small, independent services communicating via REST. This enables <strong>__continuous_deployment__</strong> and infinite horizontal scaling.</li>
             </ol>
-            <p><strong>Conclusion:</strong> The trend is a consistent move from centralized, rigid structures to decentralized, flexible distributed systems.</p>
         </div>
 
         <div class="checklist">
@@ -406,7 +441,7 @@ DIAGRAM (ASCII — exam-drawable):
             </ul>
         </div>
 
-        <div class="mnemonic"><strong>M-C-S-M</strong>: Monolith -> Client-Server -> SOA -> Microservices.</div>
+        <div class="mnemonic">M-C-S-M (Monolith, Client-Server, SOA, Microservices)</div>
         
         <div class="cheat-sheet hidden" id="q1-cs">
             <h3>Cheat Sheet</h3>
@@ -424,31 +459,27 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q2">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q2-sa')">Copy Ans</button>
-            <button class="q-btn" onclick="toggleID('q2-cs')">Cheat Sheet</button>
-            <span class="rec-time">Rec: 15 min</span>
+            <span class="rec-time">15 min</span>
         </div>
-        <h2>Q2: Describe different software development methodologies and the software quality model.</h2>
+        <h2>Q2: Development Methodologies & Quality Model (ISO 9126)</h2>
 
         <div class="quick-summary">
-            1. Methodologies: <strong>Waterfall</strong> (Linear) vs <strong>Agile</strong> (Iterative).<br>
-            2. Quality Model: <strong>ISO 9126</strong> standard.<br>
-            3. Key attributes: Functionality, Reliability, Usability, Efficiency.
+            1. <strong>Waterfall</strong> (Linear) vs <strong>Agile</strong> (Iterative).<br>
+            2. <strong>ISO 9126</strong>: The standard for quality.<br>
+            3. Attributes: Functionality, Reliability, Usability.
         </div>
 
         <div class="ascii-container">
 <pre id="q2-diag">
-DIAGRAM (ASCII — exam-drawable):
-
-   WATERFALL (Linear)           AGILE (Iterative)
-  [ Reqs ]                     (    Plan    )
-     |                       /            \
-  [ Design ]               ( Deploy      Code )
-     |                       \            /
-  [ Code ]                     (    Test    )
-     |                          ------------
-  [ Test ]                     (Repeats Loop)
+  WATERFALL (Linear)          AGILE (Iterative)
+ [ Reqs ]                    (    Plan    )
+    |                      /            \
+ [ Design ]              ( Deploy      Code )
+    |                      \            /
+ [ Code ]                    (    Test    )
+    |                         ------------
+ [ Test ]                    (Repeats Loop)
 </pre>
-            <div class="draw-tip">Draw steps going down (Staircase) for Waterfall. Draw a Circle with arrows for Agile.</div>
         </div>
 
         <div class="deep-dive">
@@ -488,53 +519,46 @@ DIAGRAM (ASCII — exam-drawable):
             <br>- <strong>Portability:</strong> Adaptability to environments.</p>
         </div>
 
-        <div class="mnemonic"><strong>F-R-U-E-M-P</strong> (Functionality, Reliability, Usability, Efficiency, Maintainability, Portability).</div>
+        <div class="mnemonic">F-R-U-E-M-P (Functionality, Reliability, Usability, Efficiency, Maintainability, Portability)</div>
     </section>
 
     <!-- Q3 -->
     <section class="question-block" id="q3">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q3-sa')">Copy Ans</button>
-            <button class="q-btn" onclick="toggleID('q3-cs')">Cheat Sheet</button>
-            <span class="rec-time">Rec: 18 min</span>
+            <span class="rec-time">18 min</span>
         </div>
-        <h2>Q3: Describe the software architecture business cycle with a neat diagram.</h2>
+        <h2>Q3: Architecture Business Cycle (ABC)</h2>
         
         <div class="quick-summary">
             1. Architecture is a cycle, not a one-time event.<br>
             2. Inputs: Stakeholders, Org, Tech.<br>
-            3. Feedback: The system changes the environment that created it.
-        </div>
-
-        <div class="deep-dive">
-            <p><strong>Definition:</strong> The <strong>__Architecture_Business_Cycle_(ABC)__</strong> is the concept that software architecture is a result of technical, business, and social influences, and the resulting system in turn influences those very factors.</p>
+            3. Feedback: System changes the environment.
         </div>
 
         <div class="ascii-container">
 <pre id="q3-diag">
-DIAGRAM (ASCII — exam-drawable):
-
-   [Stakeholders]   [Organization]   [Tech Env]
-         |                |               |
-         | (Reqs)         | (Skills)      | (Tools)
-         v                v               v
-      _________________________________________
-     |           THE ARCHITECT                 |
-     |_________________________________________|
-                      |
-                      v
-               [ ARCHITECTURE ]
-                      |
-                      v
-                 [ SYSTEM ]
-                /     |    \
- (Feedback)    v      v     v
-     [Stakeholders] [Org] [Tech Env]
+  [Stakeholders]   [Organization]   [Tech Env]
+        |                |               |
+        | (Reqs)         | (Skills)      | (Tools)
+        v                v               v
+     _________________________________________
+    |           THE ARCHITECT                 |
+    |_________________________________________|
+                     |
+                     v
+              [ ARCHITECTURE ]
+                     |
+                     v
+                [ SYSTEM ]
+               /     |    \
+(Feedback)    v      v     v
+    [Stakeholders] [Org] [Tech Env]
 </pre>
-            <div class="draw-tip">Architect in middle. 3 Inputs (top). Output -> System. System loops back to Inputs (bottom).</div>
         </div>
 
         <div class="deep-dive">
+            <p><strong>Definition:</strong> The <strong>__Architecture_Business_Cycle_(ABC)__</strong> is the concept that software architecture is a result of technical, business, and social influences, and the resulting system in turn influences those very factors.</p>
             <p><strong>1. Influences on the Architect (Inputs):</strong>
             <br>- <strong>Stakeholders:</strong> Users, managers, and testers all have conflicting goals (e.g., "Fast" vs "Secure" vs "Cheap"). The architect mediates these.
             <br>- <strong>Developing Organization:</strong> <strong>__Conway's_Law__</strong> states that systems mirror the communication structure of the team. If you have 3 teams, you get a 3-part compiler.
@@ -563,23 +587,15 @@ DIAGRAM (ASCII — exam-drawable):
             <br>The existence of the system changes the environment. It creates new market opportunities, trains the organization in new technologies, and sets new standards, thus restarting the cycle.</p>
         </div>
 
-        <div class="mnemonic"><strong>S-O-T-E</strong> (Inputs: Stakeholders, Org, Tech, Experience).</div>
+        <div class="mnemonic">S-O-T-E (Stakeholders, Org, Tech, Experience)</div>
     </section>
 
     <!-- Q4 -->
     <section class="question-block" id="q4">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q4-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q4: Explain Software Quality Models: McCall Model, Boehm Model, ISO Model, FURPS.</h2>
-
-        <div class="quick-summary">
-            1. <strong>McCall:</strong> Product Revision, Transition, Operation.<br>
-            2. <strong>Boehm:</strong> Hierarchical utility model.<br>
-            3. <strong>FURPS:</strong> Functionality, Usability, Reliability, Perf, Support.
-        </div>
-
+        <h2>Q4: Quality Models (McCall, Boehm, FURPS)</h2>
         <div class="deep-dive">
             <p><strong>1. McCall’s Model (1977):</strong>
             <br>Focuses on three perspectives of the software lifecycle:
@@ -599,11 +615,8 @@ DIAGRAM (ASCII — exam-drawable):
             <br>- <strong>R</strong>eliability (Frequency of failure)
             <br>- <strong>P</strong>erformance (Response time, Throughput)
             <br>- <strong>S</strong>upportability (Extensibility, Serviceability)</p>
-
-            <p><strong>4. ISO 9126:</strong>
-            <br>The consensus standard that unified the others into 6 main characteristics (Functionality, Reliability, Usability, Efficiency, Maintainability, Portability).</p>
         </div>
-
+        
         <div class="checklist">
             <h4>What to write to get 7/7:</h4>
             <ul>
@@ -619,17 +632,9 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q5">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q5-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 12 min</span>
         </div>
-        <h2>Q5: Explain structural, framework, dynamic, and process models of software architecture.</h2>
-
-        <div class="quick-summary">
-            1. Different "Views" to understand a complex system.<br>
-            2. Structural = Static parts.<br>
-            3. Dynamic = Runtime behavior.<br>
-            4. Process = Build steps.
-        </div>
-
+        <h2>Q5: Architectural Models (Views)</h2>
+        
         <div class="deep-dive">
             <p><strong>Definition:</strong> These models represent different <strong>__Viewpoints__</strong> of a system. No single model can describe an entire architecture.</p>
 
@@ -673,16 +678,9 @@ DIAGRAM (ASCII — exam-drawable):
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q6-sa')">Copy Ans</button>
             <button class="q-btn" onclick="toggleID('q6-cs')">Cheat Sheet</button>
-            <span class="rec-time">Rec: 18 min</span>
         </div>
-        <h2>Q6: Describe major architectural styles: Data-flow architecture; Pipes and Filters architecture; Call-and-return architecture.</h2>
-
-        <div class="quick-summary">
-            1. <strong>Data-Flow:</strong> Data availability triggers processing.<br>
-            2. <strong>Pipes & Filters:</strong> Stream processing (Unix style).<br>
-            3. <strong>Call & Return:</strong> Standard Main/Subroutine style.
-        </div>
-
+        <h2>Q6: Styles: Data-Flow, Pipe & Filter, Call & Return</h2>
+        
         <div class="deep-dive">
             <p><strong>1. Data-Flow Architecture:</strong>
             <br>In this style, the entire structure is determined by the motion of data. Components are "workers" that wait for input data, transform it, and output it. There is <strong>__no_global_state__</strong>.</p>
@@ -704,11 +702,8 @@ DIAGRAM (ASCII — exam-drawable):
 
         <div class="ascii-container">
 <pre id="q6-diag">
-DIAGRAM (ASCII — exam-drawable):
-
 PIPE & FILTER:
  [Source] -> (Pipe) -> [Filter A] -> (Pipe) -> [Filter B] -> [Sink]
- (Data flows continuously like water)
 
 CALL & RETURN:
       [ Main Program ]
@@ -719,9 +714,8 @@ CALL & RETURN:
     \________|_________/
          (Returns)
 </pre>
-            <div class="draw-tip">Top: Linear chain of boxes. Bottom: Hierarchy tree (Main calling subs).</div>
         </div>
-
+        
         <div class="sample-answer" id="q6-sa">
             <h3>Sample Answer (7 Marks)</h3>
             <p><strong>1. Data-Flow Architecture:</strong> Access and movement of data define the system. Availability of data triggers computation. It promotes loose coupling.</p>
@@ -739,14 +733,11 @@ CALL & RETURN:
     <section class="question-block" id="q7">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q7-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q7: What are the Architectural Constraints of RESTful API?</h2>
+        <h2>Q7: Constraints of RESTful API</h2>
         
         <div class="quick-summary">
-            1. REST is not just "using HTTP".<br>
-            2. It is defined by <strong>6 Constraints</strong> (Fielding).<br>
-            3. Breaking constraints = Not RESTful.
+            REST is defined by <strong>6 Constraints</strong>. Breaking them means it's not REST.
         </div>
 
         <div class="deep-dive">
@@ -768,8 +759,8 @@ CALL & RETURN:
             </ol>
         </div>
 
-        <div class="mnemonic"><strong>S-C-U-L-C-S</strong> (Stateless, Client-Server, Uniform, Layered, Cacheable, Script).</div>
-
+        <div class="mnemonic">S-C-U-L-C-S (Stateless, Client-Server, Uniform, Layered, Cacheable, Script)</div>
+        
         <div class="checklist">
             <h4>What to write to get 7/7:</h4>
             <ul>
@@ -785,9 +776,25 @@ CALL & RETURN:
     <section class="question-block" id="q8">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q8-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q8: Explain layered architecture and data-centered architecture with diagrams.</h2>
+        <h2>Q8: Layered vs Data-Centered Architecture</h2>
+        
+        <div class="ascii-container">
+<pre id="q8-diag">
+A. LAYERED:                  B. DATA-CENTERED:
+_____________________          [Client A]  [Client B]
+| Presentation (UI) |               \        /
+|___________________|                v      v
+         | v                       [REPOSITORY]
+_____________________              [ DATABASE ]
+| Business Logic    |                ^      ^
+|___________________|               /        \
+         | v                   [Client C]  [Client D]
+_____________________
+| Data Access (DAO) |
+|___________________|
+</pre>
+        </div>
 
         <div class="deep-dive">
             <p><strong>1. Layered Architecture:</strong>
@@ -806,26 +813,6 @@ CALL & RETURN:
             <br>- <em>Cons:</em> Repository is a <strong>__Single_Point_of_Failure__</strong> and performance bottleneck.</p>
         </div>
 
-        <div class="ascii-container">
-<pre id="q8-diag">
-DIAGRAM (ASCII — exam-drawable):
-
-A. LAYERED STYLE:              B. DATA-CENTERED (Repository):
-_____________________              [ Client A ]    [ Client B ]
-| Presentation (UI) |                    \            /
-|___________________|                     v          v
-         | v                          ____________________
-_____________________                |                    |
-| Business Logic    |                |    SHARED DATA     |
-|___________________|                |    REPOSITORY      |
-         | v                         |____________________|
-_____________________                     ^          ^
-| Data Access (DAO) |                    /            \
-|___________________|              [ Client C ]    [ Client D ]
-</pre>
-            <div class="draw-tip">Left: Stack of 3 boxes. Right: Big box in middle surrounded by small clients.</div>
-        </div>
-
         <div class="sample-answer" id="q8-sa">
             <h3>Sample Answer (7 Marks)</h3>
             <p><strong>1. Layered Architecture:</strong> A hierarchical style where components are grouped into layers (Presentation, Business, Data). Each layer serves the one above it.
@@ -842,14 +829,13 @@ _____________________                     ^          ^
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q9-sa')">Copy Ans</button>
             <button class="q-btn" onclick="toggleID('q9-cs')">Cheat Sheet</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q9: What is Microservices Architecture? Explain benefits and challenges.</h2>
+        <h2>Q9: Microservices: Benefits & Challenges</h2>
 
         <div class="quick-summary">
             1. Small, independent services.<br>
-            2. <strong>Database per service</strong>.<br>
-            3. Enables massive scaling but adds complexity.
+            2. <strong>Database per Service</strong>.<br>
+            3. Massive scaling, high complexity.
         </div>
 
         <div class="deep-dive">
@@ -872,28 +858,15 @@ _____________________                     ^          ^
             <br>3. <strong>Operational Overhead:</strong> Requires DevOps (Docker, Kubernetes).</p>
         </div>
 
-        <div class="mnemonic"><strong>S-I-D</strong> (Small, Independent, Distributed).</div>
-
-        <div class="cheat-sheet hidden" id="q9-cs">
-            <h3>Cheat Sheet</h3>
-            <ul>
-                <li><strong>Key:</strong> Independence.</li>
-                <li><strong>Pattern:</strong> Database per service.</li>
-                <li><strong>Pros:</strong> Scale, Speed, Fault tolerance.</li>
-                <li><strong>Cons:</strong> Network latency, Data sync issues.</li>
-                <li><strong>Example:</strong> Netflix, Amazon.</li>
-            </ul>
-        </div>
+        <div class="mnemonic">S-I-D (Small, Independent, Distributed)</div>
     </section>
 
     <!-- Q10 -->
     <section class="question-block" id="q10">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q10-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q10: Describe agent-based architecture and reactive architecture.</h2>
-
+        <h2>Q10: Agent-based & Reactive Architecture</h2>
         <div class="deep-dive">
             <p><strong>Part 1: Agent-Based Architecture</strong>
             <br>Composed of "Agents"—autonomous components that perceive their environment and act to achieve goals.
@@ -912,37 +885,26 @@ _____________________                     ^          ^
             <br>3. <strong>Elastic:</strong> Stays responsive under varying workload (Auto-scaling).
             <br>4. <strong>Message Driven:</strong> Uses asynchronous message passing to ensure loose coupling (The Foundation).</p>
         </div>
-
-        <div class="mnemonic"><strong>R-R-E-M</strong> (Responsive, Resilient, Elastic, Message-driven).</div>
+        <div class="mnemonic">R-R-E-M (Responsive, Resilient, Elastic, Message-driven)</div>
     </section>
 
     <!-- Q11 -->
     <section class="question-block" id="q11">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q11-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 12 min</span>
         </div>
-        <h2>Q11: Give explanation on event-driven architecture.</h2>
+        <h2>Q11: Event-Driven Architecture (EDA)</h2>
         
-        <div class="quick-summary">
-            1. Decouples producers and consumers.<br>
-            2. "Fire and Forget" model.<br>
-            3. Highly scalable.
-        </div>
-
         <div class="ascii-container">
 <pre id="q11-diag">
-DIAGRAM (ASCII — exam-drawable):
-
-  [ Producer ] ---> (Event: "OrderPlaced")
-                          |
-                    [ EVENT BROKER ]
-                    /      |       \
-             (Push)     (Push)     (Push)
-              /            |           \
-       [Email Svc]    [Stock Svc]   [Log Svc]
+ [ Producer ] ---> (Event: "OrderPlaced")
+                         |
+                   [ EVENT BROKER ]
+                   /      |       \
+            (Push)     (Push)     (Push)
+             /            |           \
+      [Email Svc]    [Stock Svc]   [Log Svc]
 </pre>
-            <div class="draw-tip">Producer emits event to a central Broker. Broker pushes to multiple Consumers.</div>
         </div>
 
         <div class="deep-dive">
@@ -968,10 +930,8 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q12">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q12-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 12 min</span>
         </div>
-        <h2>Q12: Explain Software Architecture Description Languages (ADLs). Discuss types and features.</h2>
-
+        <h2>Q12: Architecture Description Languages (ADLs)</h2>
         <div class="deep-dive">
             <p><strong>Definition:</strong> ADLs are formal languages used to describe software architecture precisely, focusing on components and connectors (unlike programming languages which focus on algorithms).</p>
             
@@ -985,8 +945,6 @@ DIAGRAM (ASCII — exam-drawable):
             <br>- <strong>ACME:</strong> A generic interchange language to swap data between tools.
             <br>- <strong>Wright:</strong> Focuses on formal analysis of deadlocks and protocols.
             <br>- <strong>Darwin:</strong> Focuses on distributed systems and dynamic structures.</p>
-            
-            <p><em>Note:</em> In modern industry, <strong>UML</strong> has largely replaced specialized ADLs.</p>
         </div>
     </section>
 
@@ -994,14 +952,11 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q13">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q13-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q13: Explain CORBA and Java RMI architecture with use cases.</h2>
-
+        <h2>Q13: CORBA & Java RMI</h2>
+        
         <div class="ascii-container">
 <pre id="q13-diag">
-DIAGRAM (ASCII — exam-drawable):
-
  [ Client Object ]        [ Server Object ]
         |                        ^
      (Stub)                  (Skeleton)
@@ -1029,27 +984,23 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q14">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q14-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 12 min</span>
         </div>
-        <h2>Q14: Explain Model View Architecture.</h2>
-
+        <h2>Q14: Model View Architecture (MVC)</h2>
+        
         <div class="ascii-container">
 <pre id="q14-diag">
-DIAGRAM (ASCII — exam-drawable):
-
      User Input
          |
          v
-   [ CONTROLLER ] ------------> [ MODEL ]
-   (Handles logic)             (Data/State)
-         |                          |
-    Selects View               Updates View
-         |                          |
-         v                          v
-     [ VIEW ] <---------------------|
+   [ CONTROLLER ] -----------> [ MODEL ]
+   (Logic/Handler)            (Data/State)
+         |                         |
+    Selects View              Updates View
+         |                         |
+         v                         v
+     [ VIEW ] <--------------------|
     (Display UI)
 </pre>
-            <div class="draw-tip">Triangle flow: Controller updates Model. Model updates View. User interacts with Controller.</div>
         </div>
 
         <div class="deep-dive">
@@ -1069,10 +1020,8 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q15">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q15-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 10 min</span>
         </div>
-        <h2>Q15: Explain the role of UML in software architecture.</h2>
-
+        <h2>Q15: Role of UML</h2>
         <div class="deep-dive">
             <p><strong>Definition:</strong> UML (Unified Modeling Language) is the standard visual language for specifying, visualizing, constructing, and documenting the artifacts of software systems.</p>
 
@@ -1093,14 +1042,12 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q16">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q16-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q16: Explain JSP, and lifecycle of servlets.</h2>
-
+        <h2>Q16: JSP & Servlet Lifecycle</h2>
+        
         <div class="quick-summary">
             1. JSP = HTML + Java.<br>
-            2. Servlet = Java class handling HTTP.<br>
-            3. Lifecycle: Load -> Init -> Service -> Destroy.
+            2. Lifecycle: Load -> Init -> Service -> Destroy.
         </div>
 
         <div class="deep-dive">
@@ -1118,17 +1065,15 @@ DIAGRAM (ASCII — exam-drawable):
             </ol>
         </div>
 
-        <div class="mnemonic"><strong>L-I-S-D</strong> (Load, Init, Service, Destroy).</div>
+        <div class="mnemonic">L-I-S-D (Load, Init, Service, Destroy)</div>
     </section>
 
     <!-- Q17 -->
     <section class="question-block" id="q17">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q17-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q17: What is the Cost Benefit Analysis Method (CBAM)? Explain the steps.</h2>
-
+        <h2>Q17: Cost Benefit Analysis (CBAM)</h2>
         <div class="deep-dive">
             <p><strong>Definition:</strong> CBAM is an economic modeling method used to decide <strong>__which__</strong> architectural strategies should be implemented given a budget. It adds "Cost" and "ROI" to the technical analysis.</p>
 
@@ -1147,10 +1092,8 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q18">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q18-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q18: Explain Attribute Driven Design (ADD) with an example.</h2>
-
+        <h2>Q18: Attribute Driven Design (ADD)</h2>
         <div class="deep-dive">
             <p><strong>Definition:</strong> ADD is a recursive design method where the architecture is generated by prioritizing <strong>__Quality_Attributes__</strong> (Performance, Security) rather than just functional requirements.</p>
 
@@ -1172,10 +1115,8 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q19">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q19-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q19: Describe Architecture Tradeoff Analysis Method (ATAM) with phases and outputs.</h2>
-
+        <h2>Q19: ATAM (Tradeoff Analysis)</h2>
         <div class="deep-dive">
             <p><strong>Definition:</strong> ATAM is a method to evaluate an architecture <strong>__before__</strong> coding begins to identify risks.</p>
 
@@ -1191,17 +1132,15 @@ DIAGRAM (ASCII — exam-drawable):
             <br>- <strong>Sensitivity Points:</strong> A component where a small change causes a big impact (e.g., "Encryption level heavily affects latency").
             <br>- <strong>Trade-off Points:</strong> Decisions that improve one attribute but hurt another (e.g., "Compression saves storage but hurts speed").</p>
         </div>
-        <div class="mnemonic"><strong>R-N-S-T</strong> (Risks, Non-risks, Sensitivity, Trade-offs).</div>
+        <div class="mnemonic">R-N-S-T (Risks, Non-risks, Sensitivity, Trade-offs)</div>
     </section>
 
     <!-- Q20 -->
     <section class="question-block" id="q20">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q20-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 12 min</span>
         </div>
-        <h2>Q20: Describe Active Reviews for Intermediate Design (ARID).</h2>
-
+        <h2>Q20: ARID (Active Reviews)</h2>
         <div class="deep-dive">
             <p><strong>Definition:</strong> ARID is a review method for <strong>__partial__</strong> designs or subsystems (unlike ATAM which is for the whole system). It checks if the design is actually usable by the developers.</p>
 
@@ -1217,10 +1156,8 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q21">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q21-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 15 min</span>
         </div>
-        <h2>Q21: Define Refinement and also explain principle of sound documentation in detail.</h2>
-
+        <h2>Q21: Refinement & Documentation</h2>
         <div class="deep-dive">
             <p><strong>Part 1: Refinement</strong>
             <br>Refinement is the gradual process of converting high-level abstract specifications into low-level executable code.
@@ -1239,10 +1176,8 @@ DIAGRAM (ASCII — exam-drawable):
     <section class="question-block" id="q22">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q22-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 12 min</span>
         </div>
-        <h2>Q22: Describe seven parts template for documentation package.</h2>
-
+        <h2>Q22: 7-Part Doc Template</h2>
         <div class="deep-dive">
             <p>When documenting a specific View (e.g., Component View), use this standard template:</p>
             <ol>
@@ -1255,17 +1190,15 @@ DIAGRAM (ASCII — exam-drawable):
                 <li><strong>Other Info:</strong> Authors, dates, version history.</li>
             </ol>
         </div>
-        <div class="mnemonic"><strong>P-E-C-V-A-G-O</strong> (Primary, Element, Context, Variability, Architecture, Glossary, Other).</div>
+        <div class="mnemonic">P-E-C-V-A-G-O</div>
     </section>
 
     <!-- Q23 -->
     <section class="question-block" id="q23">
         <div class="q-controls">
             <button class="q-btn" onclick="copyText('q23-sa')">Copy Ans</button>
-            <span class="rec-time">Rec: 12 min</span>
         </div>
-        <h2>Q23: What are architecture software interfaces? Explain with examples.</h2>
-
+        <h2>Q23: Architecture Interfaces</h2>
         <div class="deep-dive">
             <p><strong>Definition:</strong> An <strong>__Interface__</strong> is a boundary across which two components exchange information. It defines a contract: "What I do" vs "How I do it".</p>
 
@@ -1288,15 +1221,12 @@ DIAGRAM (ASCII — exam-drawable):
 </footer>
 
 <script>
-    // Menu Logic
+    // Mobile Menu Logic
     const menuOverlay = document.getElementById('menu-overlay');
-    const mainContainer = document.getElementById('main-container');
     
     function toggleMenu() {
         menuOverlay.classList.toggle('open');
         document.body.style.overflow = menuOverlay.classList.contains('open') ? 'hidden' : 'auto';
-        
-        // Generate TOC if opening
         if(menuOverlay.classList.contains('open') && document.getElementById('toc-list').innerHTML.trim() === '') {
             generateTOC();
         }
@@ -1308,14 +1238,16 @@ DIAGRAM (ASCII — exam-drawable):
             const id = h2.parentElement.id;
             const a = document.createElement('a');
             a.href = '#' + id;
-            a.innerText = h2.innerText.split(':')[0]; // Just Q number
-            a.innerText += ": " + h2.innerText.split(':')[1].substring(0, 25) + "...";
-            a.onclick = toggleMenu; // Close on click
+            // Create a clean TOC Label
+            let text = h2.innerText.split(':')[0]; 
+            let detail = h2.innerText.split(':')[1] || "";
+            a.innerHTML = `<strong>${text}</strong>${detail.substring(0, 25)}...`;
+            a.onclick = toggleMenu;
             list.appendChild(a);
         });
     }
 
-    // View Modes
+    // Modes
     function toggleRevisionMode() {
         document.body.classList.toggle('revision-mode');
         document.getElementById('btn-rev').classList.toggle('active');
@@ -1370,8 +1302,8 @@ DIAGRAM (ASCII — exam-drawable):
         document.querySelectorAll('.question-block').forEach(q => {
             if(q.style.display !== 'none') {
                 txt += q.querySelector('h2').innerText + "\n";
-                txt += "SUMMARY: " + q.querySelector('.quick-summary')?.innerText.replace(/\n/g, ' ') + "\n";
-                txt += "ANSWER: " + q.querySelector('.deep-dive')?.innerText + "\n\n";
+                txt += "SUMMARY: " + (q.querySelector('.quick-summary')?.innerText.replace(/\n/g, ' ') || "") + "\n";
+                txt += "ANSWER: " + (q.querySelector('.deep-dive')?.innerText || "") + "\n\n";
                 txt += "----------------\n";
             }
         });
@@ -1383,7 +1315,7 @@ DIAGRAM (ASCII — exam-drawable):
     }
 
     function printPDF() {
-        toggleMenu(); // ensure closed
+        toggleMenu();
         window.print();
     }
 </script>
