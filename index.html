@@ -9,13 +9,14 @@
     :root {
         --bg-core: #000000;
         --bg-surface: #0a0a0a;
-        --bg-card: #111111;
+        --bg-card: #121212;
         --text-main: #e0e0e0;
         --text-muted: #a0a0a0;
         --accent: #ffffff;
         --border: #333333;
         --success: #00ff9d;
         --warning: #ffcc00;
+        --danger: #ff5555;
         --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono: "Menlo", "Consolas", "Monaco", "Liberation Mono", "Lucida Console", monospace;
     }
@@ -26,8 +27,8 @@
         background-color: var(--bg-core);
         color: var(--text-main);
         font-family: var(--font-main);
-        line-height: 1.6;
-        font-size: 16px;
+        line-height: 1.65;
+        font-size: 17px; /* Slightly larger for reading */
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -117,48 +118,51 @@
     .toc-link:hover { color: var(--accent); padding-left: 5px; transition: 0.2s; }
 
     /* MAIN CONTENT */
-    main { padding: 1rem; max-width: 900px; margin: 0 auto; padding-bottom: 4rem; }
+    main { padding: 1rem; max-width: 900px; margin: 0 auto; padding-bottom: 6rem; }
 
     /* QUESTION CARD */
     .q-card {
-        border-bottom: 4px solid var(--border);
-        padding-bottom: 3rem;
-        margin-bottom: 3rem;
+        border-bottom: 6px solid var(--border);
+        padding-bottom: 4rem;
+        margin-bottom: 4rem;
     }
     
-    h2 { font-size: 1.4rem; color: var(--accent); margin: 2rem 0 1rem; line-height: 1.3; }
-    h3 { font-size: 1.1rem; color: var(--text-main); margin: 1.5rem 0 0.5rem; border-left: 3px solid var(--text-muted); padding-left: 0.8rem; }
+    h2 { font-size: 1.6rem; color: var(--accent); margin: 2rem 0 1.5rem; line-height: 1.3; letter-spacing: -0.5px; }
+    h3 { font-size: 1.2rem; color: var(--text-main); margin: 2rem 0 1rem; border-left: 4px solid var(--text-muted); padding-left: 1rem; }
 
     /* CONTENT BLOCKS */
     .summary-box {
         background: var(--bg-surface);
         border: 1px solid #333;
-        padding: 1rem;
+        padding: 1.5rem;
         border-radius: 8px;
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 2rem;
     }
     .summary-box ul { padding-left: 1.2rem; list-style: square; color: var(--text-muted); }
+    .summary-box li { margin-bottom: 0.5rem; }
 
     .definition {
         font-style: italic;
-        color: var(--text-muted);
-        border-left: 2px solid var(--accent);
-        padding-left: 1rem;
-        margin: 1.5rem 0;
+        color: var(--text-main);
+        border-left: 3px solid var(--accent);
+        padding: 1rem 1.5rem;
+        margin: 2rem 0;
+        background: var(--bg-card);
+        border-radius: 0 8px 8px 0;
     }
 
-    .deep-dive { font-size: 1.05rem; color: #d0d0d0; text-align: justify; }
-    .deep-dive p { margin-bottom: 1rem; }
-    .deep-dive ul { padding-left: 1.5rem; margin-bottom: 1rem; color: #bbb; }
-    .deep-dive li { margin-bottom: 0.5rem; }
+    .deep-dive { font-size: 1.1rem; color: #d0d0d0; text-align: left; }
+    .deep-dive p { margin-bottom: 1.5rem; }
+    .deep-dive ul { padding-left: 1.5rem; margin-bottom: 1.5rem; color: #bbb; }
+    .deep-dive li { margin-bottom: 0.8rem; }
 
     /* DIAGRAMS */
     .diagram-box {
         background: #000;
         border: 1px solid var(--border);
-        padding: 1rem;
-        margin: 2rem 0;
+        padding: 1.5rem;
+        margin: 2.5rem 0;
         overflow-x: auto;
         border-radius: 6px;
         position: relative;
@@ -167,20 +171,9 @@
     pre {
         font-family: var(--font-mono);
         font-size: 13px;
-        line-height: 1.3;
+        line-height: 1.4;
         color: var(--accent);
         white-space: pre;
-    }
-
-    .img-placeholder {
-        background: #1a1a1a;
-        border: 1px dashed #444;
-        color: #666;
-        padding: 2rem;
-        text-align: center;
-        margin: 1.5rem 0;
-        font-size: 0.8rem;
-        border-radius: 6px;
     }
 
     /* EXAM PARTS */
@@ -189,33 +182,35 @@
         border: 1px solid #333;
         border-left: 4px solid var(--success);
         padding: 1.5rem;
-        margin-top: 2rem;
+        margin-top: 3rem;
         border-radius: 0 8px 8px 0;
     }
+    .sample-answer h4 { color: var(--success); margin-top: 0; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 1rem; }
     
-    .checklist { background: #0f1510; border: 1px solid #1b2e1e; padding: 1rem; margin-top: 1.5rem; border-radius: 8px; }
-    .checklist h4 { color: var(--success); margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.8rem; }
-    .checklist li { list-style: none; margin-bottom: 0.3rem; color: #bbb; }
-    .checklist li::before { content: "✓ "; color: var(--success); font-weight: bold; }
+    .checklist { background: #0f1510; border: 1px solid #1b2e1e; padding: 1.5rem; margin-top: 1.5rem; border-radius: 8px; }
+    .checklist h4 { color: var(--success); margin-bottom: 1rem; text-transform: uppercase; font-size: 0.85rem; margin-top: 0; }
+    .checklist li { list-style: none; margin-bottom: 0.5rem; color: #bbb; }
+    .checklist li::before { content: "✓ "; color: var(--success); font-weight: bold; margin-right: 8px; }
 
-    .mistakes { background: #1a1111; border: 1px solid #331a1a; padding: 1rem; margin-top: 1rem; border-radius: 8px; }
-    .mistakes h4 { color: #ff5555; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.8rem; }
-    .mistakes li { list-style: none; margin-bottom: 0.3rem; color: #bbb; }
-    .mistakes li::before { content: "⚠ "; color: #ff5555; }
+    .mistakes { background: #1a1111; border: 1px solid #331a1a; padding: 1.5rem; margin-top: 1rem; border-radius: 8px; }
+    .mistakes h4 { color: var(--danger); margin-bottom: 1rem; text-transform: uppercase; font-size: 0.85rem; margin-top: 0; }
+    .mistakes li { list-style: none; margin-bottom: 0.5rem; color: #bbb; }
+    .mistakes li::before { content: "⚠ "; color: var(--danger); margin-right: 8px; }
 
     .cheat-sheet {
         border: 1px dashed var(--text-muted);
         padding: 1.5rem;
-        margin-top: 2rem;
+        margin-top: 3rem;
         border-radius: 8px;
     }
-    .cheat-sheet h4 { text-align: center; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; }
-    .cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem; }
-
-    .practice-box { background: var(--bg-surface); border: 1px solid var(--border); padding: 1rem; margin-top: 2rem; border-radius: 8px; }
+    .cheat-sheet h4 { text-align: center; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; }
+    .cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.9rem; }
+    
+    .practice-box { background: var(--bg-surface); border: 1px solid var(--border); padding: 1.5rem; margin-top: 2rem; border-radius: 8px; }
+    .practice-box h4 { margin-top: 0; color: var(--warning); text-transform: uppercase; font-size: 0.85rem; }
 
     /* FOOTER */
-    footer { text-align: center; padding: 2rem; color: #444; font-size: 0.9rem; border-top: 1px solid #222; }
+    footer { text-align: center; padding: 3rem 1rem; color: #444; font-size: 0.9rem; border-top: 1px solid #222; }
 
     /* MODES */
     body.mode-summary .deep-dive, body.mode-summary .sample-answer, body.mode-summary .checklist, body.mode-summary .mistakes, body.mode-summary .practice-box { display: none; }
@@ -277,39 +272,39 @@
 
     <!-- Q1 -->
     <section class="q-card" id="q1">
-        <h2>Q1: Evolution of Software Architecture (Monolith to Distributed)</h2>
+        <h2>Q1: Evolution of Software Architecture</h2>
         
         <div class="summary-box">
             <strong>Quick Summary:</strong>
             <ul>
-                <li>Evolution driven by <strong>scalability</strong> and <strong>agility</strong> needs.</li>
-                <li>Mainframe (Monolith) -> PC (Client-Server) -> Web (SOA) -> Cloud (Microservices).</li>
-                <li>Shift from <strong>Tight Coupling</strong> to <strong>Loose Coupling</strong>.</li>
-                <li>Modern systems favor decentralization and fault tolerance.</li>
+                <li>Evolution driven by need for <strong>Scalability</strong> and <strong>Agility</strong>.</li>
+                <li>Started with <strong>Monoliths</strong> (Mainframes).</li>
+                <li>Moved to <strong>Client-Server</strong> (PCs, 2-Tier/3-Tier).</li>
+                <li>Evolved to <strong>SOA</strong> (Enterprise Integration).</li>
+                <li>Currently at <strong>Microservices</strong> (Cloud-native).</li>
+                <li>Key shift: From Tight Coupling to Loose Coupling.</li>
             </ul>
         </div>
 
         <div class="definition">
-            <strong>Definition:</strong> The historical progression of software design paradigms, moving from single-unit <strong>Monolithic</strong> structures to decentralized <strong>Distributed Systems</strong>, aimed at solving complexity, deployment speed, and scaling challenges.
+            <strong>Definition:</strong> The evolution of software architecture refers to the historical progression of design paradigms from centralized, single-unit <strong>__Monoliths__</strong> to decentralized, loosely coupled <strong>__Distributed_Systems__</strong>, driven by the need to manage complexity, deployment speed, and massive scale.
         </div>
 
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p>The history of software architecture is fundamentally a story of managing complexity. In the early days of computing (1970s-80s), hardware was the constraint. Systems were built as <strong>Monoliths</strong>—huge, single executables running on mainframes. All layers (UI, Logic, Data) were tightly coupled in one codebase.</p>
+            <p>The history of software architecture is not just a list of dates; it is a story of how we handle <strong>Complexity</strong> and <strong>Scale</strong>. In the beginning (1960s-80s), hardware was expensive and rare. Software was built as <strong>Monoliths</strong> on Mainframes. A Monolith is a system where the User Interface (UI), Business Logic, and Data Access Code are all compiled into a single executable file. While simple to deploy (just copy one file), they had a fatal flaw: a <strong>Single Point of Failure</strong>. If one line of code had a bug, the entire banking system would crash. Scaling was "Vertical" (buying a bigger mainframe), which is incredibly expensive.</p>
             
-            <p><strong>Why it changed:</strong> As user bases grew, Monoliths hit a wall. They suffered from the "Single Point of Failure" problem—one bug could crash the entire system. Scaling meant "Vertical Scaling" (buying bigger, more expensive servers), which has a physical limit.</p>
+            <p><strong>The 1990s & Client-Server:</strong> As Personal Computers (PCs) became common, we needed to offload work from the mainframe. The <strong>Client-Server</strong> model was born. The "Client" (PC) handled the presentation (UI), and the "Server" handled the data. This introduced the concept of <strong>Logical Separation</strong>. Later, this evolved into <strong>3-Tier Architecture</strong> (Presentation -> Logic -> Data), which is still the foundation of many web apps today.</p>
 
-            <p><strong>The Client-Server Era (1990s):</strong> The rise of Personal Computers led to the first major split. The "Client" handled the presentation, and the "Server" handled the data. This 2-Tier (and later 3-Tier) architecture introduced the concept of <strong>logical separation</strong>.</p>
+            <p><strong>The 2000s & SOA:</strong> With the internet boom, large enterprises had dozens of disconnected systems (Billing, Shipping, Inventory) that needed to talk to each other. <strong>Service-Oriented Architecture (SOA)</strong> was the solution. It introduced the <strong>Enterprise Service Bus (ESB)</strong>—a smart pipe that connected dumb endpoints. Services communicated via heavy XML/SOAP messages. While it solved integration, the ESB became a bottleneck, and the complexity was immense.</p>
 
-            <p><strong>SOA (2000s):</strong> With the internet, enterprises needed distinct systems (like Billing and Shipping) to talk to each other. <strong>Service Oriented Architecture (SOA)</strong> introduced the Enterprise Service Bus (ESB). It focused on reusability but was heavy and complex (XML/SOAP).</p>
-
-            <p><strong>Microservices (2010s - Present):</strong> The Cloud era (AWS, Azure) demanded infinite scale. Applications are now broken into tiny, autonomous services. Each service has its own database and can be deployed independently. This enables <strong>Horizontal Scaling</strong> (adding more cheap servers) and allows teams to work in parallel using different technologies.</p>
-
-            <p><strong>Trade-off:</strong> While distributed systems offer scale and resilience, they introduce massive <strong>complexity</strong> in networking, debugging, and data consistency (CAP theorem).</p>
+            <p><strong>The 2010s & Microservices:</strong> The rise of Cloud Computing (AWS, Azure) and companies like Netflix changed everything. We needed systems that could scale infinitely and update daily. <strong>Microservices</strong> architecture breaks an application into tiny, completely autonomous services. Crucially, <strong>each service has its own database</strong>. They communicate via lightweight REST APIs. This allows <strong>Horizontal Scaling</strong> (adding cheap servers) and <strong>Fault Isolation</strong> (if the "Recommendations" service dies, "Video Playback" still works).</p>
+            
+            <p><strong>Trade-off:</strong> We traded the <em>simplicity of code</em> (Monolith) for the <em>complexity of operations</em> (Microservices). Managing 1000 tiny services requires advanced DevOps (Docker, Kubernetes).</p>
         </div>
 
         <div class="diagram-box">
-            <span class="diagram-label">ASCII Diagram</span>
+            <span class="diagram-label">Evolution Timeline</span>
 <pre>
   [ 1980s ]      [ 1990s ]         [ 2000s ]         [ 2010s+ ]
  MONOLITH     CLIENT-SERVER          SOA           MICROSERVICES
@@ -321,99 +316,75 @@
 </pre>
         </div>
 
-        <!-- Fallback for image if needed, keeping lightweight -->
-        <!-- <div class="img-placeholder">Real Image Fallback: Evolution_Chart.png</div> -->
-
         <div class="sample-answer">
-            <strong>Sample Answer (7 Marks)</strong>
-            <p><strong>Definition:</strong> The evolution of software architecture represents the transition from centralized, rigid systems to decentralized, flexible distributed systems.</p>
-            <p><strong>Key Phases:</strong>
-            <br>1. <strong>Monolithic Architecture:</strong> The earliest phase where all modules (UI, Business Logic, Data) were bundled into a single artifact. It was simple to develop but suffered from tight coupling and vertical scaling limits.
-            <br>2. <strong>Client-Server/Layered:</strong> Introduced logical separation (e.g., 3-Tier Architecture), decoupling the User Interface from the Database, improving maintainability.
-            <br>3. <strong>Service-Oriented Architecture (SOA):</strong> Focused on enterprise integration using an ESB and SOAP, allowing large disparate systems to interoperate.
-            <br>4. <strong>Microservices:</strong> The modern standard for cloud-native apps. It decomposes systems into small, autonomous services communicating via REST. This enables <strong>continuous deployment</strong> and infinite horizontal scaling.</p>
+            <h4>Sample Answer (7 Marks)</h4>
+            <p>The evolution of software architecture represents the transition from centralized, rigid systems to decentralized, flexible distributed systems to meet the demands of scale and agility.</p>
+            <p><strong>1. Monolithic Architecture:</strong> The earliest phase where all modules (UI, Business Logic, Data) were bundled into a single artifact. It was simple to develop but suffered from tight coupling, single points of failure, and vertical scaling limits.<br>
+            <strong>2. Client-Server/Layered:</strong> Introduced logical separation (e.g., 3-Tier Architecture), decoupling the User Interface from the Database, improving maintainability and security.<br>
+            <strong>3. Service-Oriented Architecture (SOA):</strong> Focused on enterprise integration using an Enterprise Service Bus (ESB) and SOAP protocol, allowing large disparate systems to interoperate.<br>
+            <strong>4. Microservices:</strong> The modern standard for cloud-native apps. It decomposes systems into small, autonomous services communicating via lightweight REST APIs. This enables <strong>continuous deployment</strong>, fault isolation, and infinite horizontal scaling.</p>
             <p><strong>Conclusion:</strong> The trend has consistently moved towards "Loose Coupling" to support the scale and speed of the modern web.</p>
         </div>
 
         <div class="checklist">
             <h4>7/7 Answer Checklist</h4>
             <ul>
-                <li>Mention "Vertical Scaling" vs "Horizontal Scaling".</li>
+                <li>Mention "Vertical Scaling" (Monolith) vs "Horizontal Scaling" (Microservices).</li>
                 <li>Keyword: <strong>Coupling</strong> (Tight to Loose).</li>
                 <li>Timeline: Mainframe -> PC -> Web -> Cloud.</li>
-                <li>Draw the 4-stage diagram showing the breakdown.</li>
+                <li>Draw the 4-stage diagram showing the breakdown of the box.</li>
                 <li>Mention "Single Point of Failure" for Monoliths.</li>
-            </ul>
-        </div>
-
-        <div class="mistakes">
-            <h4>Common Mistakes</h4>
-            <ul>
-                <li>Confusing SOA and Microservices (SOA uses ESB/SOAP, Microservices use REST/Smart Endpoints).</li>
-                <li>Forgetting to mention the driver of change (Scale/Internet).</li>
             </ul>
         </div>
 
         <div class="cheat-sheet">
             <h4>Revision Cheat Sheet</h4>
             <div class="cs-grid">
-                <div>
-                    <strong>Mnemonic:</strong> M-C-S-M<br>
-                    (Monolith, Client-Server, SOA, Microservices)
-                </div>
-                <div>
-                    <strong>Key Trend:</strong><br>
-                    Centralized DB -> Decentralized DB
-                </div>
-                <div>
-                    <strong>Monolith:</strong><br>
-                    Simple, Fast intra-call, Rigid.
-                </div>
-                <div>
-                    <strong>Microservices:</strong><br>
-                    Complex, Network latency, Agile.
-                </div>
+                <div><strong>Mnemonic:</strong> M-C-S-M<br>(Monolith, Client-Server, SOA, Microservices)</div>
+                <div><strong>Trend:</strong> Centralized DB -> Decentralized DB</div>
+                <div><strong>Monolith:</strong> Simple code, Hard deploy.</div>
+                <div><strong>Microservice:</strong> Complex ops, Easy deploy.</div>
             </div>
         </div>
     </section>
 
     <!-- Q2 -->
     <section class="q-card" id="q2">
-        <h2>Q2: Development Methodologies & Quality Model (ISO 9126)</h2>
+        <h2>Q2: Development Methodologies & ISO 9126</h2>
         
         <div class="summary-box">
             <strong>Quick Summary:</strong>
             <ul>
-                <li><strong>Waterfall:</strong> Linear, rigid, good for fixed requirements.</li>
-                <li><strong>Agile:</strong> Iterative, flexible, good for changing markets.</li>
-                <li><strong>ISO 9126:</strong> The international standard for software quality.</li>
-                <li>Key Attributes: Functionality, Reliability, Usability, Efficiency.</li>
+                <li><strong>Waterfall:</strong> Linear, Document-heavy, rigid.</li>
+                <li><strong>Agile:</strong> Iterative, Feedback-heavy, flexible.</li>
+                <li><strong>ISO 9126:</strong> The standard defining "Quality".</li>
+                <li>6 Quality Attributes: F-R-U-E-M-P.</li>
             </ul>
         </div>
 
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
             <p><strong>Part 1: Methodologies</strong><br>
-            How we build software matters as much as what we build.
-            <br><strong>Waterfall Model:</strong> A classical linear approach. Like construction, you finish the "Design" phase completely before starting "Coding".
-            <br>- <em>Pros:</em> Disciplined, easy to manage, clear milestones.
-            <br>- <em>Cons:</em> <strong>"No turning back"</strong>. If a requirement changes late, the project fails.
-            <br><strong>Agile Methodology (Scrum):</strong> An iterative approach. Software is built in small increments called <strong>Sprints</strong> (usually 2 weeks).
-            <br>- <em>Pros:</em> Rapid feedback, adaptable to market changes.
-            <br>- <em>Cons:</em> Scope creep, requires experienced developers.</p>
+            Software architecture doesn't exist in a vacuum; it depends on <em>how</em> we build.
+            <br><strong>Waterfall Model:</strong> This is the classical engineering approach derived from construction and manufacturing. You finish the "Requirements" phase completely before starting "Design", and finish "Design" before "Coding".
+            <br>- <em>Pros:</em> Highly disciplined, clear milestones, easy to budget for fixed-scope projects.
+            <br>- <em>Cons:</em> <strong>"No turning back"</strong>. If a requirement changes late in the cycle (which always happens in software), the cost to fix it is astronomical. It assumes we know everything at the start.
+            <br><strong>Agile Methodology (e.g., Scrum):</strong> An iterative approach born in the 2000s. Software is built in small increments called <strong>Sprints</strong> (usually 2 weeks). At the end of every sprint, we have a working product to show the user.
+            <br>- <em>Pros:</em> Rapid feedback loop, adaptable to market changes, reduced risk of building the "wrong" thing.
+            <br>- <em>Cons:</em> Can lead to "Scope Creep" (never-ending features), requires a highly skilled and disciplined team.</p>
 
             <p><strong>Part 2: ISO 9126 Quality Model</strong><br>
-            How do we define "Good" software? ISO 9126 provides a standard framework with 6 top-level characteristics:
-            <br>1. <strong>Functionality:</strong> Suitability, Accuracy, Security. (Does it do the job?)
-            <br>2. <strong>Reliability:</strong> Fault tolerance, Recoverability. (Does it stay up?)
-            <br>3. <strong>Usability:</strong> Learnability, Operability. (Can humans use it?)
-            <br>4. <strong>Efficiency:</strong> Time behavior, Resource utilization. (Is it fast?)
-            <br>5. <strong>Maintainability:</strong> Testability, Changeability. (Is it easy to fix?)
-            <br>6. <strong>Portability:</strong> Installability, Adaptability. (Can it move environments?)</p>
+            "Quality" is subjective. To make it objective, ISO 9126 provides a standard framework with 6 top-level characteristics that every architect must balance:
+            <br>1. <strong>Functionality:</strong> Does it do what is needed? (Suitability, Accuracy, Security).
+            <br>2. <strong>Reliability:</strong> Does it stay up? (Fault tolerance, Recoverability - e.g., can it restart after a crash?).
+            <br>3. <strong>Usability:</strong> Is it easy to use? (Learnability, Operability, Attractiveness).
+            <br>4. <strong>Efficiency:</strong> Is it fast and light? (Time behavior, Resource utilization - Memory/CPU).
+            <br>5. <strong>Maintainability:</strong> Is it easy to fix? (Analyzability, Changeability, Stability, Testability).
+            <br>6. <strong>Portability:</strong> Can it move environments? (Adaptability, Installability, Replaceability).</p>
         </div>
 
         <div class="diagram-box">
-            <span class="diagram-label">Methodology Diagram</span>
+            <span class="diagram-label">Methodology Comparison</span>
 <pre>
   WATERFALL (Linear)          AGILE (Iterative)
  [ Reqs ]                    (    Plan    )
@@ -427,36 +398,28 @@
         </div>
 
         <div class="sample-answer">
-            <strong>Sample Answer (7 Marks)</strong>
-            <p><strong>Software Development Methodologies:</strong>
-            <br>1. <strong>Waterfall:</strong> A sequential design process where progress flows steadily downwards. Each phase (Reqs, Design, Code, Test) must complete before the next begins. It is rigid and best for stable requirements.
-            <br>2. <strong>Agile:</strong> An iterative approach focusing on rapid delivery of small software increments. It values customer collaboration and responsiveness to change over following a strict plan.</p>
-            <p><strong>Software Quality Model (ISO 9126):</strong>
-            <br>To objectively measure quality, ISO 9126 defines six characteristics:
-            <br>- <strong>Functionality:</strong> Does it provide the required functions?
-            <br>- <strong>Reliability:</strong> Can it maintain performance under conditions?
-            <br>- <strong>Usability:</strong> Effort needed to learn and use.
-            <br>- <strong>Efficiency:</strong> Performance relative to resources.
-            <br>- <strong>Maintainability:</strong> Effort needed to modify.
-            <br>- <strong>Portability:</strong> Ability to transfer environments.</p>
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>Software Development Methodologies:</strong><br>
+            1. <strong>Waterfall:</strong> A sequential design process where progress flows steadily downwards like a waterfall. Each phase (Requirements, Design, Implementation, Verification) must be completed before the next begins. It is rigid, document-driven, and best for stable requirements.<br>
+            2. <strong>Agile:</strong> An iterative approach focusing on rapid delivery of small software increments. It values customer collaboration and responsiveness to change over following a strict plan. Development happens in short cycles called Sprints.</p>
+            <p><strong>ISO 9126 Quality Model:</strong><br>
+            This international standard defines six characteristics to evaluate software quality:<br>
+            - <strong>Functionality:</strong> Suitability and accuracy of features.<br>
+            - <strong>Reliability:</strong> Capability to maintain performance levels (Fault tolerance).<br>
+            - <strong>Usability:</strong> Effort needed to learn and use the software.<br>
+            - <strong>Efficiency:</strong> Performance relative to resources used.<br>
+            - <strong>Maintainability:</strong> Effort needed to modify or fix bugs.<br>
+            - <strong>Portability:</strong> Ability to transfer from one environment to another.</p>
         </div>
 
-        <div class="cheat-sheet">
-            <h4>Revision Cheat Sheet</h4>
-            <div class="cs-grid">
-                <div>
-                    <strong>Mnemonic:</strong> F-R-U-E-M-P<br>
-                    (Func, Rel, Use, Eff, Maint, Port)
-                </div>
-                <div>
-                    <strong>Waterfall:</strong><br>
-                    Document-driven, Rigid.
-                </div>
-                <div>
-                    <strong>Agile:</strong><br>
-                    Feedback-driven, Flexible.
-                </div>
-            </div>
+        <div class="checklist">
+            <h4>7/7 Answer Checklist</h4>
+            <ul>
+                <li>Contrast Linear (Waterfall) vs Iterative (Agile).</li>
+                <li>List all 6 ISO attributes clearly.</li>
+                <li>Use the Mnemonic F-R-U-E-M-P.</li>
+                <li>Mention "Sprints" for Agile.</li>
+            </ul>
         </div>
     </section>
 
@@ -467,35 +430,35 @@
         <div class="summary-box">
             <strong>Quick Summary:</strong>
             <ul>
-                <li>Architecture is not created in a vacuum.</li>
-                <li><strong>Inputs:</strong> Stakeholders, Organization, Technical Environment.</li>
-                <li><strong>Output:</strong> System.</li>
-                <li><strong>Feedback:</strong> The system changes the environment that created it.</li>
+                <li>Architecture is not static; it's a loop.</li>
+                <li><strong>Inputs:</strong> Stakeholders, Organization, Tech Environment.</li>
+                <li><strong>Output:</strong> The System.</li>
+                <li><strong>Feedback:</strong> The System changes the world, creating new inputs.</li>
             </ul>
         </div>
 
         <div class="definition">
-            <strong>Definition:</strong> The Architecture Business Cycle (ABC) is the concept that software architecture is a result of technical, business, and social influences, and the resulting system reciprocally influences those factors.
+            <strong>Definition:</strong> The Architecture Business Cycle (ABC) is a model illustrating that software architecture is a result of technical, business, and social influences, and the resulting system reciprocally influences and changes those very factors.
         </div>
 
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p>The architect does not design in isolation. They are "in the middle" of a cycle.</p>
+            <p>The architect does not design in a vacuum. They are "in the middle" of a cycle of influences.</p>
             <p><strong>1. Influences on the Architect (Inputs):</strong>
-            <br>- <strong>Stakeholders:</strong> Users want features, managers want low cost, testers want observability. These goals conflict. The architect must trade them off.
-            <br>- <strong>Developing Organization:</strong> <strong>Conway's Law</strong> states that "Systems mirror the communication structure of the organization." If you have 3 disconnected teams, you will likely build a system with 3 disconnected parts.
-            <br>- <strong>Technical Environment:</strong> The tools, frameworks, and standards available at the time (e.g., "We must use AI because it's trending") force design choices.
-            <br>- <strong>Architect's Experience:</strong> We stick to what we know. A Java architect will likely propose a Java solution.</p>
+            <br>- <strong>Stakeholders:</strong> Users want features, managers want low cost, testers want observability, security teams want locks. These goals conflict. The architect's job is to trade them off.
+            <br>- <strong>Developing Organization:</strong> <strong>Conway's Law</strong> is critical here. It states that "Systems mirror the communication structure of the organization." If you have 3 disconnected teams, you will likely build a system with 3 disconnected parts. Also, the organization's budget and existing skills constrain the design.
+            <br>- <strong>Technical Environment:</strong> The tools, frameworks, and standards available at the time force design choices. (e.g., "We must use AI because it's trending" or "We must use Cloud because physical servers are obsolete").
+            <br>- <strong>Architect's Experience:</strong> We stick to what we know. If an architect was successful with Java in the past, they will bias towards Java again.</p>
 
             <p><strong>2. The Feedback Loop (Return Cycle):</strong>
-            <br>Once the system is built and deployed, it changes the world:
-            <br>- <strong>Organization:</strong> The team acquires new skills (e.g., "Now we are experts in React").
-            <br>- <strong>Stakeholders:</strong> Seeing the system generates NEW requirements ("I didn't know I wanted this until I saw it").
-            <br>- <strong>Tech Env:</strong> A successful system might become a platform or standard for others.</p>
+            <br>Once the system is built and deployed, it doesn't just sit there. It changes the environment:
+            <br>- <strong>Organization:</strong> The team acquires new skills (e.g., "Now we are experts in Microservices"). This enables new types of architectures for the <em>next</em> project.
+            <br>- <strong>Stakeholders:</strong> Seeing the system generates NEW requirements ("I didn't know I wanted this feature until I saw the prototype").
+            <br>- <strong>Tech Env:</strong> A successful system (like AWS or Kafka) might become a platform or standard for others to build upon.</p>
         </div>
 
         <div class="diagram-box">
-            <span class="diagram-label">ABC Diagram</span>
+            <span class="diagram-label">ABC Cycle</span>
 <pre>
   [Stakeholders]   [Organization]   [Tech Env]
         |                |               |
@@ -516,6 +479,21 @@
 </pre>
         </div>
 
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p>The Architecture Business Cycle (ABC) demonstrates that architecture is not a one-time static event but a continuous loop of influence.</p>
+            <p><strong>Phase 1: Influences (Inputs)</strong>
+            <br>The architect designs the system based on constraints from:
+            <br>- <strong>Stakeholders:</strong> Who define the functional and non-functional requirements (Quality Attributes).
+            <br>- <strong>Developing Organization:</strong> Staff skills, budget, and team structure (Conway's Law) constrain the design.
+            <br>- <strong>Technical Environment:</strong> Current industry standards, tools, and frameworks available.
+            <br>- <strong>Architect’s Experience:</strong> Personal bias and expertise.</p>
+            <p><strong>Phase 2: Output</strong>
+            <br>These inputs produce the <strong>__Architecture__</strong>, which leads to the implementation of the <strong>__System__</strong>.</p>
+            <p><strong>Phase 3: Feedback</strong>
+            <br>The existence of the system changes the environment. It creates new market opportunities, trains the organization in new technologies, and alters stakeholder expectations, thus restarting the cycle with new inputs for the next iteration.</p>
+        </div>
+
         <div class="checklist">
             <h4>7/7 Answer Checklist</h4>
             <ul>
@@ -526,6 +504,16 @@
                 <li>Mention <strong>Conway's Law</strong>.</li>
             </ul>
         </div>
+        
+        <div class="cheat-sheet">
+            <h4>Mnemonic: S-O-T-E</h4>
+            <div class="cs-grid">
+                <div><strong>S</strong>takeholders</div>
+                <div><strong>O</strong>rganization</div>
+                <div><strong>T</strong>ech Env</div>
+                <div><strong>E</strong>xperience</div>
+            </div>
+        </div>
     </section>
 
     <!-- Q4 -->
@@ -534,36 +522,40 @@
         
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p>Different eras produced different ways to categorize "Quality".</p>
-            <p><strong>1. McCall’s Model (1977):</strong> Organized around three perspectives of the product lifecycle.
-            <br>- <strong>Product Revision:</strong> Can I change it? (Maintainability, Flexibility, Testability).
-            <br>- <strong>Product Transition:</strong> Can I move it? (Portability, Reusability, Interoperability).
-            <br>- <strong>Product Operation:</strong> Does it run well? (Correctness, Reliability, Efficiency, Integrity, Usability).</p>
+            <p>Different eras produced different ways to categorize "Quality". It's not enough to say "software is good"; we must define "good".</p>
+            
+            <p><strong>1. McCall’s Model (1977):</strong>
+            <br>This model organizes quality around three perspectives of the software lifecycle (The "Three Ps"):
+            <br>- <strong>Product Revision (Can I change it?):</strong> Maintainability (fix bugs), Flexibility (add features), Testability (validate it).
+            <br>- <strong>Product Transition (Can I move it?):</strong> Portability (new hardware), Reusability (new app), Interoperability (talk to others).
+            <br>- <strong>Product Operation (Does it run well?):</strong> Correctness, Reliability, Efficiency, Integrity (Security), Usability.</p>
 
-            <p><strong>2. Boehm’s Model (1978):</strong> A hierarchical model focusing on "General Utility".
-            <br>- <strong>Key Difference:</strong> It explicitly places <strong>Maintainability</strong> as a primary driver of utility. Boehm argued that if software costs too much to maintain, its utility is low, regardless of how fast it runs.</p>
+            <p><strong>2. Boehm’s Model (1978):</strong>
+            <br>A hierarchical model focusing on "General Utility".
+            <br>- <strong>Key Difference:</strong> It explicitly places <strong>Maintainability</strong> as a primary driver of utility. Boehm argued that if software costs too much to maintain, its utility is low, regardless of how fast it runs. It breaks "Utility" down into Portability, As-is Utility, and Maintainability.</p>
 
-            <p><strong>3. FURPS Model (HP):</strong> A simplified, functional industry model.
-            <br>- <strong>F</strong>unctionality: Features, Capabilities.
-            <br>- <strong>U</strong>sability: Human factors, Aesthetics.
-            <br>- <strong>R</strong>eliability: Frequency of failure, Recoverability.
-            <br>- <strong>P</strong>erformance: Speed, Throughput, Response time.
-            <br>- <strong>S</strong>upportability: Testability, Extensibility, Serviceability.</p>
+            <p><strong>3. FURPS Model (HP):</strong>
+            <br>A simplified, functional industry model developed by Hewlett-Packard.
+            <br>- <strong>F</strong>unctionality: Features, Capabilities, Security.
+            <br>- <strong>U</strong>sability: Human factors, Aesthetics, Documentation.
+            <br>- <strong>R</strong>eliability: Frequency of failure, Recoverability, MTBF (Mean Time Between Failures).
+            <br>- <strong>P</strong>erformance: Speed, Throughput, Response time, Resource usage.
+            <br>- <strong>S</strong>upportability: Testability, Extensibility, Serviceability, Installability.</p>
         </div>
 
         <div class="sample-answer">
-            <strong>Sample Answer (7 Marks)</strong>
+            <h4>Sample Answer (7 Marks)</h4>
             <p><strong>1. McCall’s Model:</strong> Classifies quality into three dimensions regarding the product's lifecycle:
-            <br>- <strong>Product Operation:</strong> (Correctness, Efficiency, Reliability)
-            <br>- <strong>Product Revision:</strong> (Maintainability, Flexibility, Testability)
-            <br>- <strong>Product Transition:</strong> (Portability, Reusability)
-            <br><strong>2. Boehm’s Model:</strong> A hierarchical model that prioritizes <strong>Maintainability</strong> as a key factor for "General Utility", suggesting that hard-to-maintain software has low value.
-            <br><strong>3. FURPS Model:</strong> An acronym developed by HP:
-            <br>- <strong>F</strong>unctionality
-            <br>- <strong>U</strong>sability
-            <br>- <strong>R</strong>eliability
-            <br>- <strong>P</strong>erformance
-            <br>- <strong>S</strong>upportability</p>
+            <br>- <strong>Product Operation:</strong> Characteristics like Correctness, Efficiency, and Reliability (Day-to-day use).
+            <br>- <strong>Product Revision:</strong> Characteristics like Maintainability, Flexibility, and Testability (Updating).
+            <br>- <strong>Product Transition:</strong> Characteristics like Portability and Reusability (Moving).</p>
+            <p><strong>2. Boehm’s Model:</strong> A hierarchical model that prioritizes <strong>Maintainability</strong> as a key factor for "General Utility", suggesting that hard-to-maintain software has low value regardless of features.</p>
+            <p><strong>3. FURPS Model:</strong> An acronym developed by HP:
+            <br>- <strong>F</strong>unctionality (Features)
+            <br>- <strong>U</strong>sability (Human factors)
+            <br>- <strong>R</strong>eliability (Failure rate)
+            <br>- <strong>P</strong>erformance (Speed)
+            <br>- <strong>S</strong>upportability (Maintenance)</p>
         </div>
         
         <div class="cheat-sheet">
@@ -572,6 +564,7 @@
                 <div><strong>McCall:</strong><br>Op, Rev, Trans.</div>
                 <div><strong>Boehm:</strong><br>Utility hierarchy.</div>
                 <div><strong>FURPS:</strong><br>F-U-R-P-S.</div>
+                <div><strong>Best Model:</strong><br>ISO 9126 (Combines all).</div>
             </div>
         </div>
     </section>
@@ -582,32 +575,33 @@
         
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p>Architecture is too complex to view from just one angle. We use different "Views" or models to describe it to different stakeholders.</p>
+            <p>Architecture is too complex to view from just one angle. Just as a building needs floor plans (structure), wiring diagrams (connections), and plumbing plans (flow), software needs multiple "Views" or models to describe it to different stakeholders.</p>
             
             <p><strong>1. Structural Model (The Skeleton):</strong>
             <br>Describes the static organization of the system.
             <br>- <em>Focus:</em> "What is it made of?"
-            <br>- <em>Elements:</em> Classes, Objects, Modules, Servers.
-            <br>- <em>Diagrams:</em> Class Diagrams, Component Diagrams.
-            <br>- <em>Audience:</em> Developers.</p>
+            <br>- <em>Elements:</em> Classes, Objects, Modules, Servers, Packages.
+            <br>- <em>Diagrams:</em> Class Diagrams, Component Diagrams, Deployment Diagrams.
+            <br>- <em>Audience:</em> Developers, System Admins.</p>
 
             <p><strong>2. Dynamic Model (The Blood Flow):</strong>
             <br>Describes the runtime behavior.
-            <br>- <em>Focus:</em> "What happens when I click this?"
-            <br>- <em>Elements:</em> State transitions, Message passing, Data flow.
-            <br>- <em>Diagrams:</em> Sequence Diagrams, State Charts.
-            <br>- <em>Audience:</em> Testers and Developers (debugging).</p>
+            <br>- <em>Focus:</em> "What happens when I click this button?" or "How does data move?"
+            <br>- <em>Elements:</em> State transitions, Message passing, Data flow, Event handling.
+            <br>- <em>Diagrams:</em> Sequence Diagrams, State Charts, Activity Diagrams.
+            <br>- <em>Audience:</em> Testers (for scenarios) and Developers (for debugging logic).</p>
 
             <p><strong>3. Process Model (The Construction):</strong>
-            <br>Describes the steps to build and run the system.
-            <br>- <em>Focus:</em> "Who does what?"
-            <br>- <em>Elements:</em> IDEs, Build scripts, CI/CD pipelines, Concurrency.
-            <br>- <em>Audience:</em> Project Managers, DevOps.</p>
+            <br>Describes the steps to build, integrate, and run the system.
+            <br>- <em>Focus:</em> "Who does what and when?"
+            <br>- <em>Elements:</em> IDEs, Build scripts, CI/CD pipelines, Concurrency, Threads.
+            <br>- <em>Audience:</em> Project Managers, DevOps Engineers.</p>
 
             <p><strong>4. Framework Model (The Pattern):</strong>
             <br>Describes the high-level architectural style or reference architecture used.
-            <br>- <em>Focus:</em> "What rules do we follow?"
-            <br>- <em>Examples:</em> "This is an MVC app", "This is a Pipe-and-Filter system".</p>
+            <br>- <em>Focus:</em> "What rules or templates do we follow?"
+            <br>- <em>Examples:</em> "This is an MVC app", "This is a Pipe-and-Filter system", "This is a Microservices app".
+            <br>- <em>Benefit:</em> It allows new developers to immediately understand the high-level constraints and philosophy of the system.</p>
         </div>
         
         <div class="checklist">
@@ -628,27 +622,29 @@
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
             <p><strong>1. Data-Flow Architecture:</strong>
-            <br>In this style, the entire structure is determined by the motion of data. Components are "workers" that wait for input data, transform it, and output it. There is <strong>no global state</strong>. The system is purely reactive to data availability.</p>
+            <br>In this style, the entire structure is determined by the motion of data. Components are "workers" that wait for input data, transform it, and output it. There is <strong>no global state</strong>. The system is purely reactive to data availability. It is like a factory assembly line.</p>
 
             <p><strong>2. Pipes and Filters (Subtype of Data-Flow):</strong>
-            <br>- <strong>Filters:</strong> Independent processing units. They read a stream, process it incrementally, and write to output. Crucially, Filter A <strong>does not know</strong> Filter B exists.
-            <br>- <strong>Pipes:</strong> Connectors that buffer and carry data.
+            <br>- <strong>Filters:</strong> Independent processing units. They read a stream, process it incrementally, and write to output. Crucially, Filter A <strong>does not know</strong> Filter B exists. They are completely decoupled.
+            <br>- <strong>Pipes:</strong> Connectors that buffer and carry data between filters.
             <br>- <em>Example:</em> UNIX Shell (`cat file | grep "err" | sort`).
-            <br>- <em>Pros:</em> High Reusability (mix & match filters), Concurrency.
-            <br>- <em>Cons:</em> Performance overhead (parsing/unparsing data between filters).</p>
+            <br>- <em>Pros:</em> High Reusability (mix & match filters), Concurrency (Filters A and B work simultaneously).
+            <br>- <em>Cons:</em> Performance overhead (parsing/unparsing data between filters), difficult to handle interactive applications.</p>
 
             <p><strong>3. Call-and-Return Architecture:</strong>
-            <br>The dominant style in classical programming (C, Java).
-            <br>- <strong>Main-Subroutine:</strong> A main controller explicitly calls sub-routines. The caller waits for the callee to finish.
+            <br>The dominant style in classical programming (C, Java, C++).
+            <br>- <strong>Main-Subroutine:</strong> A main controller explicitly calls sub-routines. The caller halts and waits for the callee to finish and return a value.
             <br>- <strong>Object-Oriented:</strong> Objects encapsulate data and call methods on each other.
-            <br>- <em>Pros:</em> Easy to reason about (sequential flow).
-            <br>- <em>Cons:</em> Tightly coupled components. Hard to distribute across a network.</p>
+            <br>- <em>Pros:</em> Easy to reason about (sequential flow - "I know what line runs next").
+            <br>- <em>Cons:</em> Tightly coupled components. Hard to distribute across a network because function calls assume shared memory.</p>
         </div>
 
         <div class="diagram-box">
+            <span class="diagram-label">Styles Diagram</span>
 <pre>
 PIPE & FILTER:
  [Source] -> (Pipe) -> [Filter A] -> (Pipe) -> [Filter B] -> [Sink]
+ (Data flows continuously like water)
 
 CALL & RETURN:
       [ Main Program ]
@@ -659,6 +655,18 @@ CALL & RETURN:
     \________|_________/
          (Returns)
 </pre>
+        </div>
+
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>1. Data-Flow Architecture:</strong> Access and movement of data define the system. Availability of data triggers computation. It promotes loose coupling and component independence.</p>
+            <p><strong>2. Pipes and Filters Style:</strong> A specific data-flow style where:
+            <br>- <strong>Filters:</strong> Are independent components that transform data streams.
+            <br>- <strong>Pipes:</strong> Are conduits connecting filters.
+            <br>- It is highly flexible; filters can be rearranged easily (e.g., Unix commands). However, it suffers from data parsing overhead.</p>
+            <p><strong>3. Call-and-Return Style:</strong> The classical imperative approach.
+            <br>- <strong>Main-Subroutine:</strong> A hierarchy where a main program invokes subroutines. Execution is sequential and synchronous.
+            <br>- It is simple to understand but scales poorly for distributed applications due to tight coupling.</p>
         </div>
     </section>
 
@@ -672,25 +680,26 @@ CALL & RETURN:
                 <li>REST is defined by <strong>6 Constraints</strong> (Roy Fielding).</li>
                 <li>It is resource-based, not action-based.</li>
                 <li><strong>Statelessness</strong> is the most critical constraint for scaling.</li>
+                <li>Breaking constraints = Not RESTful (just HTTP API).</li>
             </ul>
         </div>
 
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p>REST (Representational State Transfer) is often misunderstood as just "using JSON over HTTP". To be truly RESTful, an architecture must adhere to 6 constraints:</p>
+            <p>REST (Representational State Transfer) is often misunderstood as just "using JSON over HTTP". To be truly RESTful, an architecture must adhere to 6 constraints defined by Roy Fielding:</p>
             <ol>
-                <li><strong>Client-Server:</strong> Strict separation of concerns. Server stores data; Client handles UI. They evolve independently.</li>
-                <li><strong>Stateless:</strong> The server contains <strong>NO client state</strong>. Each request must contain all information (e.g., Auth Token) necessary to understand it. The server does not remember "User X is logged in". This allows any server to handle any request.</li>
-                <li><strong>Cacheable:</strong> Responses must explicitly label themselves as cacheable or non-cacheable to improve client performance.</li>
+                <li><strong>Client-Server:</strong> Strict separation of concerns. Server stores data; Client handles UI. They can evolve independently (e.g., change the React UI without touching the Java backend).</li>
+                <li><strong>Stateless (CRITICAL):</strong> The server contains <strong>NO client state</strong>. Each request must contain all information (e.g., Auth Token) necessary to understand it. The server does not remember "User X is logged in". This allows any server to handle any request, enabling massive scaling.</li>
+                <li><strong>Cacheable:</strong> Responses must explicitly label themselves as cacheable or non-cacheable. This reduces server load and improves client-side performance.</li>
                 <li><strong>Uniform Interface:</strong> The core constraint.
                     <ul>
                         <li>Resource Identification (URIs like `/users/1`).</li>
                         <li>Standard Methods (GET, POST, PUT, DELETE).</li>
-                        <li><strong>HATEOAS</strong> (Hypermedia as Engine of Application State) - API returns links to next possible actions.</li>
+                        <li><strong>HATEOAS</strong> (Hypermedia as Engine of Application State) - API returns links to next possible actions, making the API self-discoverable.</li>
                     </ul>
                 </li>
-                <li><strong>Layered System:</strong> The client cannot tell if it is connected directly to the end server or an intermediary (Load Balancer, CDN).</li>
-                <li><strong>Code on Demand (Optional):</strong> The server can extend client functionality by sending executable code (e.g., JavaScript).</li>
+                <li><strong>Layered System:</strong> The client cannot tell if it is connected directly to the end server or an intermediary (Load Balancer, CDN, Proxy). This allows security and caching layers to be added transparently.</li>
+                <li><strong>Code on Demand (Optional):</strong> The server can extend client functionality by sending executable code (e.g., JavaScript applets). This is the only optional constraint.</li>
             </ol>
         </div>
 
@@ -715,21 +724,22 @@ CALL & RETURN:
             <h3>Deep Explanation</h3>
             <p><strong>1. Layered Architecture:</strong>
             <br>Organizes the system into horizontal layers of abstraction.
-            <br>- <strong>Rule:</strong> Layer N provides services to Layer N+1. Layer N+1 only calls Layer N (Strict layering).
-            <br>- <strong>Layers:</strong> Presentation (UI) -> Business Logic -> Data Access (DAO) -> Database.
-            <br>- <em>Pros:</em> Separation of concerns, Testability (mock layers), Easy to swap layers (e.g., change DB without touching UI).
-            <br>- <em>Cons:</em> <strong>"Sinkhole antipattern"</strong> (requests passing through layers that do nothing but pass data), Latency.</p>
+            <br>- <strong>Rule:</strong> Layer N provides services to Layer N+1. Layer N+1 only calls Layer N (Strict layering). A layer should not skip the one below it.
+            <br>- <strong>Common Layers:</strong> Presentation (UI) -> Business Logic -> Data Access (DAO) -> Database.
+            <br>- <em>Pros:</em> Separation of concerns, Testability (you can mock layers), Easy to swap layers (e.g., change DB without touching UI).
+            <br>- <em>Cons:</em> <strong>"Sinkhole antipattern"</strong> (requests passing through layers that do nothing but pass data), Performance overhead due to multiple hops.</p>
 
             <p><strong>2. Data-Centered (Repository) Architecture:</strong>
             <br>A central data store is the primary means of communication.
-            <br>- <strong>Structure:</strong> A Central Repository (Database) surrounded by independent Clients.
+            <br>- <strong>Structure:</strong> A Central Repository (Database) surrounded by independent Clients. The components interact via the data store, not directly with each other.
             <br>- <em>Passive Repository:</em> Clients pull/push data (e.g., Standard DB apps).
-            <br>- <em>Active Blackboard:</em> Repository notifies clients when data changes (e.g., AI systems, IDEs like Eclipse).
-            <br>- <em>Pros:</em> Data integrity is centralized. Clients are decoupled from each other.
-            <br>- <em>Cons:</em> Repository is a <strong>Single Point of Failure</strong> and performance bottleneck.</p>
+            <br>- <em>Active Blackboard:</em> Repository notifies clients when data changes (e.g., AI systems, IDEs like Eclipse where the code editor updates the outline view automatically).
+            <br>- <em>Pros:</em> Data integrity is centralized. Clients are completely decoupled from each other.
+            <br>- <em>Cons:</em> The Repository is a <strong>Single Point of Failure</strong> and a major performance bottleneck.</p>
         </div>
 
         <div class="diagram-box">
+            <span class="diagram-label">Comparison Diagram</span>
 <pre>
 A. LAYERED:                  B. DATA-CENTERED:
 _____________________          [Client A]  [Client B]
@@ -744,6 +754,16 @@ _____________________
 | Data Access (DAO) |
 |___________________|
 </pre>
+        </div>
+
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>1. Layered Architecture:</strong> A hierarchical style where components are grouped into layers (Presentation, Business, Data). Each layer serves the one above it.
+            <br><em>Benefit:</em> It supports separation of concerns and maintainability.
+            <br><em>Drawback:</em> Request latency increases as data traverses multiple layers.</p>
+            <p><strong>2. Data-Centered Architecture:</strong> Relies on a central <strong>Repository</strong> accessible by all components. Components interact via the data store, not directly with each other.
+            <br><em>Benefit:</em> Excellent for data integrity and integrating independent tools (e.g., Eclipse IDE).
+            <br><em>Drawback:</em> The repository becomes a performance bottleneck and Single Point of Failure.</p>
         </div>
     </section>
 
@@ -766,9 +786,9 @@ _____________________
             <p><strong>Definition:</strong> An architectural style where an application is a collection of small, autonomous services, each running in its own process, communicating via lightweight mechanisms (HTTP/REST), and independently deployable.</p>
 
             <p><strong>Core Principles:</strong>
-            <br>- <strong>Database per Service:</strong> No shared big database. Each service owns its data.
+            <br>- <strong>Database per Service:</strong> No shared big database. Each service owns its data to ensure loose coupling.
             <br>- <strong>Smart Endpoints, Dumb Pipes:</strong> Logic is in the service, not the bus (unlike SOA).
-            <br>- <strong>Decentralized Governance:</strong> Teams choose their own tools (Polyglot persistence).</p>
+            <br>- <strong>Decentralized Governance:</strong> Teams choose their own tools (Polyglot persistence - one service uses Mongo, another uses SQL).</p>
 
             <p><strong>Benefits:</strong>
             <br>1. <strong>Agility:</strong> Small teams can work in parallel. Faster time-to-market.
@@ -779,7 +799,7 @@ _____________________
             <p><strong>Challenges:</strong>
             <br>1. <strong>Distributed Complexity:</strong> Network latency, debugging is hard (Requires Distributed Tracing).
             <br>2. <strong>Data Consistency:</strong> No ACID transactions across services. Must use "Eventual Consistency" (Sagas).
-            <br>3. <strong>Operational Overhead:</strong> Requires complex DevOps (Docker, Kubernetes).</p>
+            <br>3. <strong>Operational Overhead:</strong> Requires complex DevOps (Docker, Kubernetes) to manage hundreds of services.</p>
         </div>
 
         <div class="cheat-sheet">
@@ -804,6 +824,7 @@ _____________________
                 <ul>
                     <li><strong>Autonomy:</strong> Acts without direct intervention.</li>
                     <li><strong>Reactivity:</strong> Perceives environment changes.</li>
+                    <li><strong>Pro-activity:</strong> Goal-oriented behavior.</li>
                     <li><strong>Social Ability:</strong> Negotiates/Collaborates with other agents.</li>
                 </ul>
             <br>- <em>Use Cases:</em> Robotics, Stock trading bots, Traffic control systems.</p>
@@ -837,9 +858,9 @@ _____________________
             <p><strong>Key Concepts:</strong>
             <br>- <strong>Decoupling:</strong> The producer does not know who is listening. It just yells "Order Placed!" and moves on.
             <br>- <strong>Asynchronous:</strong> Non-blocking. The producer doesn't wait for the consumer.
-            <br>- <strong>Broker Topology:</strong> A central Event Bus (like Kafka/RabbitMQ) manages the flow.</p>
-            <p><strong>Pros:</strong> High scalability, easy to add new features (just add a new listener).
-            <br><strong>Cons:</strong> Hard to trace execution flow (no linear stack trace). "What triggered this?" is hard to answer.</p>
+            <br>- <strong>Broker Topology:</strong> A central Event Bus (like Kafka/RabbitMQ) manages the flow of events.</p>
+            <p><strong>Pros:</strong> High scalability, easy to add new features (just add a new listener), highly responsive.
+            <br><strong>Cons:</strong> Hard to trace execution flow (no linear stack trace). "What triggered this?" is hard to answer. Eventual consistency is tricky.</p>
         </div>
 
         <div class="diagram-box">
@@ -853,6 +874,14 @@ _____________________
       [Email Svc]    [Stock Svc]   [Log Svc]
 </pre>
         </div>
+
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>Event-Driven Architecture (EDA)</strong> is a design pattern that promotes the production, detection, and consumption of events.
+            <br><strong>Mechanism:</strong> Instead of direct requests, components emit events to an <strong>Event Bus</strong> (Broker). Subscribers listen to specific events and react asynchronously.
+            <br><strong>Benefits:</strong> It creates highly decoupled systems. Producers don't need to know about consumers, allowing for easy extensibility and high throughput.
+            <br><strong>Use Case:</strong> Real-time systems like Uber, Stock Markets, or IoT data processing.</p>
+        </div>
     </section>
 
     <!-- Q12 -->
@@ -863,15 +892,16 @@ _____________________
             <p><strong>Definition:</strong> ADLs are formal languages used to describe software architecture precisely, focusing on components and connectors (unlike programming languages which focus on algorithms).</p>
             
             <p><strong>Essential Features of an ADL:</strong>
-            <br>1. <strong>Components:</strong> Defines units of computation (e.g., database, server).
-            <br>2. <strong>Connectors:</strong> Defines interactions (e.g., pipes, SQL link).
-            <br>3. <strong>Configuration:</strong> Defines the topology/graph.
+            <br>1. <strong>Components:</strong> Defines units of computation (e.g., database, server, client).
+            <br>2. <strong>Connectors:</strong> Defines interactions (e.g., pipes, SQL link, RPC).
+            <br>3. <strong>Configuration:</strong> Defines the topology/graph (how components are wired).
             <br>4. <strong>Tool Support:</strong> Allows analysis (deadlock detection) and code generation.</p>
 
             <p><strong>Types/Examples:</strong>
             <br>- <strong>ACME:</strong> A generic interchange language to swap data between tools.
             <br>- <strong>Wright:</strong> Focuses on formal analysis of deadlocks and protocols.
-            <br>- <strong>Darwin:</strong> Focuses on distributed systems and dynamic structures.</p>
+            <br>- <strong>Darwin:</strong> Focuses on distributed systems and dynamic structures.
+            <br>- <strong>UML:</strong> While not strictly an ADL, UML 2.0 is the modern industry standard replacing many ADLs.</p>
         </div>
     </section>
 
@@ -881,15 +911,16 @@ _____________________
         
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
+            <p>These are legacy technologies for Distributed Objects.</p>
             <p><strong>1. CORBA (Common Object Request Broker Architecture):</strong>
             <br>- <strong>Goal:</strong> Language Independence. A C++ object calls a Java object.
             <br>- <strong>Mechanism:</strong> Uses an <strong>ORB</strong> (Object Request Broker) as a middleware bus. Interfaces are defined in <strong>IDL</strong> (Interface Definition Language).
-            <br>- <em>Use Case:</em> Legacy banking systems mixing Cobol mainframes with C++ clients.</p>
+            <br>- <em>Use Case:</em> Legacy banking systems mixing Cobol mainframes with C++ clients. Very complex.</p>
 
             <p><strong>2. Java RMI (Remote Method Invocation):</strong>
             <br>- <strong>Goal:</strong> Java-to-Java communication.
             <br>- <strong>Mechanism:</strong> Uses Stubs (Client-side proxy) and Skeletons (Server-side helper). It uses Java Serialization to send objects over the wire.
-            <br>- <em>Use Case:</em> Pure Java enterprise applications (EJB) in the early 2000s.</p>
+            <br>- <em>Use Case:</em> Pure Java enterprise applications (EJB) in the early 2000s. Simpler than CORBA but language-locked.</p>
 
             <p><strong>Comparison:</strong> CORBA is complex but universal. RMI is simple but Java-only.</p>
         </div>
@@ -919,7 +950,8 @@ _____________________
             <br>3. <strong>Controller:</strong> The Coordinator. Handles user input (clicks, keys), updates the Model, and selects the View.</p>
 
             <p><strong>Web MVC Variant:</strong>
-            <br>Controller (Server) receives request -> Updates DB (Model) -> Selects HTML Template (View) -> Returns to Browser.</p>
+            <br>Controller (Server) receives request -> Updates DB (Model) -> Selects HTML Template (View) -> Returns to Browser.
+            <br><em>Examples:</em> Spring MVC, Ruby on Rails, Django.</p>
         </div>
 
         <div class="diagram-box">
@@ -947,15 +979,15 @@ _____________________
             <p><strong>Definition:</strong> UML (Unified Modeling Language) is the standard visual language for specifying, visualizing, constructing, and documenting the artifacts of software systems.</p>
 
             <p><strong>Roles:</strong>
-            <br>1. <strong>Visualization:</strong> "A picture is worth 1000 lines of code." It helps stakeholders understand complex flows.
+            <br>1. <strong>Visualization:</strong> "A picture is worth 1000 lines of code." It helps stakeholders understand complex flows without reading code.
             <br>2. <strong>Specification:</strong> It defines precise interfaces and behaviors before coding starts.
             <br>3. <strong>Blueprint for Construction:</strong> CASE tools can generate code skeletons from UML diagrams.
             <br>4. <strong>Documentation:</strong> It serves as a permanent record for maintenance teams.</p>
 
             <p><strong>Key Diagrams for Architects:</strong>
-            <br>- <strong>Class Diagram:</strong> Static structure.
-            <br>- <strong>Sequence Diagram:</strong> Runtime interaction/timing.
-            <br>- <strong>Deployment Diagram:</strong> Physical hardware mapping.</p>
+            <br>- <strong>Class Diagram:</strong> Static structure (Inheritance, Composition).
+            <br>- <strong>Sequence Diagram:</strong> Runtime interaction/timing (Order of messages).
+            <br>- <strong>Deployment Diagram:</strong> Physical hardware mapping (Nodes and Artifacts).</p>
         </div>
     </section>
 
@@ -976,7 +1008,7 @@ _____________________
             <h3>Deep Explanation</h3>
             <p><strong>1. JSP (JavaServer Pages):</strong>
             <br>A technology for developing web pages that support dynamic content. It allows inserting Java code in HTML using tags (`<% code %>`).
-            <br>- <em>How it works:</em> The server translates the JSP into a Servlet (Java code) automatically upon the first request.</p>
+            <br>- <em>How it works:</em> The server translates the JSP into a Servlet (Java code) automatically upon the first request. It acts as the "View" in MVC.</p>
 
             <p><strong>2. Servlet Lifecycle:</strong>
             <br>Servlets are managed by a Web Container (e.g., Tomcat). The lifecycle has 4 phases:</p>
@@ -1001,19 +1033,38 @@ _____________________
 
     <!-- Q17 -->
     <section class="q-card" id="q17">
-        <h2>Q17: Cost Benefit Analysis (CBAM)</h2>
+        <h2>Q17: Cost Benefit Analysis Method (CBAM)</h2>
+        <div class="summary-box">
+            <strong>Quick Summary:</strong>
+            <ul>
+                <li>Economic modeling for architecture.</li>
+                <li>Decides "Which decision is worth the money?".</li>
+                <li>Calculates ROI for architectural strategies.</li>
+            </ul>
+        </div>
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p><strong>Definition:</strong> CBAM is an economic modeling method used to decide <strong>which</strong> architectural strategies should be implemented given a budget. It adds "Cost" and "ROI" to the technical analysis.</p>
-
+            <p><strong>Definition:</strong> CBAM answers the question: "We have limited budget. Which architectural improvement gives the best Return on Investment (ROI)?" It adds an economic dimension to technical decisions. It follows ATAM.</p>
             <p><strong>The Steps:</strong>
-            <br>1. <strong>Collate Scenarios:</strong> Gather feature requests/scenarios.
-            <br>2. <strong>Refine Scenarios:</strong> Pick the top ones based on business goals.
-            <br>3. <strong>Prioritize Scenarios:</strong> Stakeholders vote (allocate 100 points).
-            <br>4. <strong>Assign Utility:</strong> How much "benefit" does this scenario provide?
-            <br>5. <strong>Develop Strategies:</strong> What architectural change is needed for this?
-            <br>6. <strong>Determine Cost:</strong> How much money/time to build it?
+            <br>1. <strong>Collate Scenarios:</strong> Gather all potential feature requests/improvements.
+            <br>2. <strong>Refine Scenarios:</strong> Filter the most relevant ones based on business goals.
+            <br>3. <strong>Prioritize Scenarios:</strong> Stakeholders vote (e.g., allocate 100 points to desired features).
+            <br>4. <strong>Assign Utility:</strong> How much "goodness" does this scenario bring? (High/Medium/Low).
+            <br>5. <strong>Develop Strategies:</strong> What technical changes are needed for this?
+            <br>6. <strong>Determine Cost:</strong> Estimate the effort/money to implement each strategy.
             <br>7. <strong>Calculate ROI:</strong> (Benefit / Cost). Rank strategies by ROI and select top ones until budget runs out.</p>
+        </div>
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>CBAM</strong> is an architectural evaluation method that focuses on the economic implications of design decisions. It helps stakeholders prioritize requirements based on ROI.
+            <br><strong>Process:</strong> It starts by gathering scenarios, prioritizing them based on business utility, developing architectural strategies to address them, estimating the cost of implementation, and finally calculating the ROI ratio. This ensures budget is spent on the highest-value changes.</p>
+        </div>
+        <div class="checklist">
+            <h4>7/7 Checklist</h4>
+            <ul>
+                <li>Mention "Economic Modeling" or "ROI".</li>
+                <li>List steps: Scenarios -> Utility -> Cost -> ROI.</li>
+            </ul>
         </div>
     </section>
 
@@ -1023,49 +1074,60 @@ _____________________
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
             <p><strong>Definition:</strong> ADD is a recursive design method where the architecture is generated by prioritizing <strong>Quality Attributes</strong> (Performance, Security) rather than just functional requirements.</p>
-
             <p><strong>The Recursive Process:</strong>
-            <br>1. <strong>Choose a Module</strong> to design.
-            <br>2. <strong>Identify Drivers:</strong> Pick the high-priority quality attributes (e.g., "Must handle 10k users").
-            <br>3. <strong>Choose a Pattern:</strong> Select an architectural tactic that satisfies the driver (e.g., "Use Load Balancer").
-            <br>4. <strong>Instantiate:</strong> Apply the pattern.
-            <br>5. <strong>Decompose:</strong> Break down the module and repeat step 1 for sub-modules.</p>
+            <br>1. <strong>Choose Module:</strong> Pick a part of the system to design (e.g., the Billing Module).
+            <br>2. <strong>Identify Drivers:</strong> What are the critical quality constraints? (e.g., "Must handle 10k users").
+            <br>3. <strong>Choose Pattern:</strong> Select a tactic that solves the constraint (e.g., "Use Load Balancer").
+            <br>4. <strong>Instantiate:</strong> Apply the pattern to the module.
+            <br>5. <strong>Decompose:</strong> Break down into smaller modules and repeat step 1 for sub-modules.</p>
+            <p><strong>Example:</strong> If "High Availability" is a driver, ADD dictates choosing a "Active-Passive Redundancy" pattern before designing any business logic.</p>
+        </div>
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>Attribute Driven Design (ADD)</strong> is a methodology that bases the decomposition of a system on its high-priority Quality Attributes.
+            <br><strong>Steps:</strong> It is a recursive process. The architect selects a module, identifies the key drivers (e.g., Security, Performance), chooses an architectural pattern to satisfy them, instantiates the pattern, and then decomposes the module further.
+            <br><strong>Example:</strong> If "High Availability" is a driver, ADD dictates choosing a "Redundancy" pattern before designing business logic.</p>
         </div>
     </section>
 
     <!-- Q19 -->
     <section class="q-card" id="q19">
-        <h2>Q19: ATAM (Tradeoff Analysis)</h2>
+        <h2>Q19: Architecture Tradeoff Analysis Method (ATAM)</h2>
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p><strong>Definition:</strong> ATAM is a method to evaluate an architecture <strong>before</strong> coding begins to identify risks.</p>
-
+            <p><strong>Definition:</strong> ATAM is a method to evaluate an architecture <strong>before</strong> coding begins to identify risks. It focuses on finding where quality attributes conflict.</p>
             <p><strong>Phases:</strong>
-            <br>1. <strong>Presentation:</strong> Architect presents the design; Stakeholders present business goals.
+            <br>1. <strong>Presentation:</strong> Architect presents design; Stakeholders present business goals.
             <br>2. <strong>Investigation:</strong> Generate a "Utility Tree" (prioritized quality goals).
             <br>3. <strong>Testing:</strong> Brainstorm scenarios (e.g., "What if the DB fails?"). Walk through the design to see if it holds up.
-            <br>4. <strong>Reporting:</strong> Present the findings.</p>
-
+            <br>4. <strong>Reporting:</strong> Output the findings.</p>
             <p><strong>Key Outputs (R-N-S-T):</strong>
             <br>- <strong>Risks:</strong> Decisions that might hurt quality.
             <br>- <strong>Non-Risks:</strong> Good decisions.
             <br>- <strong>Sensitivity Points:</strong> A component where a small change causes a big impact (e.g., "Encryption level heavily affects latency").
             <br>- <strong>Trade-off Points:</strong> Decisions that improve one attribute but hurt another (e.g., "Compression saves storage but hurts speed").</p>
         </div>
+        <div class="cheat-sheet"><h4>Mnemonic: R-N-S-T</h4></div>
     </section>
 
     <!-- Q20 -->
     <section class="q-card" id="q20">
-        <h2>Q20: ARID (Active Reviews)</h2>
+        <h2>Q20: Active Reviews for Intermediate Design (ARID)</h2>
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p><strong>Definition:</strong> ARID is a review method for <strong>partial</strong> designs or subsystems (unlike ATAM which is for the whole system). It checks if the design is actually usable by the developers.</p>
-
-            <p><strong>How it works:</strong>
-            <br>1. It is a hybrid of a <strong>Design Review</strong> and a <strong>Code Walkthrough</strong>.
-            <br>2. <strong>Reviewers:</strong> The developers who will use the design (e.g., who will consume the API).
-            <br>3. <strong>Process:</strong> Present a scenario. Ask the reviewers to write pseudo-code using the design to solve it.
-            <br>4. <strong>Pass/Fail:</strong> If the developers struggle to use the interface, the design fails.</p>
+            <p><strong>Definition:</strong> A review method for <strong>partial</strong> designs or subsystems (unlike ATAM which is for the whole system). It checks "suitability for use".</p>
+            <p><strong>Process:</strong>
+            <br>1. <strong>Reviewers:</strong> The developers who will <em>use</em> the design (e.g., the people consuming the API).
+            <br>2. <strong>Method:</strong> It is a hybrid of a <strong>Design Review</strong> and a <strong>Code Walkthrough</strong>.
+            <br>3. <strong>Action:</strong> Present a scenario. Ask reviewers to write pseudo-code using the design to solve it.
+            <br>4. <strong>Verdict:</strong> If they struggle to write the code, the interface is bad/hard to use.
+            <br><strong>Use Case:</strong> Testing a Framework or API design before releasing it.</p>
+        </div>
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>ARID</strong> is a validation method designed for partial architectures or subsystems (like an API or Framework).
+            <br><strong>How it works:</strong> It combines a design review with a code walkthrough. The reviewers are the future users (developers). They are given scenarios and asked to write pseudo-code using the proposed design.
+            <br><strong>Goal:</strong> To ensure the design is practical and usable before full implementation.</p>
         </div>
     </section>
 
@@ -1076,12 +1138,14 @@ _____________________
             <h3>Deep Explanation</h3>
             <p><strong>Part 1: Refinement</strong>
             <br>Refinement is the gradual process of converting high-level abstract specifications into low-level executable code.
-            <br><em>Chain:</em> Conceptual Arch -> Logical Design -> Physical Design -> Code.</p>
+            <br><em>Chain:</em> Conceptual Architecture -> Logical Design -> Physical Design -> Implementation Code.
+            <br>It ensures that the final code actually matches the architectural intent.</p>
 
             <p><strong>Part 2: Principles of Sound Documentation</strong>
+            <br>Documentation is useless if nobody reads it. Good principles are:
             <br>1. <strong>Write for the Reader:</strong> Identify who is reading (Manager vs Coder) and write for them.
-            <br>2. <strong>Avoid Repetition:</strong> Maintain a "Single Source of Truth".
-            <br>3. <strong>Record Rationale:</strong> Document <strong>WHY</strong> a decision was made, not just WHAT was made. This helps future maintainers.
+            <br>2. <strong>Avoid Repetition:</strong> Maintain a "Single Source of Truth". Don't copy-paste.
+            <br>3. <strong>Record Rationale:</strong> Document <strong>WHY</strong> a decision was made, not just WHAT was made. This helps future maintainers understand context.
             <br>4. <strong>Keep it Current:</strong> Outdated documentation is worse than no documentation.
             <br>5. <strong>Standardize:</strong> Use standard templates (Views and Viewpoints).</p>
         </div>
@@ -1089,23 +1153,21 @@ _____________________
 
     <!-- Q22 -->
     <section class="q-card" id="q22">
-        <h2>Q22: 7-Part Doc Template</h2>
+        <h2>Q22: 7-Part Documentation Template</h2>
         <div class="deep-dive">
             <h3>Deep Explanation</h3>
-            <p>When documenting a specific View (e.g., Component View), use this standard template:</p>
+            <p>When documenting a specific View (e.g., Component View), standard practice suggests using this 7-part template to ensure completeness:</p>
             <ol>
                 <li><strong>Primary Presentation:</strong> The main diagram (e.g., the UML Class diagram).</li>
-                <li><strong>Element Catalog:</strong> A dictionary describing every box/line in the diagram.</li>
-                <li><strong>Context Diagram:</strong> Shows how this part fits into the larger system.</li>
-                <li><strong>Variability Guide:</strong> Explains what is configurable or changeable.</li>
+                <li><strong>Element Catalog:</strong> A dictionary describing every box/line in the diagram in detail.</li>
+                <li><strong>Context Diagram:</strong> Shows how this part fits into the larger system (The Big Picture).</li>
+                <li><strong>Variability Guide:</strong> Explains what is configurable or changeable in this design.</li>
                 <li><strong>Architecture Background:</strong> Rationale, analysis, and why choices were made.</li>
                 <li><strong>Glossary:</strong> Definitions of terms used.</li>
                 <li><strong>Other Info:</strong> Authors, dates, version history.</li>
             </ol>
         </div>
-        <div class="cheat-sheet">
-            <h4>Mnemonic: P-E-C-V-A-G-O</h4>
-        </div>
+        <div class="cheat-sheet"><h4>Mnemonic: P-E-C-V-A-G-O</h4></div>
     </section>
 
     <!-- Q23 -->
@@ -1121,9 +1183,18 @@ _____________________
 
             <p><strong>Importance:</strong>
             <br>- Allows <strong>Parallel Development</strong> (Team A builds client, Team B builds server).
-            <br>- Allows <strong>Modifiability</strong> (You can rewrite the internals as long as the interface stays the same).</p>
+            <br>- Allows <strong>Modifiability</strong> (You can rewrite the internals as long as the interface stays the same).
+            <br>- <strong>IDL (Interface Definition Language)</strong> is often used to define these contracts formally.</p>
             
             <p><strong>Example:</strong> A REST API Swagger file is an architectural interface definition.</p>
+        </div>
+        <div class="sample-answer">
+            <h4>Sample Answer (7 Marks)</h4>
+            <p><strong>Software Interfaces</strong> define the boundary across which components exchange information. They act as a contract.
+            <br><strong>Types:</strong>
+            <br>- <strong>Provided Interface:</strong> The services a component offers to others.
+            <br>- <strong>Required Interface:</strong> The services a component needs to function.
+            <br><strong>Significance:</strong> Good interfaces enable parallel development (teams work on different sides of the contract) and modifiability (internals can change if the interface remains stable).</p>
         </div>
     </section>
 
