@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Architecture — Exam Master Notes</title>
+    <style>
+        :root {
+            --bg-body: #0f172a;       /* Slate 900 */
+            --bg-panel: #1e293b;      /* Slate 800 */
+            --bg-card: #334155;       /* Slate 700 */
+            --text-main: #f1f5f9;     /* Slate 100 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --accent: #3b82f6;        /* Blue 500 */
+            --accent-hover: #2563eb;  /* Blue 600 */
+            --success: #22c55e;       /* Green 500 */
+            --success-bg: rgba(34, 197, 94, 0.1);
+            --warning: #f59e0b;       /* Amber 500 */
+            --danger: #ef4444;        /* Red 500 */
+            --border: #475569;        /* Slate 600 */
+            --code-bg: #020617;       /* Slate 950 */
+            --font-main: system-ui, -apple-system, sans-serif;
+            --font-mono: 'Menlo', 'Consolas', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* --- Layout --- */
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
+            position: sticky;
+            top: 0;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+        }
+
+        .toc-list { list-style: none; padding: 1rem 0; }
+        .toc-item a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .toc-item a:hover, .toc-item a.active {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border-left-color: var(--accent);
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 300px;
+            flex: 1;
+            padding-bottom: 4rem;
+        }
+
+        /* Header */
+        .hero {
+            position: relative;
+            border-bottom: 1px solid var(--border);
+        }
+        .cover-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            opacity: 0.7;
+            display: block;
+        }
+        .hero-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(to top, var(--bg-body), transparent);
+        }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
+        /* Controls */
+        .controls {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            z-index: 40;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* Question Block */
+        .question-block {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            scroll-margin-top: 160px;
+        }
+
+        .q-header { margin-bottom: 1.5rem; border-bottom: 2px solid var(--accent); padding-bottom: 1rem; }
+        .q-title { font-size: 1.8rem; color: var(--accent); margin-bottom: 0.5rem; }
+        .q-meta { display: flex; gap: 15px; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); align-items: center; }
+        
+        .quick-summary {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid var(--accent);
+            padding: 1.2rem;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* Visuals */
+        .visuals { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 2rem 0; }
+        .vis-box { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; }
+        .vis-label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; font-weight: bold; display: flex; justify-content: space-between; }
+        
+        pre.ascii-art {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.2;
+            white-space: pre;
+            overflow-x: auto;
+            background: var(--code-bg);
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-main);
+            flex: 1;
+        }
+        
+        svg.diagram { width: 100%; height: auto; max-height: 300px; }
+        .diagram text { fill: var(--text-main); font-family: sans-serif; font-size: 12px; }
+        .diagram rect, .diagram circle, .diagram polygon { stroke: var(--text-main); fill: var(--bg-panel); stroke-width: 2; }
+        .diagram line, .diagram path { stroke: var(--text-main); stroke-width: 2; fill: none; }
+        .diagram .accent { stroke: var(--accent); }
+
+        /* Content Typography */
+        .deep-content h3 { font-size: 1.4rem; color: var(--text-main); margin: 2rem 0 1rem; border-left: 5px solid var(--accent); padding-left: 10px; }
+        .deep-content h4 { font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .deep-content p { margin-bottom: 1rem; text-align: justify; color: #cbd5e1; }
+        .deep-content ul, .deep-content ol { margin-left: 2rem; margin-bottom: 1.5rem; color: #cbd5e1; }
+        .deep-content li { margin-bottom: 0.5rem; }
+        .deep-content strong { color: white; font-weight: 700; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+        th, td { border: 1px solid var(--border); padding: 1rem; text-align: left; }
+        th { background: var(--bg-card); color: var(--accent); }
+
+        .example-box { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning); padding: 1.5rem; border-radius: 6px; margin: 1.5rem 0; }
+        .example-box h4 { color: var(--warning); margin-top: 0; display: flex; align-items: center; gap: 8px; }
+
+        /* Exam Aids */
+        .checklist-box { background: var(--success-bg); border: 1px solid var(--success); padding: 1.5rem; border-radius: 6px; margin-top: 2rem; }
+        .checklist-box h4 { color: var(--success); margin-top: 0; }
+        .checklist-box li { list-style: none; display: flex; gap: 10px; }
+        .checklist-box li:before { content: "✓"; font-weight: bold; }
+
+        .forget-box { background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--danger); padding: 1rem; margin-top: 1rem; }
+        .wording-box { border: 1px dashed var(--text-muted); padding: 1rem; margin-top: 1rem; font-style: italic; font-family: serif; background: var(--bg-panel); }
+
+        /* Cheat Sheet */
+        .cheat-sheet { margin-top: 2rem; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        .cs-header { background: var(--bg-card); padding: 1rem; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; }
+        .cs-body { padding: 1.5rem; display: none; background: var(--bg-panel); border-top: 1px solid var(--border); }
+        .cs-body.show { display: block; }
+        .cs-body ul { columns: 2; }
+
+        /* Modes */
+        body.revision-mode .deep-content, 
+        body.revision-mode .example-box { display: none; }
+        body.revision-mode .cs-body { display: block; } /* Auto show cheat sheet */
+        
+        body.diagrams-only .deep-content,
+        body.diagrams-only .quick-summary,
+        body.diagrams-only .checklist-box,
+        body.diagrams-only .forget-box,
+        body.diagrams-only .example-box,
+        body.diagrams-only .wording-box,
+        body.diagrams-only .cheat-sheet { display: none; }
+        body.diagrams-only .visuals { display: grid; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .visuals { grid-template-columns: 1fr; }
+            .controls { padding: 0.5rem; justify-content: space-between; }
+            .btn { font-size: 0.75rem; padding: 0.5rem; flex: 1; justify-content: center; }
+            .mobile-toggle { display: block; position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; z-index: 100; font-size: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        }
+        @media (min-width: 769px) { .mobile-toggle { display: none; } }
+
+        /* Print */
+        @media print {
+            body { background: white; color: black; }
+            .sidebar, .controls, .mobile-toggle, .q-actions { display: none !important; }
+            .main { margin: 0; }
+            .question-block { break-inside: avoid; border-bottom: 1px solid #000; page-break-after: always; }
+            .deep-content { display: block !important; }
+            .cs-body { display: block !important; border: 1px solid #000; }
+            svg.diagram text { fill: black; }
+            svg.diagram rect, svg.diagram circle { stroke: black; fill: none; }
+            pre.ascii-art { border: 1px solid #000; color: black; background: none; }
+            .deep-content h3, .deep-content h4 { color: black; border-color: black; }
+            .deep-content p, .deep-content li { color: black; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 style="color: var(--accent);">SA Exam Master</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">7th Sem B.Tech • RGPV</p>
+                <input type="text" id="search" class="search-box" placeholder="Filter questions..." onkeyup="filterContent()">
+            </div>
+            <ul class="toc-list" id="toc">
+                </ul>
+        </aside>
+
+        <main class="main">
+            <div class="hero">
+                <img src="/mnt/data/WhatsApp Image 2025-11-20 at 14.07.34_b9daf329.jpg" alt="Course Cover" class="cover-img">
+                <div class="hero-text">
+                    <h1>Software Architecture</h1>
+                    <p>Complete Exam Notes • Dark Mode • Offline Ready</p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="expandAll()">Expand All</button>
+                <button class="btn" onclick="collapseAll()">Collapse All</button>
+                <button class="btn" id="btnRevision" onclick="toggleMode('revision')">⚡ Revision Mode</button>
+                <button class="btn" id="btnDiagrams" onclick="toggleMode('diagrams')">🖼️ Diagrams Only</button>
+                <button class="btn" onclick="exportTxt()">📄 Export Text</button>
+                <button class="btn btn-primary" onclick="printPage()">🖨️ Download PDF</button>
+            </div>
+
+            <div id="content-area">
+                </div>
+
+            <footer style="padding: 3rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                Generated for Exam Success • Mobile First • 2025
+            </footer>
+        </main>
+    </div>
+
+<script>
+const questions = [
+    {
+        id: 1,
+        title: "Evolution of Software Architecture",
+        time: "20 min",
+        mnemonic: "M.C.D.S. (Monolithic > Client-Server > Distributed > Service-Oriented)",
+        summary: "Traces the journey from single-unit Mainframes to modern Microservices. The key drivers were the need for scalability, maintainability, and handling internet-scale traffic.",
+        definition: "<strong>Software Architecture Evolution</strong> refers to the historical transition of software structures from tightly coupled <strong>Monolithic</strong> systems to loosely coupled <strong>Distributed</strong> and <strong>Service-Oriented</strong> systems.",
+        ascii: `
+ [Phase 1: Monolith]    [Phase 2: Client-Server]    [Phase 3: Distributed]
+
+ +-------------+        +--------+   +--------+     +-----+   +-----+
+ | UI+Logic+DB |        | Client |---| Server |     | Svc |---| Svc |
+ | (All in 1)  |        +--------+   +--------+     +-----+   +-----+
+ +-------------+                                       ^         ^
+        |                                              | Network |
+    Single Node                                     +---------------+
+`,
+        drawTip: "Draw a timeline: One big box (Monolith) splitting into two (C-S) then many small ones (Distributed).",
+        svgContent: `<svg class="diagram" viewBox="0 0 400 150"><rect x="20" y="50" width="80" height="80" rx="4"/><text x="60" y="95" text-anchor="middle">Monolith</text><line x1="110" y1="90" x2="150" y2="90" class="accent"/><polygon points="150,90 140,85 140,95" fill="currentColor" stroke="none"/><rect x="160" y="30" width="60" height="40" rx="4"/><rect x="160" y="100" width="60" height="40" rx="4"/><line x1="190" y1="70" x2="190" y2="100" stroke-dasharray="4"/><text x="190" y="55" text-anchor="middle" font-size="10">Client</text><text x="190" y="125" text-anchor="middle" font-size="10">Server</text><line x1="230" y1="90" x2="270" y2="90" class="accent"/><rect x="280" y="40" width="30" height="30" rx="4"/><rect x="330" y="40" width="30" height="30" rx="4"/><rect x="305" y="100" width="30" height="30" rx="4"/><line x1="310" y1="55" x2="330" y2="55"/><line x1="295" y1="70" x2="310" y2="100"/><text x="320" y="145" text-anchor="middle" font-size="10">Distributed</text></svg>`,
+        body: `
+            <h3>1. Introduction</h3>
+            <p>Software architecture has evolved rapidly to meet the changing demands of businesses. In the early days (1970s), hardware was expensive and rare, leading to centralized <strong>Monolithic</strong> systems (Mainframes). As hardware became cheaper and networking improved, systems became <strong>Distributed</strong> to improve scalability and resilience.</p>
+
+            <h3>2. Stages of Evolution</h3>
+            <h4>A. Monolithic Architecture (1970s - 1980s)</h4>
+            <p>All software components (Presentation, Business Logic, Data Access) are bundled into a single deployable unit (e.g., a single .exe or .war file).</p>
+            <ul>
+                <li><strong>Pros:</strong> Simple to develop, debug, and deploy initially. High performance (no network latency).</li>
+                <li><strong>Cons:</strong> Single point of failure. Difficult to scale (must scale the whole app, not just parts). Technology lock-in.</li>
+            </ul>
+
+            <h4>B. Client-Server Architecture (1990s)</h4>
+            <p>The system is split into two parts: the <strong>Client</strong> (User Interface) requesting services, and the <strong>Server</strong> (Data/Logic) providing them.</p>
+            <ul>
+                <li><strong>2-Tier:</strong> Thick client talks directly to DB.</li>
+                <li><strong>3-Tier:</strong> Introduced an Application Layer between Client and DB.</li>
+            </ul>
+
+            <h4>C. Distributed / Service-Oriented Architecture (2000s)</h4>
+            <p>Systems are composed of autonomous services communicating over a network (ESB/SOAP). This allowed breaking down silos in enterprises.</p>
+
+            <h4>D. Modern Era (Microservices & Cloud)</h4>
+            <p>Applications are collections of small, loosely coupled services. Focus is on <strong>agility</strong>, <strong>automated deployment</strong> (DevOps), and <strong>cloud-native</strong> features.</p>
+
+            <h3>3. Comparison Table</h3>
+            <table>
+                <thead><tr><th>Feature</th><th>Monolithic</th><th>Distributed (Modern)</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Coupling</strong></td><td>High (Tight)</td><td>Low (Loose)</td></tr>
+                    <tr><td><strong>Scaling</strong></td><td>Vertical (Better Hardware)</td><td>Horizontal (More Nodes)</td></tr>
+                    <tr><td><strong>Failure Impact</strong></td><td>Total System Failure</td><td>Partial Failure (Resilient)</td></tr>
+                    <tr><td><strong>Development</strong></td><td>One large team</td><td>Small autonomous teams</td></tr>
+                </tbody>
+            </table>
+        `,
+        example: `<strong>Real World Example:</strong> Think of <strong>Netflix</strong>. In 2008, a single database corruption shut down their entire streaming service (Monolithic failure). They moved to AWS and Microservices. Now, if the "Recommendation Service" fails, you can still play movies (Distributed Resilience).`,
+        checklist: ["Timeline (1970s -> Now)", "Tight vs Loose Coupling", "Vertical vs Horizontal Scaling", "Mainframe mention"],
+        forget: ["To mention the driver of change (Internet/Scale).", "The distinction between 2-Tier and 3-Tier."],
+        wording: "Software architecture evolved from centralized, tightly coupled monolithic mainframes to decentralized, loosely coupled distributed systems to support internet-scale agility.",
+        cheatsheet: ["M.C.D.S.", "Monolith = One Block", "Distributed = Networked", "Scaling: Up vs Out", "Driver: Internet", "Coupling: High -> Low", "SOA -> Microservices", "Resilience increases", "Complexity increases"],
+    },
+    {
+        id: 2,
+        title: "Software Development Methodologies & Quality Models",
+        time: "15 min",
+        mnemonic: "FRUEMP (Func, Rel, Use, Eff, Main, Port)",
+        summary: "Covers HOW we build software (Waterfall/Agile) and HOW we measure it (ISO 9126). The Quality Model provides the standard metrics for 'good' software.",
+        definition: "<strong>Methodologies</strong> are process frameworks guiding development, while <strong>Quality Models</strong> (like ISO 9126) are hierarchical metrics to evaluate software excellence.",
+        ascii: `
+ [Methodologies]         [Quality Model: ISO 9126]
+    |                       |
+  1. Waterfall           +--+--+--+--+--+
+  2. Agile               F  R  U  E  M  P
+  3. Spiral
+`,
+        drawTip: "Left side: List methodologies. Right side: Tree diagram for ISO 9126 (FRUEMP).",
+        svgContent: `<svg class="diagram" viewBox="0 0 400 120"><rect x="150" y="10" width="100" height="30" rx="4"/><text x="200" y="30" text-anchor="middle">ISO 9126</text><line x1="200" y1="40" x2="200" y2="60" class="accent"/><line x1="20" y1="60" x2="380" y2="60" class="accent"/><line x1="20" y1="60" x2="20" y2="80"/><text x="20" y="95" text-anchor="middle" font-size="10">Func</text><line x1="92" y1="60" x2="92" y2="80"/><text x="92" y="95" text-anchor="middle" font-size="10">Rel</text><line x1="164" y1="60" x2="164" y2="80"/><text x="164" y="95" text-anchor="middle" font-size="10">Use</text><line x1="236" y1="60" x2="236" y2="80"/><text x="236" y="95" text-anchor="middle" font-size="10">Eff</text><line x1="308" y1="60" x2="308" y2="80"/><text x="308" y="95" text-anchor="middle" font-size="10">Main</text><line x1="380" y1="60" x2="380" y2="80"/><text x="380" y="95" text-anchor="middle" font-size="10">Port</text></svg>`,
+        body: `
+            <h3>1. Software Development Methodologies</h3>
+            <p>These are frameworks that structure, plan, and control the process of developing an information system.</p>
+            <ul>
+                <li><strong>Waterfall Model:</strong> Linear and sequential. Requirements -> Design -> Implementation -> Verification -> Maintenance.
+                    <br><em>Best for:</em> Projects with fixed, clear requirements (e.g., Defense systems).</li>
+                <li><strong>Agile Model:</strong> Iterative and incremental. Breaks product into small cycles (Sprints). Focuses on customer feedback.
+                    <br><em>Best for:</em> Web apps, startups, changing requirements.</li>
+                <li><strong>Spiral Model:</strong> Risk-driven. Combines Waterfall's systematic approach with Agile's iterative nature. Focuses heavily on Risk Analysis.</li>
+            </ul>
+
+            <h3>2. ISO 9126 Quality Model</h3>
+            <p>This standard defines 6 main characteristics of software quality (The FRUEMP mnemonic):</p>
+            <ol>
+                <li><strong>Functionality:</strong> Does the software provide the required functions? (Suitability, Accuracy, Security).</li>
+                <li><strong>Reliability:</strong> Can it maintain performance over time? (Fault tolerance, Recoverability).</li>
+                <li><strong>Usability:</strong> Is it easy to understand and learn? (Learnability, Operability).</li>
+                <li><strong>Efficiency:</strong> Does it use resources (CPU/RAM) well? (Time behavior).</li>
+                <li><strong>Maintainability:</strong> Is it easy to modify/fix? (Analyzability, Testability).</li>
+                <li><strong>Portability:</strong> Can it be moved to another environment? (Installability, Adaptability).</li>
+            </ol>
+        `,
+        example: `<strong>Example:</strong> When building a <strong>Banking App</strong>, <em>Security</em> (Functionality) and <em>Accuracy</em> are critical. When building a <strong>Game</strong>, <em>Efficiency</em> (FPS) and <em>Usability</em> take precedence.`,
+        checklist: ["Waterfall vs Agile", "FRUEMP definition", "Functionality vs Non-Functional Req", "Risk Analysis (Spiral)"],
+        forget: ["To list the sub-characteristics (e.g., Security under Functionality).", "That methodologies manage *process* while quality models measure *product*."],
+        wording: "Software quality is multi-dimensional; ISO 9126 standardizes this into six characteristics: Functionality, Reliability, Usability, Efficiency, Maintainability, and Portability.",
+        cheatsheet: ["Waterfall = Linear/Rigid", "Agile = Iterative/Flexible", "Spiral = Risk-Driven", "FRUEMP", "Functionality", "Reliability", "Usability", "Efficiency", "Maintainability", "Portability", "ISO 9126 Standard"],
+    },
+    {
+        id: 3,
+        title: "Software Architecture Business Cycle (ABC)",
+        time: "18 min",
+        mnemonic: "Loop: Stakeholder > Arch > System > Org",
+        summary: "Architecture is not static. It is influenced by business goals, and once built, the system changes the business, creating a feedback loop.",
+        definition: "The <strong>Architecture Business Cycle (ABC)</strong> illustrates the circular relationship where organizational goals drive architecture, and the resulting system feeds back to influence future organizational goals.",
+        ascii: `
+   Stakeholders --> Requirements
+        ^               |
+        |               v
+   [ Feedback ]    [ ARCHITECTURE ]
+        |               |
+        |               v
+   [ Organization ] <-- [ SYSTEM ]
+`,
+        drawTip: "Draw a clockwise cycle: Inputs (Top) -> Arch (Right) -> System (Bottom) -> Feedback (Left).",
+        svgContent: `<svg class="diagram" viewBox="0 0 400 150"><rect x="150" y="10" width="100" height="40" rx="4"/><text x="200" y="35" text-anchor="middle" font-weight="bold">Architecture</text><path d="M250 30 L300 60" fill="none" stroke="currentColor" stroke-width="2" marker-end="url(#arrow)"/><rect x="280" y="60" width="80" height="40" rx="4"/><text x="320" y="85" text-anchor="middle">System</text><path d="M320 100 L200 130 L80 100" fill="none" stroke="currentColor" stroke-width="2" marker-end="url(#arrow)"/><text x="200" y="145" text-anchor="middle" font-size="10">Feedback Loop</text><rect x="40" y="60" width="80" height="40" rx="4"/><text x="80" y="85" text-anchor="middle">Influences</text><path d="M80 60 L150 30" fill="none" stroke="currentColor" stroke-width="2" marker-end="url(#arrow)"/></svg>`,
+        body: `
+            <h3>1. Concept</h3>
+            <p>Software architecture is a result of technical, business, and social influences. It is not created in a vacuum.</p>
+
+            <h3>2. The Cycle Steps</h3>
+            <h4>A. Influences (The Inputs)</h4>
+            <ul>
+                <li><strong>Stakeholders:</strong> Customers, managers, and developers all have different concerns (Cost vs Performance vs Maintainability).</li>
+                <li><strong>Developing Organization:</strong> The company's structure, budget, and available skills dictate what can be built (Conway's Law).</li>
+                <li><strong>Technical Environment:</strong> Current tools, frameworks, and industry standards.</li>
+            </ul>
+
+            <h4>B. Software Architecture</h4>
+            <p>The architect synthesizes these inputs into a coherent structure.</p>
+
+            <h4>C. The System</h4>
+            <p>The architecture is implemented into a running system.</p>
+
+            <h4>D. The Feedback Loop (The Outputs)</h4>
+            <p>Once the system exists, it changes the world:</p>
+            <ul>
+                <li>It creates new business opportunities (changing goals).</li>
+                <li>It teaches the organization new skills (changing inputs).</li>
+                <li>It becomes a legacy system that future architectures must integrate with.</li>
+            </ul>
+        `,
+        example: `<strong>Example:</strong> Amazon started as a bookstore (Goal). They built a robust architecture to handle it. This architecture was so good they realized they could sell the infrastructure itself (AWS). The <strong>System</strong> changed the <strong>Business Goal</strong> from "Selling Books" to "Cloud Computing".`,
+        checklist: ["Stakeholders", "Technical Environment", "Organization Goals", "Feedback Loop", "Conway's Law"],
+        forget: ["The feedback arrow returning to the organization.", "That the system itself becomes an influence for the next cycle."],
+        wording: "The ABC demonstrates that architecture is a function of organizational requirements, and its existence subsequently alters the organizational environment.",
+        cheatsheet: ["ABC = Feedback Loop", "Input: Stakeholders", "Input: Tech Environment", "Input: Organization", "Output: System", "System changes Org", "Architecture is dynamic"],
+    },
+    // ... Continuing for all questions with similar depth ...
+    {
+        id: 4,
+        title: "Software Quality Models: McCall, Boehm, ISO, FURPS",
+        time: "20 min",
+        mnemonic: "McCall's PRI (Product Revision, Operation, Transition)",
+        summary: "A comparison of different ways to categorize software quality. McCall focuses on lifecycle phases, Boehm on utility, and FURPS on functional/non-functional split.",
+        definition: "Software Quality Models provide a taxonomy for defining software excellence. <strong>McCall</strong> (1977) and <strong>FURPS</strong> are foundational models that ensure no requirement is overlooked.",
+        ascii: `
+ [ McCall's Triangle ]
+
+       /   \
+  Revision  Operation
+      \   /
+    Transition
+`,
+        drawTip: "Draw a triangle. Label corners: Revision (Left), Operation (Right), Transition (Bottom).",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 150"><polygon points="150,20 50,130 250,130" fill="none" stroke="currentColor" stroke-width="2"/><text x="150" y="50" text-anchor="middle" font-size="10">Product Revision</text><text x="100" y="110" text-anchor="middle" font-size="10">Transition</text><text x="200" y="110" text-anchor="middle" font-size="10">Operation</text><circle cx="150" cy="90" r="20" fill="var(--bg-panel)" stroke="var(--accent)"/><text x="150" y="95" text-anchor="middle" font-weight="bold">Q</text></svg>`,
+        body: `
+            <h3>1. McCall’s Quality Model (1977)</h3>
+            <p>Organizes quality factors into three perspectives of the software lifecycle:</p>
+            <ul>
+                <li><strong>Product Operation (Using it):</strong> 
+                    <br><em>Correctness, Reliability, Efficiency, Integrity, Usability.</em></li>
+                <li><strong>Product Revision (Changing it):</strong> 
+                    <br><em>Maintainability, Flexibility, Testability.</em></li>
+                <li><strong>Product Transition (Moving it):</strong> 
+                    <br><em>Portability, Reusability, Interoperability.</em></li>
+            </ul>
+
+            <h3>2. Boehm’s Quality Model</h3>
+            <p>Hierarchical model. Starts with "General Utility" and breaks down into "As-is Utility", "Maintainability", and "Portability". It addresses the hardware utility aspect as well.</p>
+
+            <h3>3. FURPS Model (Hewlett-Packard)</h3>
+            <p>A popular acronym used in industry:</p>
+            <ul>
+                <li><strong>F</strong>unctionality (Feature set, Capabilities, Security)</li>
+                <li><strong>U</strong>sability (Human factors, Documentation)</li>
+                <li><strong>R</strong>eliability (Frequency of failure, MTBF)</li>
+                <li><strong>P</strong>erformance (Response time, Throughput)</li>
+                <li><strong>S</strong>upportability (Maintainability, Extensibility)</li>
+            </ul>
+            <p><em>Note: FURPS+ adds Design, Implementation, interface, and physical constraints.</em></p>
+        `,
+        example: `<strong>Comparison:</strong> McCall is best for <em>System Lifecycle</em> analysis. FURPS is best for <em>Requirements Gathering</em> because it maps directly to user needs.`,
+        checklist: ["McCall's 3 Pillars", "FURPS Acronym", "Boehm's Hierarchy", "Functional vs Non-Functional"],
+        forget: ["To list the specific attributes inside McCall's categories (e.g., Flexibility inside Revision).", "That FURPS+ exists."],
+        wording: "McCall's model bridges the gap between users (Operation) and developers (Revision), ensuring a holistic view of quality.",
+        cheatsheet: ["McCall = PRI", "Product Revision", "Product Operation", "Product Transition", "FURPS", "Func, Use, Rel, Perf, Supp", "Boehm = Utility"],
+    },
+    // ... I will generate the HTML strings for the rest of the questions efficiently ...
+];
+
+// Adding the rest of the data programmatically to ensure the output fits
+const moreQuestions = [
+    {
+        id: 5,
+        title: "Structural, Framework, Dynamic, and Process Models",
+        time: "15 min",
+        mnemonic: "SDPF (Structure, Dynamic, Process, Framework)",
+        summary: "Architecture requires multiple 'views'. Structure is the static code, Dynamic is the behavior, Process is the concurrency, Framework is the skeleton.",
+        definition: "To fully describe a system, we need multiple <strong>View Models</strong>: <strong>Structural</strong> (static), <strong>Dynamic</strong> (behavioral), <strong>Process</strong> (runtime), and <strong>Framework</strong> (patterns).",
+        ascii: `
+ View 1: [Structure] (Static)
+ View 2: [Dynamic]   (Behavior)
+ View 3: [Process]   (Threads)
+ View 4: [Framework] (Pattern)
+`,
+        drawTip: "Draw a stack of 4 documents labeled Structure, Dynamic, Process, Framework.",
+        svgContent: `<svg class="diagram" viewBox="0 0 400 100"><g transform="translate(20,10)"><rect width="70" height="80" fill="none" stroke="currentColor"/><text x="35" y="45" text-anchor="middle" font-size="10">Struct</text></g><g transform="translate(110,10)"><rect width="70" height="80" fill="none" stroke="currentColor"/><text x="35" y="45" text-anchor="middle" font-size="10">Dynam</text></g><g transform="translate(200,10)"><rect width="70" height="80" fill="none" stroke="currentColor"/><text x="35" y="45" text-anchor="middle" font-size="10">Process</text></g><g transform="translate(290,10)"><rect width="70" height="80" fill="none" stroke="currentColor"/><text x="35" y="45" text-anchor="middle" font-size="10">Frame</text></g></svg>`,
+        body: `<h3>1. Structural Model (Static)</h3><p>Describes the static code units. Elements: Components, Classes, Packages. <br><em>Diagrams:</em> Class Diagram, Component Diagram.</p><h3>2. Dynamic Model (Behavioral)</h3><p>Describes how the system behaves over time. Elements: States, Events, Transitions. <br><em>Diagrams:</em> Sequence Diagram, State Chart.</p><h3>3. Process Model (Concurrency)</h3><p>Describes the runtime execution. Elements: Processes, Threads, Synchronization. Focuses on performance and deadlock avoidance.</p><h3>4. Framework Model</h3><p>Describes the high-level patterns or skeletons used. Identifies if the system is MVC, Pipe-Filter, etc.</p>`,
+        checklist: ["Static vs Dynamic", "Process = Concurrency", "Framework = Skeleton", "Building Blueprint Analogy"],
+        wording: "A complete architectural description requires multiple views to capture static structure, runtime behavior, and concurrency concerns.",
+        cheatsheet: ["Structural = Static", "Dynamic = Behavior", "Process = Threads", "Framework = Pattern"],
+        forget: ["Framework model definition.", "Connecting Process model to performance."]
+    },
+    {
+        id: 6,
+        title: "Architectural Styles: Data-flow, Pipes & Filters, Call-and-Return",
+        time: "20 min",
+        mnemonic: "Pipe=Stream, Call=Tree",
+        summary: "Data-flow treats apps as streams of data transformation. Call-and-Return treats apps as a hierarchy of function calls.",
+        definition: "<strong>Architectural Styles</strong> are reusable patterns. <strong>Pipes & Filters</strong> focuses on data processing streams, while <strong>Call-and-Return</strong> focuses on control flow hierarchy.",
+        ascii: `
+ [Filter A] -> (Pipe) -> [Filter B]
+    ^                       ^
+ Independent             Buffer
+`,
+        drawTip: "Draw boxes (Filters) connected by arrows (Pipes).",
+        svgContent: `<svg class="diagram" viewBox="0 0 350 80"><rect x="10" y="20" width="80" height="40" rx="4" stroke="currentColor" fill="none"/><text x="50" y="45" text-anchor="middle">Filter</text><line x1="90" y1="40" x2="140" y2="40" stroke="currentColor" stroke-dasharray="4" marker-end="url(#arrow)"/><text x="115" y="30" text-anchor="middle" font-size="10">Pipe</text><rect x="140" y="20" width="80" height="40" rx="4" stroke="currentColor" fill="none"/><text x="180" y="45" text-anchor="middle">Filter</text><line x1="220" y1="40" x2="270" y2="40" stroke="currentColor" stroke-dasharray="4" marker-end="url(#arrow)"/><text x="245" y="30" text-anchor="middle" font-size="10">Pipe</text></svg>`,
+        body: `<h3>1. Data-Flow Architecture</h3><p>The architecture is determined by the motion of data through the system.</p><h4>Pipes and Filters</h4><ul><li><strong>Filter:</strong> Independent data transformer. Does not know about other filters.</li><li><strong>Pipe:</strong> Connector that buffers data.</li><li><strong>Use Case:</strong> Compilers, Unix Shells, Video Processing.</li><li><strong>Pros:</strong> Reusable, Easy to maintain. <strong>Cons:</strong> Parsing overhead.</li></ul><h3>2. Call-and-Return</h3><p>The classic programming style. Control flows in a hierarchy.</p><ul><li><strong>Main-Subroutine:</strong> Decomposition of functions.</li><li><strong>OO Systems:</strong> Objects calling methods.</li><li><strong>Pros:</strong> Clear control logic. <strong>Cons:</strong> Tightly coupled.</li></ul>`,
+        checklist: ["Filters are independent", "Pipes are buffers", "Unix Example", "Control vs Data Flow"],
+        cheatsheet: ["Pipes = Data Flow", "Filter = Independent", "Call-Return = Hierarchy", "Main-Subroutine"],
+        wording: "Pipes and Filters architecture decouples processing steps into independent filters connected by data buffers, ideal for stream processing.",
+        forget: ["That Filters must be independent (no shared state).", "Batch Sequential is a subtype."]
+    },
+    {
+        id: 7,
+        title: "Architectural Constraints of RESTful API",
+        time: "15 min",
+        mnemonic: "SCCLUC (Stateless, Client-Server, Cacheable, Layered, Uniform, Code)",
+        summary: "REST is not a protocol, it's a style defined by 6 constraints. If you break them, it's not REST.",
+        definition: "<strong>REST</strong> (Representational State Transfer) is an architectural style defined by 6 constraints that ensure scalability, simplicity, and reliability on the web.",
+        ascii: `
+ Client <--> [ Cache ] <--> Server
+   |                          |
+ Stateless                 Layered
+`,
+        drawTip: "Draw Client and Server with a Cache block in middle. Label 'Stateless'.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 100"><rect x="20" y="30" width="60" height="40" rx="4"/><text x="50" y="55" text-anchor="middle">Client</text><line x1="80" y1="50" x2="120" y2="50" stroke="currentColor"/><rect x="120" y="30" width="60" height="40" rx="4" stroke-dasharray="4"/><text x="150" y="55" text-anchor="middle">Cache</text><line x1="180" y1="50" x2="220" y2="50" stroke="currentColor"/><rect x="220" y="30" width="60" height="40" rx="4"/><text x="250" y="55" text-anchor="middle">Server</text><text x="150" y="90" text-anchor="middle" font-size="10" fill="var(--accent)">Stateless Interface</text></svg>`,
+        body: `<h3>The 6 Constraints</h3><ol><li><strong>Client-Server:</strong> Separation of UI (Client) and Data (Server). Allows independent evolution.</li><li><strong>Stateless:</strong> No session state on server. Each request contains all info (Auth tokens). Improves scalability.</li><li><strong>Cacheable:</strong> Responses must define cacheability. Reduces server load.</li><li><strong>Layered System:</strong> Client doesn't know if it's talking to the end server or a load balancer. Improves security.</li><li><strong>Uniform Interface:</strong> Standard API (URIs, GET/POST/PUT/DELETE). Decouples implementation.</li><li><strong>Code on Demand:</strong> (Optional) Server sends executable code (JS) to client.</li></ol>`,
+        checklist: ["SCCLUC Acronym", "Stateless detailed", "Uniform Interface", "HATEOAS mention (Bonus)"],
+        cheatsheet: ["SCCLUC", "Stateless", "Client-Server", "Cacheable", "Layered", "Uniform", "Code on Demand"],
+        wording: "REST relies on a stateless, client-server protocol where every request is self-contained, ensuring high scalability.",
+        forget: ["Code on Demand is optional.", "Why Layered improves security."]
+    },
+    {
+        id: 8,
+        title: "Layered vs Data-Centered Architecture",
+        time: "18 min",
+        mnemonic: "Stack vs Hub",
+        summary: "Layered is a hierarchy (like a cake). Data-Centered is a hub-and-spoke (like a wheel) around a database.",
+        definition: "<strong>Layered Architecture</strong> organizes components hierarchically, while <strong>Data-Centered Architecture</strong> relies on a central repository accessed by independent components.",
+        ascii: `
+ [ Layered ]       [ Data-Centered ]
+
+    [UI]               [Client]
+      |                    |
+   [Logic]       [Client]--[ DB ]--[Client]
+      |                    |
+    [DB]               [Client]
+`,
+        drawTip: "Layered: Stack of 3 boxes. Data-Centered: Central DB box with spokes.",
+        svgContent: `<svg class="diagram" viewBox="0 0 400 120"><g transform="translate(0,0)"><rect x="50" y="10" width="80" height="25"/><text x="90" y="27" text-anchor="middle" font-size="10">UI</text><rect x="50" y="40" width="80" height="25"/><text x="90" y="57" text-anchor="middle" font-size="10">Logic</text><rect x="50" y="70" width="80" height="25"/><text x="90" y="87" text-anchor="middle" font-size="10">Data</text><text x="90" y="110" text-anchor="middle" font-weight="bold">Layered</text></g><g transform="translate(200,0)"><circle cx="300" cy="50" r="25" fill="none" stroke="currentColor"/><text x="300" y="55" text-anchor="middle" font-size="10">Repo</text><rect x="240" y="10" width="40" height="20"/><line x1="280" y1="30" x2="290" y2="40" stroke="currentColor"/><rect x="320" y="10" width="40" height="20"/><line x1="320" y1="30" x2="310" y2="40" stroke="currentColor"/><text x="300" y="110" text-anchor="middle" font-weight="bold">Data-Centered</text></g></svg>`,
+        body: `<h3>1. Layered Architecture</h3><p>Components are grouped into horizontal layers. A layer only talks to the one below it.</p><ul><li><strong>Structure:</strong> Presentation -> Business -> Data Access -> DB.</li><li><strong>Pros:</strong> Separation of concerns, Testability.</li><li><strong>Cons:</strong> Performance overhead (must pass through all layers).</li></ul><h3>2. Data-Centered (Repository)</h3><p>A central data structure acts as the primary means of communication.</p><ul><li><strong>Structure:</strong> Central Repo + Independent Clients.</li><li><strong>Example:</strong> IDEs (Eclipse), CAD systems, Blackboard systems.</li><li><strong>Pros:</strong> Data integrity, Easy to add new clients.</li><li><strong>Cons:</strong> Repo is single point of failure and performance bottleneck.</li></ul>`,
+        checklist: ["Strict Layering", "Repository Bottleneck", "Web App vs IDE Example"],
+        cheatsheet: ["Layered = Stack", "Data-Centered = Hub", "Repo = Central", "Performance overhead"],
+        wording: "Layered architecture enforces hierarchical separation of concerns, whereas Data-Centered architecture facilitates integration via a shared repository.",
+        forget: ["Layer skipping (Relaxed layering).", "Blackboard style."]
+    },
+    {
+        id: 9,
+        title: "Microservices Architecture",
+        time: "20 min",
+        mnemonic: "Small, Independent, Decoupled",
+        summary: "The industry standard for large scale apps. Breaks monoliths into tiny, independent apps that talk over network.",
+        definition: "<strong>Microservices</strong> is an architectural style that structures an application as a collection of services that are highly maintainable, independently deployable, and organized around business capabilities.",
+        ascii: `
+     [API Gateway]
+       /       \
+    [Svc A]   [Svc B]
+      |         |
+    (DB A)    (DB B)
+`,
+        drawTip: "Gateway at top, connecting to Svc A and Svc B. Each Svc has its OWN Database cylinder.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 120"><rect x="110" y="10" width="80" height="30" rx="4"/><text x="150" y="30" text-anchor="middle">Gateway</text><line x1="130" y1="40" x2="90" y2="60" stroke="currentColor"/><line x1="170" y1="40" x2="210" y2="60" stroke="currentColor"/><rect x="60" y="60" width="60" height="30" rx="4"/><text x="90" y="80" text-anchor="middle">User</text><rect x="180" y="60" width="60" height="30" rx="4"/><text x="210" y="80" text-anchor="middle">Order</text><circle cx="90" cy="105" r="10" fill="none" stroke="currentColor"/><circle cx="210" cy="105" r="10" fill="none" stroke="currentColor"/><text x="90" y="108" text-anchor="middle" font-size="8">DB</text><text x="210" y="108" text-anchor="middle" font-size="8">DB</text></svg>`,
+        body: `<h3>Key Characteristics</h3><ul><li><strong>Database per Service:</strong> Services do not share databases. Decouples data logic.</li><li><strong>Independently Deployable:</strong> Update one service without redeploying the whole app.</li><li><strong>Smart Endpoints, Dumb Pipes:</strong> Logic is in the service, not the message bus.</li></ul><h3>Benefits</h3><ul><li><strong>Scalability:</strong> Scale only what's needed.</li><li><strong>Resilience:</strong> Fault isolation.</li><li><strong>Tech Freedom:</strong> Use Java for one, Python for another (Polyglot).</li></ul><h3>Challenges</h3><ul><li><strong>Complexity:</strong> Distributed system fallacies.</li><li><strong>Data Consistency:</strong> No ACID transactions across services (Eventual Consistency).</li></ul>`,
+        checklist: ["Database per Service", "Independent Deployment", "Polyglot Programming", "Scalability vs Complexity"],
+        cheatsheet: ["Small Services", "Independent DB", "Decentralized", "Polyglot", "Complexity is high"],
+        wording: "Microservices decompose applications into loosely coupled, independently deployable services focused on specific business domains.",
+        forget: ["Conway's Law.", "Testing difficulty."]
+    },
+    {
+        id: 10,
+        title: "Agent-based and Reactive Architecture",
+        time: "15 min",
+        mnemonic: "Reactive = RREM",
+        summary: "Agents are autonomous robots in software. Reactive systems are built to handle massive scale and failure.",
+        definition: "<strong>Agent-based architecture</strong> consists of autonomous agents that perceive and act. <strong>Reactive architecture</strong> relies on message-passing to ensure responsiveness, resilience, and elasticity.",
+        ascii: `
+ Agent: [Sense] -> [Think] -> [Act]
+
+ Reactive: [Msg] -> [Elastic] -> [Resilient]
+`,
+        drawTip: "Agent: Loop of Sense-Think-Act. Reactive: 4 boxes for RREM.",
+        svgContent: `<svg class="diagram" viewBox="0 0 350 80"><text x="10" y="45" font-weight="bold">Reactive:</text><rect x="80" y="10" width="50" height="60"/><text x="105" y="45" text-anchor="middle" font-size="8">Resp</text><rect x="140" y="10" width="50" height="60"/><text x="165" y="45" text-anchor="middle" font-size="8">Resil</text><rect x="200" y="10" width="50" height="60"/><text x="225" y="45" text-anchor="middle" font-size="8">Elast</text><rect x="260" y="10" width="50" height="60"/><text x="285" y="45" text-anchor="middle" font-size="8">Msg</text></svg>`,
+        body: `<h3>1. Agent-Based</h3><p>Used in AI and Robotics. Components are 'Agents'.</p><ul><li><strong>Characteristics:</strong> Autonomy, Social Ability, Reactivity, Pro-activeness.</li><li><strong>Use Case:</strong> Trading bots, Traffic control systems.</li></ul><h3>2. Reactive Architecture</h3><p>Defined by the <strong>Reactive Manifesto</strong>.</p><ul><li><strong>Responsive:</strong> Rapid consistent response times.</li><li><strong>Resilient:</strong> System stays responsive in face of failure.</li><li><strong>Elastic:</strong> System stays responsive under varying workload.</li><li><strong>Message-Driven:</strong> Asynchronous boundaries.</li></ul>`,
+        checklist: ["Agent Characteristics", "Reactive Manifesto", "RREM", "Robotics example"],
+        cheatsheet: ["Agent = Autonomous", "Reactive = RREM", "Responsive", "Resilient", "Elastic", "Message-Driven"],
+        wording: "Reactive systems are designed to be responsive, resilient, elastic, and message-driven to handle modern real-time demands.",
+        forget: ["Proactive behavior of agents.", "Reactive is for high-concurrency."]
+    },
+    {
+        id: 11,
+        title: "Event-Driven Architecture (EDA)",
+        time: "12 min",
+        mnemonic: "Fire and Forget",
+        summary: "Systems that react to things happening (Events). Highly decoupled.",
+        definition: "<strong>Event-Driven Architecture</strong> is a pattern where flow is determined by events (e.g., user actions, sensor outputs). Components produce and consume events asynchronously.",
+        ascii: `
+ [Producer] --> ( Event Bus ) --> [Consumer]
+                  |
+              [Consumer]
+`,
+        drawTip: "Producer on left, Consumer on right, central Bus/Queue.",
+        svgContent: `<svg class="diagram" viewBox="0 0 350 80"><rect x="10" y="25" width="70" height="30" rx="4"/><text x="45" y="45" text-anchor="middle">Prod</text><line x1="80" y1="40" x2="120" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="120" y="30" width="100" height="20" rx="10" fill="none" stroke="currentColor" stroke-dasharray="4"/><text x="170" y="45" text-anchor="middle">Event Bus</text><line x1="220" y1="40" x2="260" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="260" y="10" width="70" height="25" rx="4"/><text x="295" y="27" text-anchor="middle">Cons A</text><line x1="220" y1="40" x2="260" y2="60" stroke="currentColor" marker-end="url(#arrow)"/><rect x="260" y="50" width="70" height="25" rx="4"/><text x="295" y="67" text-anchor="middle">Cons B</text></svg>`,
+        body: `<h3>Core Components</h3><ul><li><strong>Producer:</strong> Generates event. Does not know consumer.</li><li><strong>Channel:</strong> Queue or Bus (Kafka, RabbitMQ).</li><li><strong>Consumer:</strong> Listens and reacts.</li></ul><h3>Topologies</h3><ul><li><strong>Mediator:</strong> Central hub orchestrates events (Complex).</li><li><strong>Broker:</strong> Chained events, no central brain (Simple).</li></ul><h3>Pros/Cons</h3><p><strong>Pros:</strong> Highly decoupled, Scalable. <strong>Cons:</strong> Hard to trace logic flow, Eventual consistency.</p>`,
+        checklist: ["Decoupling", "Async Communication", "Mediator vs Broker", "IoT Example"],
+        cheatsheet: ["Producer", "Consumer", "Channel", "Decoupled", "Async"],
+        wording: "EDA enables loose coupling by allowing components to communicate asynchronously via state change notifications.",
+        forget: ["Debug difficulty.", "Mediator topology."]
+    },
+    {
+        id: 12,
+        title: "Software Architecture Description Languages (ADLs)",
+        time: "18 min",
+        mnemonic: "3 Cs (Comp, Conn, Config)",
+        summary: "Formal languages to write architecture code, not app code. Used for analysis.",
+        definition: "<strong>ADLs</strong> are formal languages used to represent and analyze software architecture, focusing on <strong>Components</strong>, <strong>Connectors</strong>, and <strong>Configurations</strong>.",
+        ascii: `
+ ADL Code:
+  Component A { port p }
+  Component B { port q }
+  Connector C { A.p -> B.q }
+`,
+        drawTip: "Write pseudo-code showing Component, Connector, and System.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 100"><rect x="50" y="20" width="200" height="60" fill="none" stroke="currentColor" stroke-dasharray="4"/><text x="150" y="15" text-anchor="middle" font-size="10">System Config</text><rect x="70" y="35" width="60" height="30"/><text x="100" y="55" text-anchor="middle">Comp</text><rect x="170" y="35" width="60" height="30"/><text x="200" y="55" text-anchor="middle">Comp</text><line x1="130" y1="50" x2="170" y2="50" stroke="currentColor" stroke-width="4"/><text x="150" y="70" text-anchor="middle" font-size="8">Connector</text></svg>`,
+        body: `<h3>Key Elements (The 3 Cs)</h3><ul><li><strong>Components:</strong> Computational units (Clients, Servers).</li><li><strong>Connectors:</strong> Interaction mechanisms (Pipes, SQL).</li><li><strong>Configuration:</strong> The topology/graph of the system.</li></ul><h3>Examples</h3><ul><li><strong>ACME:</strong> Interchange standard.</li><li><strong>Wright:</strong> For formal analysis (deadlocks).</li><li><strong>Rapide:</strong> For simulation (events).</li></ul><h3>Why use ADL?</h3><p>Allows mathematical verification of the design before coding starts.</p>`,
+        checklist: ["Components, Connectors, Configuration", "ACME/Wright examples", "Verification capability"],
+        cheatsheet: ["Formal Language", "3 Cs", "ACME", "Wright", "Analysis Tool"],
+        wording: "ADLs provide a formal syntax to specify architectural structure and behavior, enabling automated analysis and verification.",
+        forget: ["That ADLs are not programming languages.", "Difference from UML."]
+    },
+    {
+        id: 13,
+        title: "CORBA and Java RMI",
+        time: "20 min",
+        mnemonic: "ORB = Broker",
+        summary: "Middleware that lets objects on different computers talk to each other.",
+        definition: "<strong>CORBA</strong> and <strong>RMI</strong> are distributed object standards. CORBA is language-neutral, while RMI is Java-centric.",
+        ascii: `
+ Client -> [Stub] -> (Net) -> [Skel] -> Server
+`,
+        drawTip: "Client -> Stub -> Network -> Skeleton -> Server.",
+        svgContent: `<svg class="diagram" viewBox="0 0 400 80"><rect x="20" y="20" width="60" height="40"/><text x="50" y="45" text-anchor="middle">Client</text><rect x="100" y="20" width="40" height="40" fill="none" stroke="currentColor"/><text x="120" y="45" text-anchor="middle" font-size="8">Stub</text><line x1="140" y1="40" x2="260" y2="40" stroke="currentColor" stroke-dasharray="4"/><text x="200" y="35" text-anchor="middle" font-size="8">Network / ORB</text><rect x="260" y="20" width="40" height="40" fill="none" stroke="currentColor"/><text x="280" y="45" text-anchor="middle" font-size="8">Skel</text><rect x="320" y="20" width="60" height="40"/><text x="350" y="45" text-anchor="middle">Server</text></svg>`,
+        body: `<h3>1. CORBA (Common Object Request Broker Arch)</h3><ul><li><strong>Language Neutral:</strong> Connect C++ to Java.</li><li><strong>IDL:</strong> Interface Definition Language defines the contract.</li><li><strong>ORB:</strong> Object Request Broker handles the message passing.</li></ul><h3>2. Java RMI (Remote Method Invocation)</h3><ul><li><strong>Java Only:</strong> Easier to use, but restricted to JVM.</li><li><strong>Mechanism:</strong> Uses Stub (Client Proxy) and Skeleton (Server Dispatcher).</li></ul>`,
+        checklist: ["Stub and Skeleton", "IDL role", "Language Neutral vs Java Only", "ORB definition"],
+        cheatsheet: ["CORBA = Multi-lang", "RMI = Java", "Stub (Client)", "Skeleton (Server)", "IDL"],
+        wording: "CORBA facilitates heterogeneous distributed computing via IDL and ORB, while RMI provides a native Java-to-Java remote invocation mechanism.",
+        forget: ["ORB's role as the 'bus'.", "IDL is crucial for CORBA."]
+    },
+    {
+        id: 14,
+        title: "Model View Controller (MVC)",
+        time: "15 min",
+        mnemonic: "Separation of Concerns",
+        summary: "The standard web pattern. Splits Data, UI, and Logic so you can change one without breaking others.",
+        definition: "<strong>MVC</strong> is a pattern that separates an application into <strong>Model</strong> (Data), <strong>View</strong> (UI), and <strong>Controller</strong> (Logic).",
+        ascii: `
+    User
+     |
+ [Controller] -> [Model]
+     |              |
+   [View] <---------+
+`,
+        drawTip: "Triangle flow: Controller -> Model -> View -> User -> Controller.",
+        svgContent: `<svg class="diagram" viewBox="0 0 200 120"><rect x="70" y="10" width="60" height="30"/><text x="100" y="30" text-anchor="middle">Model</text><rect x="10" y="80" width="60" height="30"/><text x="40" y="100" text-anchor="middle">View</text><rect x="130" y="80" width="70" height="30"/><text x="165" y="100" text-anchor="middle">Controller</text><line x1="165" y1="80" x2="130" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><line x1="70" y1="40" x2="40" y2="80" stroke="currentColor" stroke-dasharray="4" marker-end="url(#arrow)"/><text x="100" y="60" text-anchor="middle" font-size="8">Update</text></svg>`,
+        body: `<h3>Components</h3><ul><li><strong>Model:</strong> The data and business rules. Unaware of View/Controller.</li><li><strong>View:</strong> The presentation (HTML). Observes the model.</li><li><strong>Controller:</strong> Handles user input, updates model, selects view.</li></ul><h3>Benefits</h3><p>Parallel development (Frontend vs Backend teams), Testability, Ease of maintenance.</p>`,
+        checklist: ["Model = Data", "View = UI", "Controller = Logic", "Decoupling benefit"],
+        cheatsheet: ["Model", "View", "Controller", "Decoupled", "Parallel Dev"],
+        wording: "MVC decouples the user interface from the underlying data and logic, enabling independent evolution of components.",
+        forget: ["Model does NOT depend on View.", "Controller handles input."]
+    },
+    {
+        id: 15,
+        title: "Role of UML in Software Architecture",
+        time: "15 min",
+        mnemonic: "Visual Blueprint",
+        summary: "The standard drawing language for software. Like blueprints for a building.",
+        definition: "<strong>UML</strong> (Unified Modeling Language) is the standard visual modeling language used to specify, visualize, construct, and document software systems.",
+        ascii: `
+ [Class Diag]  [Seq Diag]
+    (Static)    (Dynamic)
+       \          /
+       [Architecture]
+`,
+        drawTip: "Show Static and Dynamic diagrams feeding into Architecture.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 80"><rect x="10" y="20" width="80" height="40"/><text x="50" y="45" text-anchor="middle" font-size="10">Class Diag</text><rect x="110" y="20" width="80" height="40"/><text x="150" y="45" text-anchor="middle" font-size="10">Seq Diag</text><rect x="210" y="20" width="80" height="40"/><text x="250" y="45" text-anchor="middle" font-size="10">Comp Diag</text><text x="150" y="75" text-anchor="middle" font-weight="bold">UML</text></svg>`,
+        body: `<h3>Role</h3><ul><li><strong>Visualization:</strong> Communicating complex ideas clearly.</li><li><strong>Specification:</strong> Precise blueprint for coders.</li><li><strong>Documentation:</strong> Legacy for future devs.</li></ul><h3>Diagram Types</h3><ul><li><strong>Static:</strong> Class, Object, Component, Deployment diagrams.</li><li><strong>Dynamic:</strong> Use Case, Sequence, State, Activity diagrams.</li></ul>`,
+        checklist: ["Visualization/Spec/Doc", "Static vs Dynamic", "Communication tool"],
+        cheatsheet: ["Standard", "Blueprinting", "Static/Dynamic", "Communication"],
+        wording: "UML acts as the lingua franca of software engineering, facilitating clear communication of architectural intent.",
+        forget: ["UML is a language, not a process.", "Deployment diagrams."]
+    },
+    {
+        id: 16,
+        title: "JSP and Lifecycle of Servlets",
+        time: "18 min",
+        mnemonic: "Init -> Service -> Destroy",
+        summary: "JSP is for the View (HTML), Servlet is for the Controller (Java).",
+        definition: "<strong>JSP</strong> is a technology for developing web pages with embedded Java. <strong>Servlets</strong> are Java classes that handle HTTP requests.",
+        ascii: `
+ Req -> [init()] -> [service()] -> [destroy()]
+                     /    \
+                  doGet  doPost
+`,
+        drawTip: "3 circles: Init (Start), Service (Loop), Destroy (End).",
+        svgContent: `<svg class="diagram" viewBox="0 0 350 80"><circle cx="50" cy="40" r="30"/><text x="50" y="45" text-anchor="middle">Init</text><line x1="80" y1="40" x2="120" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><circle cx="150" cy="40" r="30"/><text x="150" y="45" text-anchor="middle">Service</text><path d="M140 15 A 20 20 0 1 0 160 15" fill="none" stroke="currentColor"/><text x="150" y="10" text-anchor="middle" font-size="8">Loop</text><line x1="180" y1="40" x2="220" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><circle cx="250" cy="40" r="30"/><text x="250" y="45" text-anchor="middle">Destroy</text></svg>`,
+        body: `<h3>Servlet Lifecycle</h3><ol><li><strong>Init():</strong> Called once. Initialize DB.</li><li><strong>Service():</strong> Called per request. Dispatches to doGet/doPost.</li><li><strong>Destroy():</strong> Called at shutdown. Cleanup.</li></ol><h3>JSP</h3><p>Allows mixing HTML and Java. Compiles into a Servlet by the container. Used mainly for presentation.</p>`,
+        checklist: ["3 Lifecycle methods", "JSP compiles to Servlet", "Web Container"],
+        cheatsheet: ["Init (Once)", "Service (Many)", "Destroy (Once)", "JSP=View", "Servlet=Logic"],
+        wording: "The Servlet lifecycle involves initialization, request processing via service methods, and destruction, managed by the Web Container.",
+        forget: ["Service runs on multiple threads.", "JSP is ultimately a Servlet."]
+    },
+    {
+        id: 17,
+        title: "Cost Benefit Analysis Method (CBAM)",
+        time: "18 min",
+        mnemonic: "ROI of Architecture",
+        summary: "Adds the money factor to architecture. Helps decide what to build based on Return on Investment.",
+        definition: "<strong>CBAM</strong> is an economic modeling method that analyzes the costs and benefits (ROI) of architectural strategies to assist in prioritization.",
+        ascii: `
+ [ATAM Risks] -> [CBAM] -> [ROI List]
+`,
+        drawTip: "ATAM Output -> CBAM Process -> Prioritized List.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 80"><rect x="10" y="20" width="80" height="40"/><text x="50" y="45" text-anchor="middle">Scenarios</text><line x1="90" y1="40" x2="110" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="110" y="20" width="80" height="40" fill="none" stroke="currentColor"/><text x="150" y="45" text-anchor="middle">Costs</text><line x1="190" y1="40" x2="210" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="210" y="20" width="80" height="40"/><text x="250" y="45" text-anchor="middle">ROI</text></svg>`,
+        body: `<h3>Why CBAM?</h3><p>Technical perfection is expensive. CBAM helps decide "Is this feature worth the cost?". Usually follows ATAM.</p><h3>Steps</h3><ol><li><strong>Collate Scenarios:</strong> Gather feature requests.</li><li><strong>Refine:</strong> Determine best/worst case utility.</li><li><strong>Prioritize:</strong> Stakeholder voting.</li><li><strong>Assign Utility:</strong> Benefit score (0-100).</li><li><strong>Calculate ROI:</strong> Benefit divided by Cost.</li></ol>`,
+        checklist: ["ROI Calculation", "Follows ATAM", "Utility vs Cost", "Prioritization"],
+        cheatsheet: ["Economics", "ROI = Benefit/Cost", "Prioritize", "Post-ATAM"],
+        wording: "CBAM extends technical analysis with economic factors to determine the return on investment of architectural decisions.",
+        forget: ["It's about money.", "Utility curves."]
+    },
+    {
+        id: 18,
+        title: "Attribute Driven Design (ADD)",
+        time: "15 min",
+        mnemonic: "Recursive Decomposition",
+        summary: "Designing by looking at Quality Attributes (Drivers) first. A recursive top-down process.",
+        definition: "<strong>ADD</strong> is a systematic method to design software architecture by prioritizing <strong>Quality Attribute Drivers</strong> (like Performance, Security) and recursively selecting patterns.",
+        ascii: `
+ Choose Module -> [Drivers] -> [Pattern] -> Decompose
+        ^                                      |
+        |______________________________________|
+`,
+        drawTip: "Circular loop: Module -> Drivers -> Pattern -> Decompose -> Repeat.",
+        svgContent: `<svg class="diagram" viewBox="0 0 350 80"><text x="20" y="45" font-size="10">Module</text><line x1="50" y1="40" x2="70" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="70" y="20" width="60" height="40"/><text x="100" y="45" text-anchor="middle" font-size="10">Drivers</text><line x1="130" y1="40" x2="150" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="150" y="20" width="60" height="40"/><text x="180" y="45" text-anchor="middle" font-size="10">Pattern</text><line x1="210" y1="40" x2="230" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="230" y="20" width="70" height="40" fill="none" stroke="currentColor"/><text x="265" y="45" text-anchor="middle" font-size="10">Decompose</text></svg>`,
+        body: `<h3>Process</h3><ol><li><strong>Choose Module:</strong> Pick part of system.</li><li><strong>Identify Drivers:</strong> Find critical QAs (e.g., "Must handle 1M users").</li><li><strong>Choose Pattern:</strong> Select Arch Style (e.g., "Load Balancer").</li><li><strong>Instantiate:</strong> Apply it.</li><li><strong>Decompose:</strong> Break into sub-modules. Repeat.</li></ol>`,
+        checklist: ["Quality Attribute Drivers", "Recursive", "Top-down", "Pattern Selection"],
+        cheatsheet: ["Recursive", "Drivers = QA", "Select Pattern", "Decompose"],
+        wording: "ADD constructs the architecture iteratively by selecting patterns that satisfy the high-priority quality attribute drivers.",
+        forget: ["It is recursive.", "Drivers are the key input."]
+    },
+    {
+        id: 19,
+        title: "Architecture Tradeoff Analysis Method (ATAM)",
+        time: "20 min",
+        mnemonic: "Risk, Tradeoff, Sensitivity",
+        summary: "A way to test architecture before building it. Finds risks and tradeoffs.",
+        definition: "<strong>ATAM</strong> is an evaluation method used to analyze how well an architecture satisfies quality goals, producing a list of <strong>Risks</strong>, <strong>Sensitivity Points</strong>, and <strong>Trade-offs</strong>.",
+        ascii: `
+ [Arch] + [Scenarios] ==> [Analysis] ==> [Risks]
+`,
+        drawTip: "Inputs (Arch, Scenarios) -> Funnel -> Outputs (Risks).",
+        svgContent: `<svg class="diagram" viewBox="0 0 350 80"><rect x="10" y="20" width="80" height="40"/><text x="50" y="45" text-anchor="middle">Business</text><line x1="90" y1="40" x2="110" y2="40" stroke="currentColor"/><rect x="110" y="20" width="80" height="40"/><text x="150" y="45" text-anchor="middle">Arch</text><line x1="190" y1="40" x2="210" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><circle cx="240" cy="40" r="25" fill="none" stroke="currentColor"/><text x="240" y="45" text-anchor="middle" font-size="8">ATAM</text><line x1="265" y1="40" x2="290" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="290" y="20" width="50" height="40" stroke-dasharray="4" fill="none" stroke="currentColor"/><text x="315" y="45" text-anchor="middle" font-size="8">Risks</text></svg>`,
+        body: `<h3>4 Phases</h3><ol><li><strong>Presentation:</strong> Stakeholders and Architects present.</li><li><strong>Investigation:</strong> Generate scenarios (Use cases).</li><li><strong>Testing:</strong> Walkthrough scenarios against architecture.</li><li><strong>Reporting:</strong> Present findings.</li></ol><h3>Outputs</h3><ul><li><strong>Risks:</strong> Decisions that might fail.</li><li><strong>Sensitivity Points:</strong> Components where a small change has big impact.</li><li><strong>Trade-offs:</strong> Decisions improving one QA but hurting another (Security vs Speed).</li></ul>`,
+        checklist: ["Risks/Sensitivity/Trade-offs", "Scenario-based", "4 Phases"],
+        cheatsheet: ["Risks", "Trade-offs", "Sensitivity", "Scenarios", "Evaluation"],
+        wording: "ATAM evaluates architectural decisions against quality scenarios to identify risks and trade-offs early in the lifecycle.",
+        forget: ["It doesn't fix the architecture, just evaluates.", "Stakeholder involvement."]
+    },
+    {
+        id: 20,
+        title: "Active Reviews for Intermediate Design (ARID)",
+        time: "12 min",
+        mnemonic: "Test-drive the Design",
+        summary: "Testing a half-finished design to see if it's usable by developers.",
+        definition: "<strong>ARID</strong> is a lightweight evaluation method for partial designs, where developers write pseudo-code to test the suitability of the interfaces.",
+        ascii: `
+ [Partial Design] -> [Devs write code] -> [Pass/Fail]
+`,
+        drawTip: "Design -> Devs -> Code Test -> Result.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 80"><rect x="10" y="20" width="80" height="40" stroke-dasharray="4" fill="none" stroke="currentColor"/><text x="50" y="45" text-anchor="middle" font-size="8">Partial Design</text><line x1="90" y1="40" x2="120" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><rect x="120" y="20" width="80" height="40"/><text x="160" y="45" text-anchor="middle">Review</text><line x1="200" y1="40" x2="230" y2="40" stroke="currentColor" marker-end="url(#arrow)"/><text x="260" y="45" text-anchor="middle" font-weight="bold">Usable?</text></svg>`,
+        body: `<h3>Process</h3><ol><li><strong>Reviewers:</strong> Developers who will use the design.</li><li><strong>Scenarios:</strong> Specific design problems.</li><li><strong>Test:</strong> Reviewers write pseudo-code using the design's API.</li><li><strong>Verdict:</strong> Is the API easy to use?</li></ol><h3>Goal</h3><p>Finds interface issues in "work-in-progress" designs.</p>`,
+        checklist: ["Intermediate Design", "Reviewers = Developers", "Pseudo-code test"],
+        cheatsheet: ["Partial Design", "Dev Focused", "Usability", "Pseudo-code"],
+        wording: "ARID validates the usability of intermediate architectural designs by having developers simulate implementation via pseudo-code.",
+        forget: ["It's a hybrid of ADR and ATAM.", "Focus on API usability."]
+    },
+    {
+        id: 21,
+        title: "Refinement and Sound Documentation",
+        time: "15 min",
+        mnemonic: "Refine = Zoom In",
+        summary: "Refinement is making design concrete. Documentation is recording the 'Why'.",
+        definition: "<strong>Refinement</strong> is the transition from abstract design to concrete implementation. <strong>Sound Documentation</strong> ensures the design rationale is recorded for future stakeholders.",
+        ascii: `
+ [Abstract] --> [Concrete]
+ (Concept)      (Code)
+`,
+        drawTip: "Funnel shape: Abstract -> Refinement -> Concrete.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 80"><path d="M50 10 L250 10 L200 70 L100 70 Z" fill="none" stroke="currentColor"/><text x="150" y="30" text-anchor="middle">Abstract</text><text x="150" y="60" text-anchor="middle">Concrete</text><text x="150" y="80" text-anchor="middle" font-size="8">Refinement</text></svg>`,
+        body: `<h3>Refinement</h3><p>The process of adding detail. Architecture -> Design -> Code.</p><h3>Sound Documentation Principles</h3><ul><li><strong>Write for the Reader:</strong> Know if reader is Manager or Dev.</li><li><strong>Avoid Repetition:</strong> DRY principle.</li><li><strong>Record Rationale:</strong> Explain WHY a decision was made, not just WHAT.</li><li><strong>Keep Current:</strong> Update docs when code changes.</li></ul>`,
+        checklist: ["Abstract to Concrete", "Rationale recording", "Audience awareness"],
+        cheatsheet: ["Refinement", "Rationale", "Audience", "No Repetition"],
+        wording: "Refinement bridges the gap between high-level abstraction and low-level implementation, while documentation preserves the design intent.",
+        forget: ["Documentation is communication, not just filing.", "Refinement preserves correctness."]
+    },
+    {
+        id: 22,
+        title: "Seven Parts Template for Documentation",
+        time: "18 min",
+        mnemonic: "PECVAGO",
+        summary: "The standard structure for documenting a view so nothing is missed.",
+        definition: "The <strong>Seven Parts Template</strong> is a standard defined by the SEI for comprehensively documenting an architectural view.",
+        ascii: `
+ 1. Primary
+ 2. Element Cat
+ 3. Context
+ 4. Variability
+ 5. Background
+ 6. Glossary
+ 7. Other
+`,
+        drawTip: "List 1-7.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 150"><rect x="10" y="10" width="280" height="130" fill="none" stroke="currentColor"/><text x="150" y="30" text-anchor="middle" font-weight="bold">Doc Package</text><text x="30" y="60" font-size="10">1. Primary Presentation</text><text x="30" y="80" font-size="10">2. Element Catalog</text><text x="30" y="100" font-size="10">3. Context Diagram</text><text x="160" y="60" font-size="10">4. Variability Guide</text><text x="160" y="80" font-size="10">5. Rationale (Bg)</text><text x="160" y="100" font-size="10">6. Glossary</text></svg>`,
+        body: `<h3>The 7 Parts (PECVAGO)</h3><ol><li><strong>Primary Presentation:</strong> The main diagram (UML).</li><li><strong>Element Catalog:</strong> Detailed dictionary of components in the diagram.</li><li><strong>Context Diagram:</strong> How the system relates to the outside world.</li><li><strong>Variability Guide:</strong> What is configurable/changeable?</li><li><strong>Architecture Background:</strong> Rationale, Constraints, Why?</li><li><strong>Glossary:</strong> Definitions of terms.</li><li><strong>Other Info:</strong> Authors, Dates, Config management.</li></ol>`,
+        checklist: ["PECVAGO", "Primary Presentation", "Rationale", "Context"],
+        cheatsheet: ["PECVAGO", "Primary", "Catalog", "Context", "Variability", "Background"],
+        wording: "The seven-part template ensures consistent, complete, and navigable documentation for architectural views.",
+        forget: ["Variability guide.", "Context diagram."]
+    },
+    {
+        id: 23,
+        title: "Architecture Software Interfaces",
+        time: "15 min",
+        mnemonic: "Ball and Socket",
+        summary: "Contracts between components. Provided = I give this. Required = I need this.",
+        definition: "<strong>Interfaces</strong> define the boundary of a software component, specifying the services it <strong>Provides</strong> and the services it <strong>Requires</strong> from others.",
+        ascii: `
+   (Required)           (Provided)
+  --Need DB--)--[Comp]--(API Access--
+   (Socket)               (Ball)
+`,
+        drawTip: "Box with Cup (Socket) on left, Ball on right.",
+        svgContent: `<svg class="diagram" viewBox="0 0 300 80"><rect x="100" y="20" width="100" height="40"/><text x="150" y="45" text-anchor="middle">Component</text><line x1="200" y1="40" x2="240" y2="40" stroke="currentColor"/><circle cx="245" cy="40" r="5" fill="white"/><text x="245" y="60" text-anchor="middle" font-size="8">Provided</text><path d="M100 40 L60 40 M60 35 A 5 5 0 0 0 60 45" fill="none" stroke="currentColor"/><text x="55" y="60" text-anchor="middle" font-size="8">Required</text></svg>`,
+        body: `<h3>Types</h3><ul><li><strong>Provided Interface (Ball):</strong> Functions the component exposes to the world. The API.</li><li><strong>Required Interface (Socket):</strong> Functions the component needs from the world. Dependencies.</li></ul><h3>Importance</h3><p>Interfaces act as <strong>Contracts</strong>. They allow components to be swapped out as long as the interface remains the same (Decoupling).</p>`,
+        checklist: ["Provided vs Required", "Ball and Socket", "Contract concept", "Decoupling"],
+        cheatsheet: ["Contract", "Provided (Ball)", "Required (Socket)", "Decoupling", "Signature"],
+        wording: "Interfaces decouple implementation from interaction by strictly defining the provided and required services of a component.",
+        forget: ["That 'Required' is also an interface.", "Signature vs Semantics."]
+    }
+];
+
+// Combine arrays
+const allQuestions = [...questions, ...moreQuestions];
+
+// --- Logic ---
+
+function renderQuestions() {
+    const container = document.getElementById('content-area');
+    const toc = document.getElementById('toc');
+    
+    allQuestions.forEach(q => {
+        // TOC
+        const tocItem = document.createElement('li');
+        tocItem.className = 'toc-item';
+        tocItem.innerHTML = `<a href="#q${q.id}" id="link-q${q.id}">Q${q.id}: ${q.title.substring(0, 25)}...</a>`;
+        toc.appendChild(tocItem);
+
+        // Main Content
+        const section = document.createElement('div');
+        section.className = 'question-block';
+        section.id = `q${q.id}`;
+        
+        section.innerHTML = `
+            <div class="q-header">
+                <div class="q-title">Q${q.id}: ${q.title}</div>
+                <div class="q-meta">
+                    <span>⏱️ ${q.time}</span>
+                    <span>🧠 ${q.mnemonic}</span>
+                </div>
+            </div>
+
+            <div class="quick-summary">
+                <strong>Summary:</strong> ${q.summary}
+            </div>
+
+            <div class="deep-content">
+                <div style="font-size:1.1rem; margin-bottom:1.5rem;">${q.definition}</div>
+            </div>
+
+            <div class="visuals">
+                <div class="vis-box">
+                    <div class="vis-label">
+                        <span>ASCII Diagram</span>
+                        <button class="btn" style="padding:2px 6px; font-size:0.7rem;" onclick="copyText(this, '${q.ascii.trim().replace(/\n/g, "\\n")}')">Copy</button>
+                    </div>
+                    <pre class="ascii-art">${q.ascii.trim()}</pre>
+                    <div style="font-size:0.8rem; color:var(--warning); margin-top:5px;">Tip: ${q.drawTip}</div>
+                </div>
+                <div class="vis-box">
+                    <div class="vis-label"><span>Reference Diagram</span></div>
+                    ${q.svgContent}
+                    <div style="font-size:0.7rem; color:#64748b; margin-top:5px;">REFERENCE IMAGE</div>
+                </div>
+            </div>
+
+            <div class="deep-content">
+                ${q.body}
+                ${q.example ? `<div class="example-box"><h4>💡 Real World Example</h4>${q.example}</div>` : ''}
+            </div>
+
+            <div class="checklist-box">
+                <h4>✅ To Get 7/7 Write:</h4>
+                <ul>${q.checklist.map(i => `<li>${i}</li>`).join('')}</ul>
+            </div>
+
+            <div class="forget-box">
+                <strong>⚠️ Stuff students forget:</strong>
+                <ul>${q.forget.map(i => `<li>${i}</li>`).join('')}</ul>
+            </div>
+
+            <div class="wording-box">
+                <strong>📝 Expected Exam Wording:</strong> "${q.wording}"
+            </div>
+
+            <div class="cheat-sheet">
+                <div class="cs-header" onclick="this.nextElementSibling.classList.toggle('show')">
+                    <span>Cheat Sheet</span> <span>▼</span>
+                </div>
+                <div class="cs-body">
+                    <ul>${q.cheatsheet.map(i => `<li>${i}</li>`).join('')}</ul>
+                </div>
+            </div>
+        `;
+        container.appendChild(section);
+    });
+}
+
+// --- Functions ---
+
+function toggleMode(mode) {
+    const body = document.body;
+    body.classList.remove('revision-mode', 'diagrams-only');
+    document.getElementById('btnRevision').classList.remove('active');
+    document.getElementById('btnDiagrams').classList.remove('active');
+
+    if(mode === 'revision') {
+        body.classList.add('revision-mode');
+        document.getElementById('btnRevision').classList.add('active');
+    } else if (mode === 'diagrams') {
+        body.classList.add('diagrams-only');
+        document.getElementById('btnDiagrams').classList.add('active');
+    }
+}
+
+function expandAll() { document.querySelectorAll('.cs-body').forEach(el => el.classList.add('show')); }
+function collapseAll() { document.querySelectorAll('.cs-body').forEach(el => el.classList.remove('show')); }
+
+function filterContent() {
+    const term = document.getElementById('search').value.toLowerCase();
+    allQuestions.forEach(q => {
+        const el = document.getElementById(`q${q.id}`);
+        const link = document.getElementById(`link-q${q.id}`);
+        const text = (q.title + q.body + q.summary).toLowerCase();
+        const match = text.includes(term);
+        el.style.display = match ? 'block' : 'none';
+        link.style.display = match ? 'block' : 'none';
+    });
+}
+
+function copyText(btn, text) {
+    navigator.clipboard.writeText(text);
+    const original = btn.innerText;
+    btn.innerText = "✓";
+    setTimeout(() => btn.innerText = original, 1500);
+}
+
+function exportTxt() {
+    let txt = "SA EXAM NOTES\n\n";
+    allQuestions.forEach(q => {
+        txt += `Q${q.id}: ${q.title}\n${q.summary}\n\nmnemonic: ${q.mnemonic}\n\n${q.ascii}\n\n----------------\n`;
+    });
+    const blob = new Blob([txt], {type: 'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'SA_Notes.txt';
+    a.click();
+}
+
+function printPage() {
+    expandAll();
+    setTimeout(() => window.print(), 500);
+}
+
+// Init
+renderQuestions();
+
+</script>
+</body>
+</html>
